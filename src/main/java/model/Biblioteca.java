@@ -20,7 +20,7 @@ public class Biblioteca {
     public EmprestimoDaoLista listaDeEmprestimos;
     public ReservaDaoLista ListaDeReservas;
 
-    public ArrayList<Usuario> usuariosList= ArrayList<Usuario>;
+    //public ArrayList<Usuario> usuariosList= ArrayList<Usuario>;
     public boolean thisIDIsValid(String id){
         if(id.charAt(0)=='t'){
             for(String idOfATeacher: idsOfTeachers){

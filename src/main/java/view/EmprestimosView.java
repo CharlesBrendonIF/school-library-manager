@@ -1,5 +1,11 @@
 package view;
 
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
 public class EmprestimosView {
 
     public Scene getScene(Stage stage) {
