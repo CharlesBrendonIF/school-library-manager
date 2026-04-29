@@ -1,8 +1,6 @@
-package model;
+package models;
 
 import repository.dao.EmprestimoDAOLista;
-
-import java.util.List;
 
 public class Usuario {
     private String id;

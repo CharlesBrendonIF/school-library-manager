@@ -1,7 +1,8 @@
 package repository.dao;
 
-import model.Emprestimo;
-import model.Usuario;
+import models.Emprestimo;
+import models.Livro;
+import models.Usuario;
 import repository.repository.ListaDinamica;
 import repository.repository.Listavel;
 
@@ -63,5 +64,9 @@ public class EmprestimoDAOLista {
             }
         }
         return contador;
+    }
+
+    public Emprestimo apagar(){
+
     }
 }

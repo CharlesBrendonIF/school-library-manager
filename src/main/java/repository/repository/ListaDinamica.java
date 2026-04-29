@@ -19,7 +19,7 @@ public class ListaDinamica implements Listavel {
     }
 
     public ListaDinamica() {
-        this(10);
+        this(100);
     }
 
     @Override

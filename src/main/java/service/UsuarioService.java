@@ -1,10 +1,7 @@
 package service;
 
 
-import model.*;
-import repository.*;
-
-import java.sql.ClientInfoStatus;
+import models.*;
 
 public class UsuarioService {
     private Biblioteca biblioteca;

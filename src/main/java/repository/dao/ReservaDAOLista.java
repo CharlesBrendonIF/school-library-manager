@@ -1,7 +1,8 @@
 package repository.dao;
-import model.Reserva;
-import model.Titulo;
-import model.Usuario;
+import models.Livro;
+import models.Reserva;
+import models.Titulo;
+import models.Usuario;
 import repository.repository.ListaDinamica;
 import repository.repository.Listavel;
 
@@ -64,5 +65,9 @@ public class ReservaDAOLista {
             }
         }
         return arrayRetorno;
+    }
+
+    public Reserva apagar(){
+
     }
 }

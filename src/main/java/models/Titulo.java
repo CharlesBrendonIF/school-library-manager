@@ -1,4 +1,4 @@
-package model;
+package models;
 import java.time.LocalDate;
 import ed.FilaPrioridadeReserva;
 import repository.dao.LivroDAOLista;

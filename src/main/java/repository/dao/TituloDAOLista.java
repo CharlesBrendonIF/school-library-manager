@@ -1,5 +1,6 @@
 package repository.dao;
-import model.Titulo;
+import models.Livro;
+import models.Titulo;
 import repository.repository.ListaDinamica;
 import repository.repository.Listavel;
 
@@ -66,6 +67,10 @@ public class TituloDAOLista {
                 }
             }
         }
+    }
+
+    public Titulo apagar(){
+
     }
 }
 

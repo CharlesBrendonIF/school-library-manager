@@ -1,6 +1,6 @@
 package repository.dao;
 
-import model.Livro;
+import models.Livro;
 import repository.repository.ListaDinamica;
 import repository.repository.Listavel;
 
@@ -57,5 +57,9 @@ public class LivroDAOLista {
                 }
             }
         }
+    }
+
+    public Livro apagar(){
+
     }
 }

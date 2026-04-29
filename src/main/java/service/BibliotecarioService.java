@@ -1,7 +1,6 @@
 package service;
 
-import model.*;
-import repository.*;
+import models.*;
 
 public class BibliotecarioService {
     private Biblioteca biblioteca;
@@ -17,6 +16,7 @@ public class BibliotecarioService {
         this.listaDeUsuarios = listaDeUsuarios;
         this.user = user;
     }
+
 
     //Funçoes do Biblotecario. Por exemplo, get
 }

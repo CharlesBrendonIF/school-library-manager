@@ -1,8 +1,8 @@
 package ed;
 
-import model.Reserva;
-import model.TipoUsuario;
-import model.Usuario;
+import models.Reserva;
+import models.TipoUsuario;
+
 import java.util.Comparator;
 
 public class ReservaComparator implements Comparator<Reserva> {
