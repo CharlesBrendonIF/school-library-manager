@@ -3,21 +3,20 @@ package models;
 import java.time.LocalDate;
 
 public class Emprestimo {
-    private String id;
+    private long id;
+    private static long idCount=0;
     private Usuario usuario;
     private Livro livro;
     private LocalDate dataEmprestimo;
     private LocalDate dataDevolucao;
     private boolean atrasado;
 
-    // Construtor padrão
     public Emprestimo() {
         this.dataEmprestimo = LocalDate.now();
     }
 
-    // Construtor parametrizado
-    public Emprestimo(String id, Usuario usuario, Livro livro) {
-        this.id = id;
+    public Emprestimo(Usuario usuario, Livro livro) {
+        this.id = ++idCount;
         this.usuario = usuario;
         this.livro = livro;
         this.dataEmprestimo = LocalDate.now();
@@ -26,7 +25,6 @@ public class Emprestimo {
         else
             this.dataDevolucao = this.dataEmprestimo.plusDays(10);
         this.atrasado = false;
-
     }
 
     // Getters
@@ -46,7 +44,7 @@ public class Emprestimo {
         return livro;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
@@ -59,11 +57,6 @@ public class Emprestimo {
     }
 
     //  Setters
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }

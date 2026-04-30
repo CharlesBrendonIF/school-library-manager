@@ -12,7 +12,7 @@ public class AuthService {
     //Em cadastro, deve se verificar se o Id inserido no parametro é valido, ou seja se pertence ao banco de dados
     //de dados de id(Biblioteca.thisIdIsValid()). Exemplo sugerido: Usuario cadastro(Biblioteca b)
 
-    ////>>>Parte de Kaique, precisa ser revisado ainda!!!
+
     public Usuario login(Biblioteca b, String email, String senha) {
 
         // -------------------------------------------------------------------

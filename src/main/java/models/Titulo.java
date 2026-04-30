@@ -2,6 +2,7 @@ package models;
 import java.time.LocalDate;
 import ed.FilaPrioridadeReserva;
 import repository.dao.LivroDAOLista;
+import repository.dao.ReservaDAOLista;
 
 public class Titulo {
     private String nome;
@@ -66,7 +67,9 @@ public class Titulo {
     public int getQuantidadeDisponivel() { return quantidadeDisponivel; }
     public int getQuantidadeReservas() { return quantidadeReservas; }
 
-    public Reserva[] getReservas(){}///Implementar metodo se basenado em FilaDeReservas
+    public Reserva[] getReservas(){
+        ReservaDAOLista listaDeReservas= new
+    }///Implementar metodo se basenado em FilaDeReservas
 
     // --- Setters ---
     public void setNome(String nome) { this.nome = nome; }

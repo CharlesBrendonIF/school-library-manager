@@ -1,14 +1,15 @@
 package repository.dao;
 import models.Livro;
 import models.Titulo;
-import repository.repository.ListaDinamica;
-import repository.repository.Listavel;
+import ed.ListaDinamica;
+import ed.Listavel;
+
 
 public class TituloDAOLista {
 
-    private Listavel listaTitulos = new ListaDinamica();
+    private Listavel<Titulo> listaTitulos = new ListaDinamica<>();
 
-    public void add(Titulo t) {
+    public void salvar(Titulo t) {
         if (t == null) {
             throw new IllegalArgumentException("Título não pode ser nulo.");
         }
@@ -19,14 +20,14 @@ public class TituloDAOLista {
         Titulo[] arrayRetorno = new Titulo[listaTitulos.tamanho()];
 
         for (int i = 0; i < listaTitulos.tamanho(); i++) {
-            arrayRetorno[i] = (Titulo)listaTitulos.selecionar(i);
+            arrayRetorno[i] = listaTitulos.selecionar(i);
         }
         return arrayRetorno;
     }
 
     public Titulo buscarPorNome(String nome) {
         for (int i = 0; i < listaTitulos.tamanho(); i++) {
-            Titulo t = (Titulo) listaTitulos.selecionar(i);
+            Titulo t = listaTitulos.selecionar(i);
             if (t.getNome().equalsIgnoreCase(nome)) {
                 return t;
             }
@@ -36,8 +37,9 @@ public class TituloDAOLista {
 
     public Titulo[] buscarPorGenero(String genero) {
         int contador = 0;
+
         for (int i = 0; i< listaTitulos.tamanho(); i++) {
-            Titulo t = (Titulo) listaTitulos.selecionar(i);
+            Titulo t = listaTitulos.selecionar(i);
             if (t.getGenero().equalsIgnoreCase(genero)) {
                 contador++;
             }
@@ -46,7 +48,7 @@ public class TituloDAOLista {
         int indice = 0;
 
         for (int i = 0; i < listaTitulos.tamanho(); i++) {
-            Titulo t = (Titulo) listaTitulos.selecionar(i);
+            Titulo t = listaTitulos.selecionar(i);
             if (t.getGenero().equalsIgnoreCase(genero)) {
                 arrayRetorno[indice++] = t;
             }
@@ -54,23 +56,42 @@ public class TituloDAOLista {
         return arrayRetorno;
     }
 
+    public void atualizar(String isbn, Titulo tituloAtualizado) {
+        for (int i = 0; i < listaTitulos.tamanho(); i++) {
+            Titulo t = listaTitulos.selecionar(i);
+            if (t.getIsbn().equals(isbn)) {
+                listaTitulos.atualizar(tituloAtualizado, i);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Título com ISBN " + isbn + " não encontrado.");
+    }
+
+    public Titulo apagar(String isbn) {
+        for (int i = 0; i < listaTitulos.tamanho(); i++) {
+            Titulo t = listaTitulos.selecionar(i);
+            if (t.getIsbn().equals(isbn)) {
+                return listaTitulos.apagar(i);
+            }
+        }
+        return null;
+    }
+
     public void ordenar() {
         for (int i = 0; i < listaTitulos.tamanho() - 1; i++) {
             for (int j = 0; j < listaTitulos.tamanho() - i - 1; j++) {
-                Titulo titulo1 = (Titulo) listaTitulos.selecionar(j);
-                Titulo titulo2 = (Titulo) listaTitulos.selecionar(j + 1);
-                
+                Titulo titulo1 = listaTitulos.selecionar(j);
+                Titulo titulo2 = listaTitulos.selecionar(j + 1);
+
                 if (titulo1.getNome().compareToIgnoreCase(titulo2.getNome()) > 0) {
-                    
+
                     listaTitulos.atualizar(titulo2, j);
                     listaTitulos.atualizar(titulo1, j + 1);
                 }
             }
         }
     }
-
-    public Titulo apagar(){
-
-    }
 }
+
+
 

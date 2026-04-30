@@ -11,6 +11,7 @@ public class FilaPrioridadeReserva  {
     private PriorityQueue<Reserva> fila;
 
     public FilaPrioridadeReserva() {
+
         this.fila = new PriorityQueue<>(new ReservaComparator());
     }
 
