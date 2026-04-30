@@ -1,13 +1,12 @@
 package repository.dao;
 
 import models.Emprestimo;
-import models.Livro;
 import models.Usuario;
-import repository.repository.ListaDinamica;
-import repository.repository.Listavel;
+import ed.ListaDinamica;
+import ed.Listavel;
 
 public class EmprestimoDAOLista {
-    private Listavel listaEmprestimos = new ListaDinamica(0);
+    private Listavel<Emprestimo> listaEmprestimos = new ListaDinamica<>(0);
 
     public void salvar(Emprestimo e) {
         if (e == null) {
@@ -16,10 +15,20 @@ public class EmprestimoDAOLista {
         listaEmprestimos.anexar(e);
     }
 
+    public Emprestimo buscarPorId(String id) {
+        for (int i = 0; i < listaEmprestimos.tamanho(); i++) {
+            Emprestimo e = listaEmprestimos.selecionar(i);
+            if (e.getId().equals(id)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     public Emprestimo[] listar() {
         Emprestimo[] arrayRetorno = new Emprestimo[listaEmprestimos.tamanho()];
         for (int i =0; i<listaEmprestimos.tamanho(); i++) {
-            arrayRetorno[i] = (Emprestimo) listaEmprestimos.selecionar(i);
+            arrayRetorno[i] = listaEmprestimos.selecionar(i);
         }
         return arrayRetorno;
     }
@@ -27,7 +36,7 @@ public class EmprestimoDAOLista {
     public Emprestimo[] buscarPorUsuario(Usuario u) {
         int contador = 0;
         for (int i = 0; i < listaEmprestimos.tamanho(); i++) {
-            Emprestimo e = (Emprestimo) listaEmprestimos.selecionar(i);
+            Emprestimo e = listaEmprestimos.selecionar(i);
             if (e.getUsuario().equals(u)) {
                 contador++;
             }
@@ -37,7 +46,7 @@ public class EmprestimoDAOLista {
         int indice = 0;
 
         for (int i = 0; i < listaEmprestimos.tamanho(); i++) {
-            Emprestimo e = (Emprestimo) listaEmprestimos.selecionar(i);
+            Emprestimo e = listaEmprestimos.selecionar(i);
             if (e.getUsuario().equals(u)) {
                 arrayRetorno[indice++] = e;
             }
@@ -45,9 +54,30 @@ public class EmprestimoDAOLista {
         return arrayRetorno;
     }
 
+    public void atualizar(String id, Emprestimo emprestimoAtualizado) {
+        for (int i = 0; i < listaEmprestimos.tamanho(); i++) {
+            Emprestimo e = listaEmprestimos.selecionar(i);
+            if (e.getId().equals(id)) {
+                listaEmprestimos.atualizar(emprestimoAtualizado, i);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Empréstimo com ID " + id + " não encontrado.");
+    }
+
+    public Emprestimo apagarPorId(String id) {
+        for (int i = 0; i < listaEmprestimos.tamanho(); i++) {
+            Emprestimo e = listaEmprestimos.selecionar(i);
+            if (e.getId().equals(id)) {
+                return listaEmprestimos.apagar(i);
+            }
+        }
+        return null;
+    }
+
     public boolean usuarioTemAtraso(Usuario u) {
         for (int  i = 0; i<listaEmprestimos.tamanho(); i++) {
-            Emprestimo e = (Emprestimo) listaEmprestimos.selecionar(i);
+            Emprestimo e = listaEmprestimos.selecionar(i);
             if (e.getUsuario().equals(u) && e.isAtrasado()) {
                 return true;
             }
@@ -58,15 +88,11 @@ public class EmprestimoDAOLista {
     public int contarEmprestimosAtivos(Usuario u) {
         int contador = 0;
         for (int i=0; i<listaEmprestimos.tamanho(); i++) {
-            Emprestimo e = (Emprestimo) listaEmprestimos.selecionar(i);
+            Emprestimo e = listaEmprestimos.selecionar(i);
             if (e.getUsuario().equals(u) && !e.getLivro().isDisponivel()) {
                 contador++;
             }
         }
         return contador;
-    }
-
-    public Emprestimo apagar(){
-
     }
 }

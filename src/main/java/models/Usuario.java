@@ -36,7 +36,9 @@ public class Usuario {
     public TipoUsuario getTipo() { return tipo; }
     public int getLimiteLivros() { return limiteLivros; }
 
-    public Emprestimo[] getEmprestimos() {  }///Fazer metodo basendo-se em EmprestimoDaoLista
+    public Emprestimo[] getEmprestimos() {
+        return listaEmprestimos.listar();
+    }
 
     // Setters
     public void setId(String id) { this.id = id; }
@@ -51,7 +53,7 @@ public class Usuario {
     }
 
     public void adicionarEmprestimo(Emprestimo emprestimo) {
-        this.listaEmprestimos.add(emprestimo);///Usar metodos contido em EmprestimoDaoLista
+        this.listaEmprestimos.salvar(emprestimo);///Usar metodos contido em EmprestimoDaoLista
     }
 
     /// Criar removerEmprestimo

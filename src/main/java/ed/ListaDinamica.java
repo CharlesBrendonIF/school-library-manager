@@ -1,10 +1,11 @@
-package repository.repository;
+package ed;
 
 import java.util.NoSuchElementException;
 
-public class ListaDinamica implements Listavel {
-    private NoDuplo ponteiroInicio;
-    private NoDuplo ponteiroFim;
+
+public class ListaDinamica<T> implements Listavel<T> {
+    private NoDuplo<T> ponteiroInicio;
+    private NoDuplo<T> ponteiroFim;
     private int tamanhoMaximo;
     private int quantidade;
 
@@ -19,11 +20,11 @@ public class ListaDinamica implements Listavel {
     }
 
     public ListaDinamica() {
-        this(100);
+        this(10000);
     }
 
     @Override
-    public void inserir(Object objeto, int posicao) {
+    public void  inserir(T objeto, int posicao) {
         if (estaCheia() || posicao < 0 || posicao > quantidade) {
             throw new IndexOutOfBoundsException("Posição inválida");
         }
@@ -31,7 +32,7 @@ public class ListaDinamica implements Listavel {
             anexar(objeto);
             return;
         }
-        NoDuplo novo = new NoDuplo(objeto);
+        NoDuplo<T> novo = new NoDuplo<>(objeto);
         if (posicao == 0) {
             if (ponteiroInicio == null) {
                 ponteiroInicio = ponteiroFim = novo;
@@ -41,8 +42,8 @@ public class ListaDinamica implements Listavel {
                 ponteiroInicio = novo;
             }
         } else {
-            NoDuplo ponteiroAtual = noNaPosicao(posicao);
-            NoDuplo ponteiroAnterior = ponteiroAtual.getAnterior();
+            NoDuplo<T> ponteiroAtual = noNaPosicao(posicao);
+            NoDuplo<T> ponteiroAnterior = ponteiroAtual.getAnterior();
             ponteiroAnterior.setProximo(novo);
             novo.setAnterior(ponteiroAnterior);
             novo.setProximo(ponteiroAtual);
@@ -52,11 +53,11 @@ public class ListaDinamica implements Listavel {
     }
 
     @Override
-    public void anexar(Object objeto) {
+    public void anexar(T objeto) {
         if (estaCheia()) {
             throw new NoSuchElementException("Lista cheia");
         }
-        NoDuplo novoNo = new NoDuplo(objeto);
+        NoDuplo<T> novoNo = new NoDuplo<>(objeto);
         if (estaVazia()) {
             ponteiroInicio = ponteiroFim = novoNo;
         } else {
@@ -68,11 +69,11 @@ public class ListaDinamica implements Listavel {
     }
 
     @Override
-    public Object selecionar(int posicao) {
+    public T selecionar(int posicao) {
         if (posicao < 0 || posicao >= quantidade) {
             throw new IndexOutOfBoundsException("Posição inválida");
         }
-        NoDuplo ponteiroAuxiliar = ponteiroInicio;
+        NoDuplo<T> ponteiroAuxiliar = ponteiroInicio;
         for (int i = 0; i < posicao; i++) {
             ponteiroAuxiliar = ponteiroAuxiliar.getProximo();
         }
@@ -80,22 +81,25 @@ public class ListaDinamica implements Listavel {
     }
 
     @Override
-    public Object[] selecionarTodos() {
-        Object[] arrayRetorno = new Object[quantidade];
-        NoDuplo ponteiroAuxiliar = ponteiroInicio;
+    public T[] selecionarTodos() {
+        T[] arrayRetorno = (T[]) new Object[quantidade];
+
+        NoDuplo<T> ponteiroAuxiliar = ponteiroInicio;
+
         for (int i = 0; i < quantidade; i++) {
             arrayRetorno[i] = ponteiroAuxiliar.getDado();
             ponteiroAuxiliar = ponteiroAuxiliar.getProximo();
         }
+
         return arrayRetorno;
     }
 
     @Override
-    public void atualizar(Object objeto, int posicao) {
+    public void atualizar(T objeto, int posicao) {
         if (posicao < 0 || posicao >= quantidade) {
             throw new IndexOutOfBoundsException("Posição inválida");
         }
-        NoDuplo ponteiroAuxiliar = ponteiroInicio;
+        NoDuplo<T> ponteiroAuxiliar = ponteiroInicio;
         for (int i = 0; i < posicao; i++) {
             ponteiroAuxiliar = ponteiroAuxiliar.getProximo();
         }
@@ -103,15 +107,15 @@ public class ListaDinamica implements Listavel {
     }
 
     @Override
-    public Object apagar(int posicao) {
+    public T apagar(int posicao) {
         if (posicao < 0 || posicao >= quantidade) {
             throw new IndexOutOfBoundsException("Posição inválida");
         }
-        NoDuplo ponteiroAuxiliar = ponteiroInicio;
+        NoDuplo<T> ponteiroAuxiliar = ponteiroInicio;
         for (int i = 0; i < posicao; i++) {
             ponteiroAuxiliar = ponteiroAuxiliar.getProximo();
         }
-        Object retorno = ponteiroAuxiliar.getDado();
+        T retorno = ponteiroAuxiliar.getDado();
         if (quantidade == 1) {
             ponteiroInicio = ponteiroFim = null;
         } else if (ponteiroAuxiliar == ponteiroInicio) {
@@ -152,7 +156,7 @@ public class ListaDinamica implements Listavel {
     @Override
     public String imprimir() {
         String resultado = "";
-        NoDuplo ponteiroAuxiliar = ponteiroInicio;
+        NoDuplo<T> ponteiroAuxiliar = ponteiroInicio;
         for (int i = 0; i < quantidade; i++) {
             resultado += ponteiroAuxiliar.getDado();
             if (i != quantidade - 1) {
@@ -163,8 +167,8 @@ public class ListaDinamica implements Listavel {
         return "[ " + resultado + " ]";
     }
 
-    private NoDuplo noNaPosicao(int posicao) {
-        NoDuplo p = ponteiroInicio;
+    private NoDuplo<T> noNaPosicao(int posicao) {
+        NoDuplo<T> p = ponteiroInicio;
         for (int i = 0; i < posicao; i++) {
             p = p.getProximo();
         }

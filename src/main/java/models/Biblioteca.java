@@ -1,9 +1,6 @@
 package models;
 
-import repository.dao.EmprestimoDAOLista;
-import repository.dao.LivroDAOLista;
-import repository.dao.ReservaDAOLista;
-import repository.dao.TituloDAOLista;
+import repository.dao.*;
 
 public class Biblioteca {
     private String[] idsOfStudents= {"s000001","s000002","s000003","s000004"};
@@ -14,7 +11,7 @@ public class Biblioteca {
     public TituloDAOLista listaDeTitulos;
     public EmprestimoDAOLista listaDeEmprestimos;
     public ReservaDAOLista ListaDeReservas;
-    public UsuarioDaoLista listaDeUsuarios;
+    public UsuarioDAOLista listaDeUsuarios;
 
     //public ArrayList<Usuario> usuariosList= ArrayList<Usuario>;
     public boolean thisIDIsValid(String id){
@@ -39,6 +36,6 @@ public class Biblioteca {
     }
 
     public Usuario[] getUsuarios(){
-
+        return listaDeUsuarios.listar();
     }
 }
