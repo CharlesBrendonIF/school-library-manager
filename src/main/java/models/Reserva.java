@@ -40,8 +40,11 @@ public class Reserva {
         return dataReserva;
     }
 
+    public long getId() {
+        return id;
+    }
 
-    // Setters
+// Setters
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;

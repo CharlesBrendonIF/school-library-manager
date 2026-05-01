@@ -5,7 +5,7 @@ import ed.ListaDinamica;
 import ed.Listavel;
 
 public class LivroDAOLista {
-    private Listavel<Livro> listaLivros = new ListaDinamica<>();
+    private Listavel<Livro> listaLivros = new ListaDinamica<Livro>();
 
     public void salvar(Livro l) {
         if (l == null) {
@@ -75,6 +75,15 @@ public class LivroDAOLista {
         return contador;
     }
 
+    /// Selecionar livros disponiveis
+    public Livro[] selecionarDisponiveis(){
+
+    }
+
+    /// Selecionar livros Indisponiveis
+    public Livro[] selecionarDisponiveis(){
+
+    }
     public void ordenar() {
         for (int i = 0; i < listaLivros.tamanho() - 1; i++) {
             for (int j = 0; j < listaLivros.tamanho() - i - 1; j++) {

@@ -68,10 +68,10 @@ public class ReservaDAOLista {
         return arrayRetorno;
     }
 
-    public void atualizar(String id, Reserva reservaAtualizada) {
+    public void atualizar(long id, Reserva reservaAtualizada) {
         for (int i = 0; i < listaReservas.tamanho(); i++) {
             Reserva r = listaReservas.selecionar(i);
-            if (r.getId().equals(id)) {
+            if (r.getId()==id) {
                 listaReservas.atualizar(reservaAtualizada, i);
                 return;
             }
@@ -79,10 +79,10 @@ public class ReservaDAOLista {
         throw new IllegalArgumentException("Reserva com ID " + id + " não encontrado.");
     }
 
-    public Reserva apagar(String id) {
+    public Reserva apagar(long id) {
         for (int i = 0; i < listaReservas.tamanho(); i++) {
             Reserva r = listaReservas.selecionar(i);
-            if (r.getId().equals(id)) {
+            if (r.getId()==id) {
                 return listaReservas.apagar(i);
             }
         }

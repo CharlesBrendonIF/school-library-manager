@@ -1,50 +1,44 @@
 package models;
 
+import java.time.LocalDate;
+
 public class Livro {
-    private String id;
+
     private boolean disponivel;
-    private Titulo titulo;
+    ///Adaptar a classe, adicionando metodos getters e setters para esses atributos
+    private String nome;
+    private String isbn;
+    private String genero;
+    private String descricao;
+    private LocalDate dataPublicacao;
+    private static long idCount=0;
+    private long id;
 
-    // Construtor padrão
-    public Livro() {}
-
-    // Construtor parametrizado
-    public Livro(String id, Titulo titulo) {
-        this.id = id;
-        this.titulo = titulo;
-        this.disponivel = true;
+    public Livro(String nome, String isbn, String genero, boolean disponivel, String descricao,
+                 LocalDate dataPublicacao) {
+        this.nome = nome;
+        this.isbn = isbn;
+        this.genero = genero;
+        this.disponivel = disponivel;
+        this.descricao = descricao;
+        this.dataPublicacao = dataPublicacao;
+        this.id= ++idCount;
     }
 
     // Getters
-    public String getId() {
+    public Long getId() {
         return id;
-    }
-
-    public Titulo getTitulo() {
-        return titulo;
     }
 
     public boolean isDisponivel() {
         return disponivel;
     }
 
-    // Setters
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setTitulo(Titulo titulo) {
-        this.titulo = titulo;
-    }
-
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
     }
 
+    /// Refazer com os atributos atuais
     public void mostrarDados() {
-        String nomeTitulo = (titulo != null) ? titulo.getNome() : "Título não definido";
-        System.out.println("ID Exemplar: " + id +
-                " | Título: " + nomeTitulo +
-                " | Status: " + (disponivel ? "Disponível" : "Emprestado"));
     }
 }

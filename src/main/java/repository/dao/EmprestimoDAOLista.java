@@ -3,11 +3,19 @@ package repository.dao;
 import models.Emprestimo;
 import models.Livro;
 import models.Usuario;
-import repository.repository.ListaDinamica;
-import repository.repository.Listavel;
+import ed.ListaDinamica;
+import ed.Listavel;
 
 public class EmprestimoDAOLista {
-    private Listavel listaEmprestimos = new ListaDinamica(0);
+    private Listavel listaEmprestimos;
+
+    public EmprestimoDAOLista(int numeroMaximoDeEmprestimos){
+        listaEmprestimos=new ListaDinamica<Emprestimo>(numeroMaximoDeEmprestimos);
+    }
+
+    public EmprestimoDAOLista(){
+        listaEmprestimos=new ListaDinamica<Emprestimo>();
+    }
 
     public void salvar(Emprestimo e) {
         if (e == null) {
@@ -66,6 +74,7 @@ public class EmprestimoDAOLista {
         return contador;
     }
 
+    ////Implementar metodo apagar emprestimo
     public Emprestimo apagar(){
 
     }

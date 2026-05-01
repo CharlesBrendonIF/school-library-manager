@@ -20,7 +20,7 @@ public class ListaDinamica<T> implements Listavel<T> {
     }
 
     public ListaDinamica() {
-        this(10000);
+        this(100000);
     }
 
     @Override

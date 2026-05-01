@@ -11,21 +11,18 @@ public class Usuario {
     private int limiteLivros;
     private EmprestimoDAOLista listaEmprestimos;
 
-    // Construtor padrão
-    public Usuario() {}
-
-    // Construtor parametrizado
-    public Usuario(String id, String nome, String email, TipoUsuario tipo) {
+    public Usuario(String id, String nome, String email, String senha, TipoUsuario tipo) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.tipo = tipo;
-
+        this.senha=senha;
         if(tipo==TipoUsuario.ALUNO){
             limiteLivros=3;
         }else if(tipo==TipoUsuario.PROFESSOR){
             limiteLivros=4;
         }
+        this.listaEmprestimos=new EmprestimoDAOLista(limiteLivros);
     }
 
     // Getters
@@ -57,6 +54,9 @@ public class Usuario {
     }
 
     /// Criar removerEmprestimo
+    public Emprestimo removerEmprestimo(){
+
+    }
 
 
 }
