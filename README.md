@@ -24,36 +24,37 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 
 ### 📂 Estrutura de Dados (`ed`)
 *Camada responsável por gerenciar as estruturas de dados customizadas:*
-- **Ana Clara**: `ListaDinamica`, `NoDuplo`, `Listavel`.
-- **Maria Eduarda**: `ReservaComparator` (Lógica de prioridade).
+- **Ana Clara**: `ListaDinamica`, `NoDuplo`, `Listavel`.🔵 (Em Revisão)
+- **Maria Eduarda**: `ReservaComparator` (Lógica de prioridade).🔵 (Em Revisão)
 
 ### 📂 Repository (DAO)
 *Camada responsável por gerenciar a persistência em memória:*
-- **Ana Clara**: `LivroDAOLista`, `UsuarioDAOLista`, `TituloDAOLista`, `EmprestimoDAOLista` e `ReservaDAOLista`.
-- **Maria Eduarda**: `ReservaDAOFilaDePrioridade`.
+- **Ana Clara**: `LivroDAOLista`, `UsuarioDAOLista`, `TituloDAOLista`, `EmprestimoDAOLista` e `ReservaDAOLista`.🔵 (Em Revisão)
+- **Maria Eduarda**: `ReservaDAOFilaDePrioridade`.🔵 (Em Revisão)
 
 ### 📂 Service (Lógica)
 *Lógica principal do sistema:*
-- **Charles**: `AuthService`, Login e Segurança.
-- **Charles**: `UsuarioService`, Gestão de usuários.
-- **Charles**: `BibliotecarioService`, Operações administrativas.
+- **Charles**: `AuthService`, Login e Segurança.🟡 (Em Desenvolvimento)
+- **Charles**: `UsuarioService`, Gestão de usuários.🟡 (Em Desenvolvimento)
+- **Charles**: `BibliotecarioService`, Operações administrativas.🟡 (Em Desenvolvimento)
 
 ### 📂 Models (Entidades)
 *Entidades base*
-- **Indaia**:`Livro`, `Titulo`, `Usuario`, `Reserva`, `Emprestimo`.
-- **Emanuel**: `Bibiloteca`, e `BibliotecaRepository`.
+- **Indaia**:`Livro`, `Titulo`, `Usuario`, `Reserva`, `Emprestimo`.🔵 (Em Revisão)
+- **Emanuel**: `Bibiloteca`, e `BibliotecaRepository`.🟢 (Concluído)
 
 ### 📂 View (resources/views)
 *Interfaces FXML desenvolvidas no Scene Builder:*
-- **Kaique**: `AuthViews`.
-- **Pedro**: `UsuarioViews`.
-- ** **: `CardsViews`
-- ** **: `BibliotecarioViews`
+- **Kaique**: `AuthViews`.🟡 (Em Desenvolvimento)
+- **Pedro**: `UsuarioViews`.🟡 (Em Desenvolvimento)
+- ****: `CardsViews`(Precisa de alguem) 🔴 (Procura-se Responsável)
+- ** **: `BibliotecarioViews` 🔴 (Procura-se Responsável)
 
 ### 📂 Controller
 *Lógica das telas e integração:*
-- **Emanuel**: Integração geral, navegação entre janelas e revisão de código.
-- **Kaique**: Controle da tela de Login e Cadastro.
+- **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🟡 (Em Desenvolvimento)
+- **Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🟡 (Em Desenvolvimento)
+- ****:`BibliotecarioController` 
   
 ---
 
