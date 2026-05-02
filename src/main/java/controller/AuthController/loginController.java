@@ -1,47 +1,66 @@
 package controller.AuthController;
 
+// Imports para o JavaFX para funcionar corretamente
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class loginController {
 
+    // O nome "campoUsuario" deve ser exatamente o mesmo do "fx:id"
     @FXML
     private TextField campoUsuario;
 
+    // O nome "campoSenha" deve ser exatamente o mesmo do "fx:id"
     @FXML
     private PasswordField campoSenha;
 
+    // Método chamado quando o botão "Entrar" é acionado
     @FXML
     public void login(ActionEvent event) {
+        // Armazena o texto do usuário em variáveis
         String usuario = campoUsuario.getText();
         String senha = campoSenha.getText();
 
+        // Para conferir se o código conseguiu ler o que foi digitado - apenas para testes no compilador
         System.out.println("Login acionado");
         System.out.println("Usuário: " + usuario);
         System.out.println("Senha: " + senha);
 
-        // ⚠ Aqui entraria autenticação real (não implementado)
+        // IMPLEMENTAR A VERIFICAÇÃO AQUI
     }
 
+    // Direciona a página recuperarSenha - verificar se vamos implementar (continua no login.Contoller
     @FXML
     public void irParaRecuperacaoSenha(ActionEvent event) {
         try {
-            System.out.println("Ir para recuperação de senha");
+            System.out.println("Esqueci minha senha");
 
+            // Para localizar o arquivo da tela recuperarSenha.fxml
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/recuperar.fxml") // mantém padrão simples
+                    getClass().getResource("/view/recuperar.fxml")
             );
 
+            // Hierarquia do JavaFX
+            // Para indicar ao Controller a tela atual
             Stage stage = (Stage) campoUsuario.getScene().getWindow();
+            // Guia para csair da tela de login e ir para tela de recuperarSenha
             stage.setScene(new Scene(loader.load()));
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+
+        // Se o arquivo .fxml não for encontrado, Exception indica erro
+        catch (Exception e) {
+            Alert alerta = new Alert(Alert.AlertType.ERROR);
+            alerta.setTitle("Erro de Sistema");
+            alerta.setHeaderText("Não foi possível mudar de tela.");
+            alerta.setContentText("Ocorreu um problema técnico ao carregar a página de recuperação.");
+            alerta.showAndWait(); // Trava tela até usuário dar ok
         }
     }
 }

@@ -4,6 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
+<!-- Carrega arquivo CSS-->
 <AnchorPane prefHeight="600" prefWidth="800" stylesheets="@css/login.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
 
     <children>
@@ -36,6 +37,7 @@
 
             <Label styleClass="titulo" text="BiblioQueue" />
 
+            <!-- CAMPOS DE ENTRADA -->
             <VBox alignment="CENTER" spacing="15" styleClass="card">
 
                 <Label styleClass="subtitulo" text="Login" />
