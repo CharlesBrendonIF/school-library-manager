@@ -74,6 +74,9 @@ public class EmprestimoDAOLista {
         return contador;
     }
 
+    public int tamanho(){
+        return listaEmprestimos.tamanho();
+    }
     ////Implementar metodo apagar emprestimo
     public Emprestimo apagar(){
 

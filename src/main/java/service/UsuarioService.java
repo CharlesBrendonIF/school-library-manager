@@ -2,21 +2,16 @@ package service;
 
 import models.*;
 import repository.*;
-
 import java.time.LocalDate;
 import java.util.List;
 
 public class UsuarioService {
 
-    private final Biblioteca biblioteca;
-    private final LivroDaoLista acervo;
-    private final TituloDaoLista listaDeTitulos;
-    private final Usuario user;
+    private Biblioteca b;
+    private Usuario user;
 
-    public UsuarioService(Biblioteca biblioteca, Usuario userLogado) {
-        this.biblioteca = biblioteca;
-        this.acervo = biblioteca.acervo;
-        this.listaDeTitulos = biblioteca.listaDeTitulos;
+    public UsuarioService(Usuario userLogado) {
+        this.b = Biblioteca.getInstance();
         this.user = userLogado;
     }
 
@@ -35,43 +30,43 @@ public class UsuarioService {
      * @param livro o exemplar a ser emprestado
      * @return true se o empréstimo foi efetuado; false caso contrário
      */
-    public boolean pegarEmprestimo(Livro livro) {
+    public boolean pegarEmprestimo(Titulo titulo) {
         // 1. Verificar atraso
         if (usuarioPossuiAtraso()) {
-            System.out.println("⚠️ Acesso Bloqueado. Você possui livros em atraso. " +
-                    "Regularize suas devoluções para fazer novos empréstimos.");
+            System.out.println("⚠️ Acesso Bloqueado: Regularize seus atrasos.");
             return false;
         }
 
-        // 2. Verificar limite de empréstimos
-        if (user.getListaEmprestimos().size() >= user.getLimiteLivros()) {
-            System.out.println("Você já pegou o máximo de livros que poderia ter pego.");
+        // 2. Verificar limite do plano do usuário
+        if (user.getListaEmprestimos().tamanho() >= user.getLimiteLivros()) {
+            System.out.println("⚠️ Limite atingido: Você já possui " + user.getLimiteLivros() + " livros.");
             return false;
         }
 
-        // 3. Verificar disponibilidade do exemplar
-        if (!livro.isEstaDisponivel()) {
-            System.out.println("Este exemplar não está disponível no momento.");
+        // 3. CORREÇÃO: Verificar se realmente NÃO há livros
+        if (titulo.getQuantidadeDisponivel() <= 0) {
+            System.out.println("❌ Indisponível: Não há exemplares deste título no momento.");
             return false;
         }
 
-        // Efetuar o empréstimo
-        LocalDate hoje = LocalDate.now();
-        LocalDate dataDevolucaoPrevista = hoje.plusDays(prazoEmDias());
-
-        Emprestimo emprestimo = new Emprestimo(EmprestimoUtils.gerarId(), livro, hoje, dataDevolucaoPrevista);
-
-        livro.setEstaDisponivel(false);
-        user.pegarLivro(livro); // vínculo usuário↔livro mantido via listaEmprestimos do Usuario
-        biblioteca.listaDeEmprestimos.adicionar(emprestimo);
-
-        // Atualiza contadores do título correspondente
-        Titulo titulo = listaDeTitulos.buscarTitulo(livro.getNome());
-        if (titulo != null) {
-            titulo.setQuantidadeDisponivel(titulo.getQuantidadeDisponivel() - 1);
+        // 4. Buscar o exemplar físico (segurança contra NullPointer)
+        Livro livroFisicoEmprestado = titulo.getExemplarDisponivel();
+        if (livroFisicoEmprestado == null) {
+            System.out.println("❌ Erro interno: Quantidade indica disponível, mas exemplar não encontrado.");
+            return false;
         }
 
-        System.out.println("Empréstimo realizado com sucesso! Devolução prevista: " + dataDevolucaoPrevista);
+        // 5. Execução do Empréstimo
+        livroFisicoEmprestado.setDisponivel(false);
+        Emprestimo emprestimo = new Emprestimo(user, livroFisicoEmprestado);
+
+        // Registro nos 3 pilares de persistência em memória
+        user.adicionarEmprestimo(emprestimo);         // Para o perfil do aluno
+        b.getListaDeEmprestimos().salvar(emprestimo); // Para o relatório geral da biblioteca
+        titulo.registrarEmprestimo(emprestimo);       // Para o controle do estoque do título
+
+
+        System.out.println("✅ Sucesso! Devolução prevista: " + emprestimo.getDataDevolucao());
         return true;
     }
 
@@ -82,7 +77,10 @@ public class UsuarioService {
      * @return true se a devolução foi registrada; false se o usuário não
      *         possui este livro em sua lista de empréstimos
      */
-    public boolean devolucaoDoEmprestimo(Livro livro) {
+    public boolean devolucaoDoEmprestimo(Livro) {
+
+        /// Refazer esse metodo considerando um objeto da classe Emprestimo. OBS: Se atenatr que é necessrio remover os emprestimos de
+        ///do registro da biblioteca, Titulo e Usuario.listaDeEmprestimos
         Emprestimo emprestimo = encontrarEmprestimoAtivo(livro);
         if (emprestimo == null) {
             System.out.println("Nenhum empréstimo ativo encontrado para este livro.");
@@ -118,9 +116,8 @@ public class UsuarioService {
     /**
      * Retorna todos os títulos do catálogo ordenados por nome.
      */
-    public List<Titulo> mostrarCatalogo() {
-        listaDeTitulos.ordenarLista();
-        return listaDeTitulos.getLista();
+    public Titulo[] mostrarCatalogo() {
+        return b.getTitulosAtualizados().listarTitulos();
     }
 
     /**
@@ -210,8 +207,10 @@ public class UsuarioService {
      * Verifica se o usuário logado possui algum empréstimo ativo com devolução atrasada.
      * CORRIGIDO: filtra apenas empréstimos ainda não devolvidos (dataDevolucao == null).
      */
+
+    /// refatorar esse metodo utilizando user.getEmprestimos
     public boolean usuarioPossuiAtraso() {
-        return biblioteca.listaDeEmprestimos.getLista().stream()
+        return user.getEmprestimos()
                 .anyMatch(e -> e.getLivro() != null
                         && user.getListaEmprestimos().contains(e.getLivro())
                         && e.getDataDevolucao() == null

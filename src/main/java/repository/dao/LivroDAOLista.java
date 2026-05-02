@@ -7,6 +7,7 @@ import ed.Listavel;
 public class LivroDAOLista {
     private Listavel<Livro> listaLivros = new ListaDinamica<Livro>();
 
+
     public void salvar(Livro l) {
         if (l == null) {
             throw new IllegalArgumentException("Livro não pode ser nulo.");
@@ -57,7 +58,7 @@ public class LivroDAOLista {
         int contador = 0;
         for (int i = 0; i < listaLivros.tamanho(); i++) {
             Livro l = listaLivros.selecionar(i);
-            if (l.getTitulo().getNome().equalsIgnoreCase(nome)) {
+            if (l.getNome().equalsIgnoreCase(nome)) {
                 contador++;
             }
         }
@@ -68,7 +69,7 @@ public class LivroDAOLista {
         int contador = 0;
         for (int i = 0; i < listaLivros.tamanho(); i++) {
             Livro l = listaLivros.selecionar(i);
-            if (l.getTitulo().getNome().equalsIgnoreCase(nome) && l.isDisponivel()) {
+            if (l.getNome().equalsIgnoreCase(nome) && l.isDisponivel()) {
                 contador++;
             }
         }
@@ -77,20 +78,65 @@ public class LivroDAOLista {
 
     /// Selecionar livros disponiveis
     public Livro[] selecionarDisponiveis(){
+        int contador = 0;
+        Livro l;
+        for (int i = 0; i < listaLivros.tamanho(); i++) {
+            l = listaLivros.selecionar(i);
+            if (l.isDisponivel())
+                contador++;
+        }
 
+        Livro[] livrosDisponiveis= new Livro[contador];
+        int y=0;
+        for(int i = 0; i < listaLivros.tamanho(); i++){
+            l = listaLivros.selecionar(i);
+            if (l.isDisponivel()){
+                livrosDisponiveis[y]=l;
+                y++;
+            }
+        }
+
+        return livrosDisponiveis;
     }
 
     /// Selecionar livros Indisponiveis
-    public Livro[] selecionarDisponiveis(){
+    public Livro[] selecionarIndisponiveis(){
+        int contador = 0;
+        Livro l;
+        for (int i = 0; i < listaLivros.tamanho(); i++) {
+            l = listaLivros.selecionar(i);
+            if (!l.isDisponivel())
+                contador++;
+        }
 
+        Livro[] livrosIndisponiveis= new Livro[contador];
+        int y=0;
+        for(int i = 0; i < listaLivros.tamanho(); i++){
+            l = listaLivros.selecionar(i);
+            if (!l.isDisponivel()){
+                livrosIndisponiveis[y]=l;
+                y++;
+            }
+        }
+
+        return livrosIndisponiveis;
     }
+
+    public Livro selecionar(int i){
+        return listaLivros.selecionar(i);
+    }
+
+    public int quantidade(){
+        return listaLivros.tamanho();
+    }
+
     public void ordenar() {
         for (int i = 0; i < listaLivros.tamanho() - 1; i++) {
             for (int j = 0; j < listaLivros.tamanho() - i - 1; j++) {
                 Livro livro1 = listaLivros.selecionar(j);
                 Livro livro2 = listaLivros.selecionar(j + 1);
 
-                if (livro1.getTitulo().getNome().compareToIgnoreCase(livro2.getTitulo().getNome()) > 0) {
+                if (livro1.getNome().compareToIgnoreCase(livro2.getNome()) > 0) {
 
                     listaLivros.atualizar(livro2, j);
                     listaLivros.atualizar(livro1, j + 1);

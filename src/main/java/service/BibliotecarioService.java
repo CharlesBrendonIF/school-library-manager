@@ -9,22 +9,11 @@ import java.util.stream.Collectors;
 
 public class BibliotecarioService {
 
+    private Biblioteca b;
 
-    private final Biblioteca biblioteca;
-    private final LivroDaoLista listaDeLivros;
-    private final TituloDaoLista listaDeTitulos;
-    private final EmprestimoDaoLista listaDeEmprestimos;
-    private final UsuarioDAOLista listaDeUsuarios;
-    private final Usuario user; // bibliotecário logado
-
-
-    public BibliotecarioService(Biblioteca biblioteca, Usuario userLogado) {
-        this.biblioteca = biblioteca;
-        this.listaDeLivros = biblioteca.acervo;
-        this.listaDeTitulos = biblioteca.listaDeTitulos;
-        this.listaDeEmprestimos = biblioteca.listaDeEmprestimos;
-        this.listaDeUsuarios = biblioteca.listaDeUsuarios;
-        this.user = userLogado;
+    public BibliotecarioService(Usuario userLogado) {
+        Usuario user=userLogado;
+        b=Biblioteca.getInstance();
     }
 
     // =========================================================================
@@ -33,36 +22,32 @@ public class BibliotecarioService {
 
     /** Total de exemplares (livros) no acervo. */
     public int getTotalLivros() {
-        return listaDeLivros.getQuantidade();
+        return b.getAcervo().quantidade();
     }
 
-    /** Número de empréstimos ativos (ainda não devolvidos). */
-    public int getEmprestimosAtivos() {
-        return (int) listaDeEmprestimos.getLista().stream()
-                .filter(e -> e.getDataDevolucao() == null)
-                .count();
+    /** Número de empréstimos ativos. */
+    public int getNumeroEmprestimosAtivos() {
+        return b.getListaDeEmprestimos().tamanho();
     }
 
     /**
      * Número de empréstimos atrasados.
-     * CORRIGIDO: filtra apenas empréstimos ainda não devolvidos (dataDevolucao == null),
      * evitando contar devoluções antigas que foram marcadas como atrasadas.
      */
-    public int getEmprestimosAtrasados() {
-        return (int) listaDeEmprestimos.getLista().stream()
-                .filter(e -> e.getDataDevolucao() == null && e.isAtrasada())
-                .count();
+    public int getNumeroEmprestimosAtrasados() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA e Emprestimo
+        int cont=0;
+        for()
     }
 
     /** Número de usuários com pelo menos um empréstimo atrasado. */
-    public int getUsuariosComAtraso() {
+    public int getUsuariosComAtraso() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA e Emprestimo
         return (int) listaDeUsuarios.getLista().stream()
                 .filter(u -> possuiAtraso(u))
                 .count();
     }
 
     /** Total de reservas ativas em todas as filas. */
-    public int getTotalReservas() {
+    public int getTotalReservas() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA e Emprestimo
         return listaDeTitulos.getLista().stream()
                 .mapToInt(t -> t.getFilaDeReservas().tamanho())
                 .sum();
@@ -73,62 +58,26 @@ public class BibliotecarioService {
     // =========================================================================
 
     /**
-     * Lista todos os empréstimos (ativos e concluídos) com seus dados completos.
+     * Lista todos os empréstimos com seus dados completos.
      */
-    public List<Emprestimo> listarTodosEmprestimos() {
-        return listaDeEmprestimos.getLista();
-    }
 
-    /**
-     * Registra manualmente a devolução de um empréstimo identificado pelo ID.
-     *
-     * @param idEmprestimo ID do empréstimo a ser encerrado
-     * @return true se a devolução foi registrada; false se não encontrado
-     */
-    public boolean registrarDevolucao(String idEmprestimo) {
-        Emprestimo emprestimo = listaDeEmprestimos.getLista().stream()
-                .filter(e -> e.getId().equals(idEmprestimo) && e.getDataDevolucao() == null)
-                .findFirst()
-                .orElse(null);
+    public boolean registrarDevolucao(Emprestimo e) {
 
-        if (emprestimo == null) {
+        if (e == null) {
             System.out.println("Empréstimo não encontrado ou já encerrado.");
             return false;
         }
 
-        LocalDate hoje = LocalDate.now();
-        emprestimo.setDataDevolucao(hoje);
-        emprestimo.setAtrasada(hoje.isAfter(emprestimo.getDataDevolucaoPrevista()));
+        Livro livro = e.getLivro();
+        livro.setDisponivel(true);
 
-        Livro livro = emprestimo.getLivro();
-        livro.setEstaDisponivel(true);
-
-        // Atualiza contadores do título
-        Titulo titulo = listaDeTitulos.buscarTitulo(livro.getNome());
-        if (titulo != null) {
-            titulo.setQuantidadeDisponivel(titulo.getQuantidadeDisponivel() + 1);
-        }
-
-        // Remove o livro da lista do usuário responsável.
-        // O vínculo usuário↔livro é mantido via listaEmprestimos do Usuario,
-        // já que a entidade Emprestimo não possui campo de usuário (conforme modelo do projeto).
-        listaDeUsuarios.getLista().stream()
-                .filter(u -> u.getListaEmprestimos().contains(livro))
-                .findFirst()
-                .ifPresent(u -> u.devolverLivro(livro));
-
-        // Notifica o próximo da fila de reservas
-        if (titulo != null) {
-            Reserva proxima = titulo.getFilaDeReservas().peek();
-            if (proxima != null) {
-                System.out.println("Notificando " + proxima.getUsuario().getNome() +
-                        ": o livro '" + titulo.getNome() + "' está disponível!");
+        // Atualiza contadores e lista de emprestimo em título;
+        for(Titulo titulo: b.getTitulosAtualizados().listarTitulos()  ){
+            if(livro.getIsbn().equalsIgnoreCase(titulo.getIsbn())){
+                titulo.removerEmprestimo(e);
             }
         }
-
-        System.out.println("Devolução registrada com sucesso." +
-                (emprestimo.isAtrasada() ? " (empréstimo estava atrasado)" : ""));
-        return true;
+        /// Completar e utilizar metodos presentes em models e repository ////
     }
 
     // =========================================================================
@@ -138,30 +87,36 @@ public class BibliotecarioService {
     /**
      * Lista todos os títulos do acervo, ordenados por nome.
      */
-    public List<Titulo> listarInventario() {
-        listaDeTitulos.ordenarLista();
-        return listaDeTitulos.getLista();
+    public Titulo[] listarInventario() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA e TituloDAOLista
+
     }
 
     /**
      * Lista todos os exemplares (livros) do acervo, ordenados por nome.
      */
-    public List<Livro> listarExemplares() {
-        listaDeLivros.ordenarLista();
-        return listaDeLivros.getLista();
+    public Livro[] listarExemplares() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA, LivroDaoLista
+
     }
 
     // =========================================================================
     // CONTROLE DE RESERVAS — tela de controle de reservas
     // =========================================================================
 
+
+//////////////////////Atualizar com Metodos de Repository e Models////////////////////////////////////////
     /**
      * Retorna, para cada título, o primeiro usuário da fila de reservas.
      */
-    public List<Titulo> listarPrimeirosDaFilaDeReservas() {
-        return listaDeTitulos.getLista().stream()
-                .filter(t -> t.getFilaDeReservas().tamanho() > 0)
-                .collect(Collectors.toList());
+    public Reserva[] listarPrimeirosDasFilaDeReservasDeCadaTitulo() {
+        ///OBS: Aqui recomendo em um loop percorrer todos os objetos Titulo em listaDeTitulos e biblioteco, e capturar
+        /// o primeiro elemento da lista de reserva de cada Titulo. Essas reservas devem ser guardadas em uma
+        ///listaDeReservas(ReservasDAOLista)
+        /// Por fim retornar listaDeResercas.listar, que vai retornar um array de reservas
+    }
+
+    public Reserva[] listarFilaDeReserva(Titulo t) {
+        ///Este metodo irá simplesmente retornar um array de das reservas de um Titulo, ou seja,
+        /// retornar um array de Titulo.listaDeReservas
     }
 
     /**
@@ -213,9 +168,7 @@ public class BibliotecarioService {
     // =========================================================================
 
     /** Retorna a lista completa de usuários. */
-    public List<Usuario> listarUsuarios() {
-        return listaDeUsuarios.getLista();
-    }
+
 
     /** Busca um usuário pelo ID. */
     public Usuario buscarUsuarioPorId(String id) {

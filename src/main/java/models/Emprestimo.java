@@ -48,6 +48,8 @@ public class Emprestimo {
         return id;
     }
 
+
+
     public LocalDate getDataEmprestimo() {
         return dataEmprestimo;
     }

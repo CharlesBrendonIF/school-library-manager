@@ -5,9 +5,10 @@ import java.time.LocalDate;
 public class Livro {
 
     private boolean disponivel;
-    ///Adaptar a classe, adicionando metodos getters e setters para esses atributos
+
     private String nome;
     private String isbn;
+    private String autor;
     private String genero;
     private String descricao;
     private LocalDate dataPublicacao;
@@ -30,6 +31,30 @@ public class Livro {
         return id;
     }
 
+    public LocalDate getDataPublicacao() {
+        return dataPublicacao;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
     public boolean isDisponivel() {
         return disponivel;
     }
@@ -38,7 +63,5 @@ public class Livro {
         this.disponivel = disponivel;
     }
 
-    /// Refazer com os atributos atuais
-    public void mostrarDados() {
-    }
+
 }

@@ -6,41 +6,99 @@ import java.time.LocalDate;
 
 public class Biblioteca {
 
-    public LivroDAOLista acervo;
-    public TituloDAOLista listaDeTitulos;
-    public EmprestimoDAOLista listaDeEmprestimos;
-    public ReservaDAOLista listaDeReservas;//Para a biblioteca ter um controle de todas as reservas
-    public UsuarioDAOLista listaDeUsuarios;
-    private BibliotecaRepository repositorio=new BibliotecaRepository();
+    private LivroDAOLista acervo;
+    private TituloDAOLista listaDeTitulos;
+    private EmprestimoDAOLista listaDeEmprestimos;
+    private ReservaDAOLista listaDeReservas;//Para a biblioteca ter um controle de todas as reservas
+    private UsuarioDAOLista listaDeUsuarios;
+    private BibliotecaRepository repositorio = new BibliotecaRepository();
+    private static Biblioteca instance;
 
-    public Biblioteca(){
-        listaDeEmprestimos=new EmprestimoDAOLista();
-        listaDeReservas=new ReservaDAOLista();
-        listaDeUsuarios=repositorio.listaDeUsuarios;
-        acervo=repositorio.listaDeLivros;
+    private Biblioteca() {
+        listaDeEmprestimos = new EmprestimoDAOLista();
+        listaDeReservas = new ReservaDAOLista();
+        listaDeUsuarios = repositorio.listaDeUsuarios;
+        acervo = repositorio.listaDeLivros;
+        listaDeTitulos= updateListaDeTitulos(acervo);
     }
 
-    public boolean thisIDIsValid(String id){
-        if(id.charAt(0)=='t'){
-            for(String idOfATeacher: repositorio.idsOfTeachers){
-                if(idOfATeacher.equals(id))
+    public static Biblioteca getInstance() {
+        if (instance == null) {
+            instance = new Biblioteca();
+        }
+        return instance;
+    }
+
+    public boolean thisIDIsValid(String id) {
+        if (id.charAt(0) == 't') {
+            for (String idOfATeacher : repositorio.idsOfTeachers) {
+                if (idOfATeacher.equals(id))
                     return true;
             }
 
-        }else if(id.charAt(0)=='s') {
-            for (String idsOfStudent: repositorio.idsOfStudents) {
+        } else if (id.charAt(0) == 's') {
+            for (String idsOfStudent : repositorio.idsOfStudents) {
                 if (idsOfStudent.equals(id))
                     return true;
             }
-        }else if(id.charAt(0)=='l'){
-            for(String idsOfLibrarian: repositorio.idsOfLibrarians){
-                if(idsOfLibrarian.equals(id))
+        } else if (id.charAt(0) == 'l') {
+            for (String idsOfLibrarian : repositorio.idsOfLibrarians) {
+                if (idsOfLibrarian.equals(id))
                     return true;
             }
         }
         return false;
     }
 
+    public LivroDAOLista getAcervo() {
+        return acervo;
+    }
+
+    public EmprestimoDAOLista getListaDeEmprestimos() {
+        return listaDeEmprestimos;
+    }
+
+    public ReservaDAOLista getListaDeReservas() {
+        return listaDeReservas;
+    }
+
+    public UsuarioDAOLista getListaDeUsuarios() {
+        return listaDeUsuarios;
+    }
+
+    public TituloDAOLista getTitulosAtualizados() {
+        // Toda vez que alguém pedir os títulos, você re-agrupa para garantir
+        // que novos livros adicionados ao acervo apareçam aqui.
+        this.listaDeTitulos = updateListaDeTitulos(this.acervo);
+        return this.listaDeTitulos;
+    }
+
+    private TituloDAOLista updateListaDeTitulos(LivroDAOLista acervo) {
+        acervo.ordenar(); // Garante que livros iguais fiquem juntos
+        TituloDAOLista novaListaDeTitulos = new TituloDAOLista();
+
+        int i = 0;
+        while (i < acervo.quantidade()) {
+            Livro modelo = acervo.selecionar(i);
+            LivroDAOLista colecaoExemplares = new LivroDAOLista();
+
+            // Agrupa todos os livros que possuem o mesmo ISBN
+            while (i < acervo.quantidade() &&
+                    acervo.selecionar(i).getIsbn().equals(modelo.getIsbn())) {
+
+                colecaoExemplares.salvar(acervo.selecionar(i));
+                i++; // Move para o próximo exemplar
+            }
+
+            // Cria um único Título baseado na coleção de exemplares idênticos
+            novaListaDeTitulos.salvar(new Titulo(colecaoExemplares));
+
+            // O "i" já está na posição do próximo livro diferente,
+            // o loop principal continuará dali.
+        }
+
+        return novaListaDeTitulos;
+    }
 }
 
 class BibliotecaRepository{

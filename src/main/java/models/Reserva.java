@@ -9,6 +9,7 @@ public class Reserva {
     private static long idCount=0;
     private long id;
     private static long Maximo_Reservas=1_000_000;
+
     // Construtor padrão
     public Reserva() {
         this.dataReserva = LocalDateTime.now();
@@ -63,6 +64,7 @@ public class Reserva {
         if (usuario != null) System.out.println("Usuário: " + usuario.getNome());
         if (titulo != null) System.out.println("Título: " + titulo.getNome());
     }
+
 
 
 }

@@ -34,11 +34,11 @@ public class Titulo {
         this.descricao = modelo.getDescricao();
         this.dataPublicacao = modelo.getDataPublicacao();
         this.autor = modelo.getAutor();
-        this.quantidade=listaDeExemplares.getTamanho();
+        this.quantidade=listaDeExemplares.quantidade();
         this.quantidaDeReservas=0;
-        this.quantidadeDisponivel=quantidade-1;
+        this.quantidadeDisponivel=quantidade;
 
-        this.listaDeEmprestimos= new EmprestimoDAOLista(quantidade-1);//Quantidade maxima de Emprestimos  precisa ser a a quantidade disponivel menos 1 pois pelo menos um exemplar deve estar presente na biblioteca
+        this.listaDeEmprestimos= new EmprestimoDAOLista(quantidadeDisponivel);//Quantidade maxima de Emprestimos  precisa ser a a quantidade disponivel menos 1 pois pelo menos um exemplar deve estar presente na biblioteca
         this.filaDeReservas= new ReservaDAOFilaDePrioridade();
     }
 
@@ -52,5 +52,35 @@ public class Titulo {
     public int getQuantidadeDeExemplares() { return quantidade; }
     public int getQuantidadeDisponivel() { return quantidadeDisponivel; }
 
+    public Livro getExemplarDisponivel(){
+        for(Livro l:listaDeExemplares.listar()){
+            if(l.isDisponivel()){
+                return l;
+            }
+        }
+        return null;
+    }
+
+
+    public void registrarEmprestimo(Emprestimo novoEmprestimo){/// Retornar exception caso quantidade disponvel seja null
+        listaDeEmprestimos.salvar(novoEmprestimo);
+        quantidadeDisponivel--;
+
+    }
+
+
+    public Emprestimo removerEmprestimo(Emprestimo e){/// Fazer esse metodo aqui rsrsrsrs
+        if(novoEmprestimo==null){/// Retornar exception caso quantidade disponvel seja null
+            return null;
+        }
+
+        for(Emprestimo emprestimo: listaDeEmprestimos.listar()){
+            if(e.getId()==emprestimo.getId()){
+
+            }
+        }
+        quantidadeDisponivel++;
+
+    }
 
 }

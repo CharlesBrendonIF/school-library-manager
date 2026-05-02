@@ -32,7 +32,7 @@ public class Usuario {
     public String getSenha() { return senha; }
     public TipoUsuario getTipo() { return tipo; }
     public int getLimiteLivros() { return limiteLivros; }
-
+    public EmprestimoDAOLista getListaEmprestimos() {return listaEmprestimos;}
     public Emprestimo[] getEmprestimos() {
         return listaEmprestimos.listar();
     }
@@ -51,12 +51,17 @@ public class Usuario {
 
     public void adicionarEmprestimo(Emprestimo emprestimo) {
         this.listaEmprestimos.salvar(emprestimo);///Usar metodos contido em EmprestimoDaoLista
-    }
+    }///Implementar caso emprestimo ==null
 
     /// Criar removerEmprestimo
     public Emprestimo removerEmprestimo(){
 
     }
+
+    public boolean temEmprestimoAtrasado(){
+        ///Return true se algum emprestimo em EmprestimoDAOLISTA estiver atrasado;
+    }
+
 
 
 }
