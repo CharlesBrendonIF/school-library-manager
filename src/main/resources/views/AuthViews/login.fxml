@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<!-- Carrega arquivo CSS-->
+<AnchorPane prefHeight="600" prefWidth="800" stylesheets="@css/login.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+
+    <children>
+
+        <!-- IMAGEM ESQUERDA -->
+        <ImageView fitHeight="1.0" fitWidth="197.0" layoutX="3.0" layoutY="-1.0" preserveRatio="true" AnchorPane.bottomAnchor="600.0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="-1.0">
+            <image>
+                <Image url="@/images/prateleira_esquerda.jpeg" />
+            </image>
+        </ImageView>
+
+        <!-- IMAGEM DIREITA -->
+        <ImageView fitWidth="200" preserveRatio="true" AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+            <image>
+                <Image url="@/images/prateleira_direita.jpeg" />
+            </image>
+        </ImageView>
+
+        <!-- CONTEÚDO CENTRAL -->
+        <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="200" AnchorPane.rightAnchor="200" AnchorPane.topAnchor="0">
+
+            <!-- Logo -->
+            <ImageView fitHeight="100" fitWidth="200" preserveRatio="true" >
+
+                <image>
+                    <Image url="@/images/logo.png" />
+                </image>
+
+            </ImageView>
+
+            <Label styleClass="titulo" text="BiblioQueue" />
+
+            <!-- CAMPOS DE ENTRADA -->
+            <VBox alignment="CENTER" spacing="15" styleClass="card">
+
+                <Label styleClass="subtitulo" text="Login" />
+
+                <TextField prefWidth="250" promptText="E-mail ou matrícula" />
+
+                <PasswordField prefWidth="250" promptText="Senha" />
+
+                <Hyperlink text="Esqueci minha senha" />
+
+                <Button prefHeight="40" prefWidth="250" styleClass="botao" text="Entrar" />
+
+            </VBox>
+
+        </VBox>
+
+    </children>
+</AnchorPane>
