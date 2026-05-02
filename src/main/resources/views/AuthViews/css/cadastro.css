@@ -1,0 +1,71 @@
+/* Cor de fundo da janela inteira */
+.root {
+    -fx-background-color: #f4f4f4;
+}
+
+/* Título principal (BiblioQueue) */
+.titulo {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2f5d50;
+    -fx-font-family: "Arial";
+}
+
+/* Subtítulo */
+.subtitulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Card central */
+.card {
+    -fx-background-color: white;
+    -fx-padding: 30;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+/* Estilo para todos os campos de texto e senha */
+.text-field, .password-field {
+    -fx-background-radius: 5;
+    -fx-padding: 10;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5;
+    -fx-background-color: #fafafa;
+}
+
+/* Quando o usuário clica no campo para digitar */
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #2f5d50;
+    -fx-border-width: 2;
+    -fx-background-color: white;
+}
+
+/* Botão principal */
+.botao {
+    -fx-background-color: #2f5d50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+/* Efeito ao passar o mouse no botão  */
+.botao:hover {
+    -fx-background-color: #3d7a69;
+}
+
+/* Estilo do Hyperlink (Fazer Login / Esqueci Senha) */
+.hyperlink {
+    -fx-text-fill: #2f5d50;
+    -fx-underline: false;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #3d7a69;
+    -fx-underline: true;
+}
