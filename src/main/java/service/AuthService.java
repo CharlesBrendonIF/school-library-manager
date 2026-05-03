@@ -8,11 +8,7 @@ import models.TipoUsuario;
 // (o acesso é sempre via b.getListaDeUsuarios())
 
 public class AuthService {
-    private Biblioteca b;
-
-    public AuthService() {
-        b = Biblioteca.getInstance();
-    }
+    private static Biblioteca b=Biblioteca.getInstance();
 
     /**
      * Realiza o login do usuário.
@@ -21,7 +17,8 @@ public class AuthService {
      *
      * @return o Usuario autenticado, ou null se as credenciais forem inválidas
      */
-    public Usuario login(String email, String senha) {
+
+    public static Usuario login(String email, String senha) {
         for (Usuario u : b.getListaDeUsuarios().listar()) {
             if (u.getEmail().equalsIgnoreCase(email) && u.getSenha().equals(senha)) {
                 System.out.println("Login realizado com sucesso! Bem-vindo(a), " + u.getNome() + ".");
@@ -39,7 +36,7 @@ public class AuthService {
      *
      * @return o novo Usuario cadastrado, ou null se o cadastro falhar
      */
-    public Usuario cadastro(String nome, String email, String senha, String id) {
+    public static Usuario cadastro(String nome,String email, String senha, String id) {
 
         // Valida o ID junto ao banco de IDs da biblioteca
         if (!b.thisIDIsValid(id)) {
@@ -73,8 +70,9 @@ public class AuthService {
      * e thisIDIsValid() também checa charAt(0) == 'p' para professores.
      * O código original usava 't', o que fazia professores serem cadastrados como ALUNO.
      */
-    private TipoUsuario resolverCategoria(String id) {
-        if (id.charAt(0) == 'p') {          // CORRIGIDO: era 't', deve ser 'p'
+
+    private static TipoUsuario resolverCategoria(String id) {
+        if (id.charAt(0)=='t') {
             return TipoUsuario.PROFESSOR;
         } else if (id.charAt(0) == 'l') {
             return TipoUsuario.BIBLIOTECARIO;

@@ -12,7 +12,7 @@
 
 <!-- Carrega arquivo CSS-->
 
-<AnchorPane prefHeight="600" prefWidth="800" stylesheets="@css/login.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="600" prefWidth="800" stylesheets="@css/login.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AuthController.loginController">
 
     <children>
 
@@ -40,13 +40,13 @@
 
                 <Label styleClass="subtitulo" text="Login" />
 
-                <TextField prefWidth="250" promptText="E-mail ou matrícula" />
+                <TextField fx:id="campoEmail" prefWidth="250" promptText="E-mail" />
 
-                <PasswordField prefWidth="250" promptText="Senha" />
+                <PasswordField fx:id="campoSenha" prefWidth="250" promptText="Senha" />
 
-                <Hyperlink text="Esqueci minha senha" />
+                <Hyperlink fx:id="cadastroLink" onAction="#fazerCadastro" text="Fazer Cadastro" />
 
-                <Button prefHeight="40" prefWidth="250" styleClass="botao" text="Entrar" />
+                <Button fx:id="entrarBtn" onAction="#login" prefHeight="40" prefWidth="250" styleClass="botao" text="Entrar" />
 
             </VBox>
 

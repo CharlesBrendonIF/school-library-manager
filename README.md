@@ -40,7 +40,7 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 
 ### 📂 Models (Entidades)
 *Entidades base*
-- **Indaia**:`Livro`, `Titulo`, `Usuario`, `Reserva`, `Emprestimo`.🔵 (Em Revisão)
+- **Indaia, Maria Eduarda**:`Livro`, `Titulo`, `Usuario`, `Reserva`, `Emprestimo`.🔵 (Em Revisão)
 - **Emanuel**: `Bibiloteca`, e `BibliotecaRepository`.🟢 (Concluído)
 
 ### 📂 Views (resources/views)
@@ -52,9 +52,9 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 
 ### 📂 Controller
 *Lógica das telas e integração:*
-- **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🟡 (Em Desenvolvimento)
+- **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🔵 (Em Revisão)
 - **Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🟡 (Em Desenvolvimento)
-- **Emanuel**:`BibliotecarioController` 🔴 (Procura-se Responsável)
+- ****:`BibliotecarioController` 🔴 (Procura-se Responsável)
   
 ---
 
