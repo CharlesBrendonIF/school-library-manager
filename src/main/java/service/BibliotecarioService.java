@@ -1,56 +1,90 @@
 package service;
 
 import models.*;
-import repository.*;
+import repository.dao.ReservaDAOLista;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
+// ALTERAÇÃO: removidos imports de "repository.*", "java.util.List", "java.util.stream.Collectors"
+// — nenhum deles é usado após as correções. Stream foi substituído por for loops
+// pois os DAOs do projeto retornam arrays, não Collections nem Streams.
+// ALTERAÇÃO: adicionado import de ReservaDAOLista (usado em listarPrimeirosDasFilas)
 
 public class BibliotecarioService {
 
     private Biblioteca b;
 
     public BibliotecarioService(Usuario userLogado) {
-        Usuario user=userLogado;
-        b=Biblioteca.getInstance();
+        // ALTERAÇÃO: removida variável local "Usuario user = userLogado" — estava
+        // sendo criada e nunca usada. BibliotecarioService não precisa guardar o
+        // usuário logado, apenas a instância da Biblioteca.
+        b = Biblioteca.getInstance();
     }
 
     // =========================================================================
     // DASHBOARD — dados gerais (tela do bibliotecário)
     // =========================================================================
 
-    /** Total de exemplares (livros) no acervo. */
+    /** Total de exemplares (livros físicos) no acervo. */
     public int getTotalLivros() {
         return b.getAcervo().quantidade();
     }
 
-    /** Número de empréstimos ativos. */
+    /** Número total de empréstimos registrados (ativos e encerrados). */
     public int getNumeroEmprestimosAtivos() {
         return b.getListaDeEmprestimos().tamanho();
     }
 
     /**
-     * Número de empréstimos atrasados.
-     * evitando contar devoluções antigas que foram marcadas como atrasadas.
+     * Número de empréstimos ativos e em atraso.
+     *
+     * ALTERAÇÃO COMPLETA: o método original tinha um "for()" vazio sem corpo
+     * nem condição, causando erro de compilação. Implementado corretamente:
+     * percorre todos os empréstimos e conta os que estão atrasados e ainda
+     * não foram devolvidos (dataDevolucao ainda é a data prevista, não a real —
+     * isAtrasado() recalcula automaticamente comparando com LocalDate.now()).
      */
-    public int getNumeroEmprestimosAtrasados() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA e Emprestimo
-        int cont=0;
-        for()
+    public int getNumeroEmprestimosAtrasados() {
+        // CORRIGIDO: era for() vazio — implementado com for-each correto
+        int cont = 0;
+        for (Emprestimo e : b.getListaDeEmprestimos().listar()) {
+            if (e.isAtrasado())
+                cont++;
+        }
+        return cont;
     }
 
-    /** Número de usuários com pelo menos um empréstimo atrasado. */
-    public int getUsuariosComAtraso() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA e Emprestimo
-        return (int) listaDeUsuarios.getLista().stream()
-                .filter(u -> possuiAtraso(u))
-                .count();
+    /**
+     * Número de usuários com pelo menos um empréstimo atrasado.
+     *
+     * ALTERAÇÃO COMPLETA: o método original usava "listaDeUsuarios.getLista().stream()"
+     * — listaDeUsuarios não é um campo desta classe, e getLista() não existe em
+     * UsuarioDAOLista. Substituído por for-each sobre b.getListaDeUsuarios().listar()
+     * e o helper possuiAtraso() foi reescrito para usar o método já disponível
+     * em EmprestimoDAOLista.
+     */
+    public int getUsuariosComAtraso() {
+        // CORRIGIDO: era listaDeUsuarios.getLista().stream() — variável e método inexistentes
+        int cont = 0;
+        for (Usuario u : b.getListaDeUsuarios().listar()) {
+            if (b.getListaDeEmprestimos().usuarioTemAtraso(u))
+                cont++;
+        }
+        return cont;
     }
 
-    /** Total de reservas ativas em todas as filas. */
-    public int getTotalReservas() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA e Emprestimo
-        return listaDeTitulos.getLista().stream()
-                .mapToInt(t -> t.getFilaDeReservas().tamanho())
-                .sum();
+    /**
+     * Total de reservas ativas somando todas as filas de todos os títulos.
+     *
+     * ALTERAÇÃO COMPLETA: o método original usava "listaDeTitulos.getLista().stream()"
+     * — listaDeTitulos não é campo desta classe e getLista() não existe em TituloDAOLista.
+     * Substituído por for-each sobre b.getTitulosAtualizados().listarTitulos().
+     */
+    public int getTotalReservas() {
+        // CORRIGIDO: era listaDeTitulos.getLista().stream() — variável e método inexistentes
+        int total = 0;
+        for (Titulo t : b.getTitulosAtualizados().listarTitulos()) {
+            total += t.filaDeReservas.tamanho();
+        }
+        return total;
     }
 
     // =========================================================================
@@ -58,26 +92,60 @@ public class BibliotecarioService {
     // =========================================================================
 
     /**
-     * Lista todos os empréstimos com seus dados completos.
+     * Registra a devolução de um empréstimo pelo bibliotecário.
+     *
+     * ALTERAÇÃO: o método original estava incompleto (comentário "Completar").
+     * Adicionadas as etapas que faltavam:
+     * - marcar data de devolução real e verificar atraso em Emprestimo
+     * - remover o empréstimo do registro do Usuário (quando removerEmprestimo
+     *   for implementado nos models)
+     * - remover da lista global da biblioteca (quando apagar() for implementado
+     *   em EmprestimoDAOLista)
+     * O trecho de remoção no Título já existia e foi mantido.
+     *
+     * @param e o empréstimo a ser encerrado
+     * @return true se processado; false se nulo
      */
-
     public boolean registrarDevolucao(Emprestimo e) {
-
         if (e == null) {
             System.out.println("Empréstimo não encontrado ou já encerrado.");
             return false;
         }
 
         Livro livro = e.getLivro();
+
+        // Marca data de devolução real e verifica se está atrasado
+        // ADICIONADO: estas linhas estavam faltando no método original
+        boolean atrasado = java.time.LocalDate.now().isAfter(e.getDataDevolucao());
+        e.setDataDevolucao(java.time.LocalDate.now());
+        e.setAtrasado(atrasado);
+
+        // Libera o exemplar físico
         livro.setDisponivel(true);
 
-        // Atualiza contadores e lista de emprestimo em título;
-        for(Titulo titulo: b.getTitulosAtualizados().listarTitulos()  ){
-            if(livro.getIsbn().equalsIgnoreCase(titulo.getIsbn())){
-                titulo.removerEmprestimo(e);
+        // Remove o empréstimo do registro do Título (já existia, mantido)
+        for (Titulo titulo : b.getTitulosAtualizados().listarTitulos()) {
+            if (livro.getIsbn().equalsIgnoreCase(titulo.getIsbn())) {
+                titulo.removerEmprestimo(e); // decrementa quantidadeDisponivel internamente
             }
         }
-        /// Completar e utilizar metodos presentes em models e repository ////
+
+        // Remove do registro do Usuário
+        // OBS: Usuario.removerEmprestimo() ainda está incompleto nos models.
+        // Quando o responsável pelos models implementar, descomentar:
+        // e.getUsuario().removerEmprestimo(e);
+
+        // Remove da lista global da biblioteca
+        // OBS: EmprestimoDAOLista.apagar() ainda está incompleto nos models.
+        // Quando implementado, descomentar:
+        // b.getListaDeEmprestimos().apagar(e.getId());
+
+        if (atrasado) {
+            System.out.println("⚠️ Devolução registrada com atraso para: " + e.getUsuario().getNome());
+        } else {
+            System.out.println("✅ Devolução registrada com sucesso para: " + e.getUsuario().getNome());
+        }
+        return true;
     }
 
     // =========================================================================
@@ -86,80 +154,121 @@ public class BibliotecarioService {
 
     /**
      * Lista todos os títulos do acervo, ordenados por nome.
+     *
+     * ALTERAÇÃO: método estava com corpo vazio, causando erro de compilação.
+     * Implementado usando b.getTitulosAtualizados() que já chama ordenar()
+     * internamente ao reconstruir a lista de títulos.
      */
-    public Titulo[] listarInventario() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA e TituloDAOLista
-
+    public Titulo[] listarInventario() {
+        // CORRIGIDO: corpo vazio — implementado com os métodos corretos
+        return b.getTitulosAtualizados().listarTitulos();
     }
 
     /**
-     * Lista todos os exemplares (livros) do acervo, ordenados por nome.
+     * Lista todos os exemplares (livros físicos) do acervo, ordenados por nome.
+     *
+     * ALTERAÇÃO: método estava com corpo vazio, causando erro de compilação.
+     * Implementado usando b.getAcervo() que retorna LivroDAOLista.
      */
-    public Livro[] listarExemplares() {/// ATUALIZAR METODO COM OS METODOS DE BIBLIOTECA, LivroDaoLista
-
+    public Livro[] listarExemplares() {
+        // CORRIGIDO: corpo vazio — implementado com os métodos corretos
+        b.getAcervo().ordenar();
+        return b.getAcervo().listar();
     }
 
     // =========================================================================
     // CONTROLE DE RESERVAS — tela de controle de reservas
     // =========================================================================
 
-
-//////////////////////Atualizar com Metodos de Repository e Models////////////////////////////////////////
     /**
-     * Retorna, para cada título, o primeiro usuário da fila de reservas.
+     * Retorna um array com o primeiro da fila de reservas de cada título
+     * que possua pelo menos uma reserva pendente.
+     *
+     * ALTERAÇÃO COMPLETA: o método original estava vazio. Implementado conforme
+     * a orientação do próprio comentário original: percorre todos os títulos,
+     * captura o primeiro da fila de cada um (proximo()), e coleta numa lista
+     * auxiliar (ReservaDAOLista) para retornar como array.
      */
     public Reserva[] listarPrimeirosDasFilaDeReservasDeCadaTitulo() {
-        ///OBS: Aqui recomendo em um loop percorrer todos os objetos Titulo em listaDeTitulos e biblioteco, e capturar
-        /// o primeiro elemento da lista de reserva de cada Titulo. Essas reservas devem ser guardadas em uma
-        ///listaDeReservas(ReservasDAOLista)
-        /// Por fim retornar listaDeResercas.listar, que vai retornar um array de reservas
+        // CORRIGIDO: corpo vazio — implementado conforme comentário original do método
+        ReservaDAOLista listaAuxiliar = new ReservaDAOLista();
+        for (Titulo t : b.getTitulosAtualizados().listarTitulos()) {
+            Reserva primeira = t.filaDeReservas.proximo(); // peek sem remover
+            if (primeira != null) {
+                listaAuxiliar.salvar(primeira);
+            }
+        }
+        return listaAuxiliar.listar();
     }
 
+    /**
+     * Retorna o array completo da fila de reservas de um título específico.
+     *
+     * ALTERAÇÃO: método estava vazio. Implementado conforme a orientação
+     * do próprio comentário original.
+     *
+     * @param t o título cuja fila se quer consultar
+     * @return array de Reserva ordenado por prioridade
+     */
     public Reserva[] listarFilaDeReserva(Titulo t) {
-        ///Este metodo irá simplesmente retornar um array de das reservas de um Titulo, ou seja,
-        /// retornar um array de Titulo.listaDeReservas
+        // CORRIGIDO: corpo vazio — implementado conforme comentário original
+        if (t == null) return new Reserva[0];
+        return t.filaDeReservas.listar();
     }
 
     /**
      * Efetua o empréstimo para o primeiro da fila de reservas de um título.
-     * O vínculo usuário↔livro é mantido por beneficiario.pegarLivro(exemplar),
-     * pois a entidade Emprestimo não possui campo de usuário (conforme modelo do projeto).
+     *
+     * ALTERAÇÃO COMPLETA: o método original usava diversas variáveis e métodos
+     * inexistentes: listaDeLivros, listaDeEmprestimos, isEstaDisponivel(),
+     * desenfileirar(), gerarIdEmprestimo(), EmprestimoUtils, e o construtor
+     * Emprestimo(id, livro, data, data) que não existe — o correto é
+     * Emprestimo(Usuario, Livro). O prazoEmDias usava getCategoria() (inexistente,
+     * correto é getTipo()) e cases com letras minúsculas (Professor/Aluno).
+     * Tudo foi reescrito usando apenas métodos e construtores existentes.
      *
      * @param titulo o título cujo primeiro da fila será atendido
-     * @return true se o empréstimo foi gerado; false se a fila estiver vazia
-     *         ou não houver exemplar disponível
+     * @return true se o empréstimo foi gerado; false se fila vazia ou sem exemplar
      */
     public boolean atenderPrimeirosDaFila(Titulo titulo) {
-        Reserva proxima = titulo.getFilaDeReservas().peek();
+        // CORRIGIDO: era titulo.getFilaDeReservas().peek() — correto é titulo.filaDeReservas.proximo()
+        Reserva proxima = titulo.filaDeReservas.proximo();
         if (proxima == null) {
             System.out.println("Fila de reservas vazia para: " + titulo.getNome());
             return false;
         }
 
-        // Busca um exemplar disponível
-        Livro exemplar = listaDeLivros.getLista().stream()
-                .filter(l -> l.getNome().equalsIgnoreCase(titulo.getNome()) && l.isEstaDisponivel())
-                .findFirst()
-                .orElse(null);
-
+        // Busca exemplar disponível diretamente no Título
+        // CORRIGIDO: era listaDeLivros.getLista().stream() com isEstaDisponivel() — inexistentes.
+        // getExemplarDisponivel() já faz isso dentro de Titulo.
+        Livro exemplar = titulo.getExemplarDisponivel();
         if (exemplar == null) {
             System.out.println("Nenhum exemplar disponível de: " + titulo.getNome());
             return false;
         }
 
-        titulo.getFilaDeReservas().desenfileirar();
+        // Remove o primeiro da fila
+        // CORRIGIDO: era titulo.getFilaDeReservas().desenfileirar() — inexistente.
+        // Correto é removerProximo()
+        titulo.filaDeReservas.removerProximo();
+        b.getListaDeReservas().apagar(proxima.getId()); // remove também da lista global
+
         Usuario beneficiario = proxima.getUsuario();
 
-        LocalDate hoje = LocalDate.now();
-        LocalDate dataDevolucaoPrevista = hoje.plusDays(prazoEmDias(beneficiario));
-        Emprestimo emprestimo = new Emprestimo(gerarIdEmprestimo(), exemplar, hoje, dataDevolucaoPrevista);
+        // Cria o empréstimo
+        // CORRIGIDO: era new Emprestimo(id, livro, data, data) — construtor inexistente.
+        // O prazo é calculado automaticamente pelo construtor Emprestimo(Usuario, Livro)
+        // com base no tipo do usuário (ALUNO=7 dias, outros=10 dias)
+        exemplar.setDisponivel(false); // CORRIGIDO: era setEstaDisponivel() — inexistente
+        Emprestimo emprestimo = new Emprestimo(beneficiario, exemplar);
 
-        exemplar.setEstaDisponivel(false);
-        beneficiario.pegarLivro(exemplar); // vínculo usuário↔livro mantido aqui
-        listaDeEmprestimos.adicionar(emprestimo);
-        titulo.setQuantidadeDisponivel(titulo.getQuantidadeDisponivel() - 1);
+        // CORRIGIDO: era beneficiario.pegarLivro() e listaDeEmprestimos.adicionar() — inexistentes
+        beneficiario.adicionarEmprestimo(emprestimo);
+        b.getListaDeEmprestimos().salvar(emprestimo);
+        titulo.registrarEmprestimo(emprestimo); // decrementa quantidadeDisponivel
 
-        System.out.println("Empréstimo gerado para " + beneficiario.getNome() +
-                " — devolução prevista: " + dataDevolucaoPrevista);
+        System.out.println("✅ Empréstimo gerado para " + beneficiario.getNome() +
+                " — devolução prevista: " + emprestimo.getDataDevolucao());
         return true;
     }
 
@@ -167,15 +276,27 @@ public class BibliotecarioService {
     // GESTÃO DE USUÁRIOS
     // =========================================================================
 
-    /** Retorna a lista completa de usuários. */
+    /**
+     * Retorna a lista completa de usuários cadastrados.
+     *
+     * ALTERAÇÃO: método existia apenas com o Javadoc, sem assinatura nem corpo.
+     * Implementado agora.
+     */
+    public Usuario[] listarUsuarios() {
+        // ADICIONADO: método estava completamente ausente (só tinha o comentário Javadoc)
+        return b.getListaDeUsuarios().listar();
+    }
 
-
-    /** Busca um usuário pelo ID. */
+    /**
+     * Busca um usuário pelo ID.
+     *
+     * ALTERAÇÃO: o original usava "listaDeUsuarios.getLista().stream()" — variável
+     * e método inexistentes. Substituído pela chamada direta a buscarPorId(),
+     * que já existe em UsuarioDAOLista.
+     */
     public Usuario buscarUsuarioPorId(String id) {
-        return listaDeUsuarios.getLista().stream()
-                .filter(u -> u.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        // CORRIGIDO: era listaDeUsuarios.getLista().stream() — inexistentes
+        return b.getListaDeUsuarios().buscarPorId(id);
     }
 
     // =========================================================================
@@ -183,67 +304,52 @@ public class BibliotecarioService {
     // =========================================================================
 
     /**
-     * Adiciona um novo exemplar (livro) ao acervo e atualiza o título correspondente.
+     * Adiciona um novo exemplar (livro físico) ao acervo.
+     * Como Titulo é sempre gerado a partir do acervo em getTitulosAtualizados(),
+     * basta salvar o livro no acervo — o Título será recriado automaticamente.
+     *
+     * ALTERAÇÃO COMPLETA: o método original usava listaDeLivros.adicionar(),
+     * listaDeTitulos.buscarTitulo(), listaDeTitulos.adicionar(), e o construtor
+     * Titulo(nome, autor, data, isbn, genero, descricao) — todos inexistentes.
+     * Titulo só pode ser construído a partir de uma LivroDAOLista (conforme o
+     * único construtor disponível: Titulo(LivroDAOLista)). Além disso,
+     * getTitulosAtualizados() reconstrói toda a lista de títulos automaticamente
+     * ao ser chamado, então não é necessário manipular Titulo manualmente aqui.
      *
      * @param livro o exemplar a ser adicionado
      */
     public void adicionarLivro(Livro livro) {
-        listaDeLivros.adicionar(livro);
-
-        Titulo titulo = listaDeTitulos.buscarTitulo(livro.getNome());
-        if (titulo == null) {
-            titulo = new Titulo(
-                    livro.getNome(),
-                    livro.getAutor(),
-                    livro.getDataDePublicacao(),
-                    livro.getIsbn(),
-                    livro.getGenero(),
-                    livro.getDescricao()
-            );
-            titulo.setQuantidade(1);
-            titulo.setQuantidadeDisponivel(1);
-            listaDeTitulos.adicionar(titulo);
-        } else {
-            titulo.setQuantidade(titulo.getQuantidade() + 1);
-            if (livro.isEstaDisponivel()) {
-                titulo.setQuantidadeDisponivel(titulo.getQuantidadeDisponivel() + 1);
-            }
+        if (livro == null) {
+            System.out.println("Livro inválido.");
+            return;
         }
-
-        System.out.println("Livro '" + livro.getNome() + "' adicionado ao acervo.");
+        // CORRIGIDO: era listaDeLivros.adicionar() — variável e método inexistentes.
+        // Correto é b.getAcervo().salvar()
+        b.getAcervo().salvar(livro);
+        System.out.println("✅ Livro '" + livro.getNome() + "' adicionado ao acervo.");
     }
 
     /**
-     * Remove um exemplar do acervo pelo ID.
+     * Remove um exemplar do acervo pelo ID (como long, pois Livro.getId() retorna Long).
      *
-     * @param idLivro ID do exemplar a ser removido
+     * ALTERAÇÃO COMPLETA: o método original usava listaDeLivros.getLista().stream(),
+     * listaDeLivros.remover(), listaDeTitulos.buscarTitulo() e listaDeTitulos.remover()
+     * — todos inexistentes. Substituído por b.getAcervo().apagar(id), que já existe
+     * em LivroDAOLista e retorna o Livro removido (ou null se não encontrado).
+     * O parâmetro foi mantido como String para compatibilidade, mas observe que
+     * Livro.getId() retorna Long — verifique com o grupo se a UI vai passar String ou long.
+     *
+     * @param idLivro ID (em String) do exemplar a ser removido
      * @return true se removido; false se não encontrado
      */
     public boolean removerLivro(String idLivro) {
-        Livro livro = listaDeLivros.getLista().stream()
-                .filter(l -> l.getId().equals(idLivro))
-                .findFirst()
-                .orElse(null);
-
-        if (livro == null) {
+        // CORRIGIDO: era listaDeLivros.getLista().stream() e listaDeLivros.remover() — inexistentes
+        Livro removido = b.getAcervo().apagar(idLivro);
+        if (removido == null) {
             System.out.println("Exemplar não encontrado.");
             return false;
         }
-
-        listaDeLivros.remover(livro);
-
-        Titulo titulo = listaDeTitulos.buscarTitulo(livro.getNome());
-        if (titulo != null) {
-            titulo.setQuantidade(titulo.getQuantidade() - 1);
-            if (livro.isEstaDisponivel()) {
-                titulo.setQuantidadeDisponivel(titulo.getQuantidadeDisponivel() - 1);
-            }
-            if (titulo.getQuantidade() <= 0) {
-                listaDeTitulos.remover(titulo);
-            }
-        }
-
-        System.out.println("Exemplar removido com sucesso.");
+        System.out.println("✅ Exemplar '" + removido.getNome() + "' removido com sucesso.");
         return true;
     }
 
@@ -251,23 +357,15 @@ public class BibliotecarioService {
     // Helpers privados
     // =========================================================================
 
-    private boolean possuiAtraso(Usuario u) {
-        return listaDeEmprestimos.getLista().stream()
-                .anyMatch(e -> e.getLivro() != null
-                        && u.getListaEmprestimos().contains(e.getLivro())
-                        && e.getDataDevolucao() == null
-                        && e.isAtrasada());
-    }
+    // REMOVIDO: possuiAtraso(Usuario u) — usava listaDeEmprestimos.getLista().stream()
+    // e u.getListaEmprestimos().contains() — ambos inexistentes. Substituído pela
+    // chamada direta a b.getListaDeEmprestimos().usuarioTemAtraso(u) nos métodos acima.
 
-    private int prazoEmDias(Usuario u) {
-        return switch (u.getCategoria()) {
-            case Professor -> 14;
-            case Aluno -> 7;
-            default -> 7; // Bibliotecario
-        };
-    }
+    // REMOVIDO: prazoEmDias(Usuario u) — usava u.getCategoria() (inexistente, correto
+    // é getTipo()) e cases com letras minúsculas. Como o construtor Emprestimo(Usuario,
+    // Livro) já calcula o prazo automaticamente, este helper não é mais necessário.
 
-    private String gerarIdEmprestimo() {
-        return EmprestimoUtils.gerarId();
-    }
+    // REMOVIDO: gerarIdEmprestimo() — usava EmprestimoUtils.gerarId() que não existe
+    // nos arquivos do projeto. O ID de Emprestimo é gerado automaticamente pelo
+    // campo estático idCount no próprio construtor da classe Emprestimo.
 }

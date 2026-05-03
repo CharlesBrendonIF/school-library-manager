@@ -1,26 +1,25 @@
 package service;
 
-import models.Biblioteca; // Corrigido para plural
-import models.Usuario;// Corrigido para plural
+import models.Biblioteca;
+import models.Usuario;
 import models.TipoUsuario;
-import repository.dao.UsuarioDAOLista;
 
-// Login e cadastro
+// ALTERAÇÃO: removido import de UsuarioDAOLista — não era usado diretamente aqui
+// (o acesso é sempre via b.getListaDeUsuarios())
+
 public class AuthService {
     private Biblioteca b;
 
-
-    public AuthService(){
-        b= Biblioteca.getInstance();
-
+    public AuthService() {
+        b = Biblioteca.getInstance();
     }
+
     /**
      * Realiza o login do usuário.
      * Verifica se o email e a senha fornecidos correspondem a algum usuário
      * já cadastrado em Biblioteca.listaDeUsuarios.
      *
-     * param b a instância da Biblioteca (fonte dos dados de usuários)
-     * return o Usuario autenticado, ou null se as credenciais forem inválidas
+     * @return o Usuario autenticado, ou null se as credenciais forem inválidas
      */
     public Usuario login(String email, String senha) {
         for (Usuario u : b.getListaDeUsuarios().listar()) {
@@ -29,22 +28,22 @@ public class AuthService {
                 return u;
             }
         }
-
         System.out.println("Email ou senha inválidos.");
         return null;
     }
 
     /**
      * Realiza o cadastro de um novo usuário.
-     * Verifica se o ID fornecido é válido consultando Biblioteca.thisIdIsValid().
+     * Verifica se o ID fornecido é válido consultando Biblioteca.thisIDIsValid().
      * Verifica também se o email já não está em uso.
-     * param b a instância da Biblioteca
+     *
      * @return o novo Usuario cadastrado, ou null se o cadastro falhar
      */
-    public Usuario cadastro(String nome,String email, String senha, String id) {
+    public Usuario cadastro(String nome, String email, String senha, String id) {
 
         // Valida o ID junto ao banco de IDs da biblioteca
         if (!b.thisIDIsValid(id)) {
+            System.out.println("ID inválido ou não autorizado.");
             return null;
         }
 
@@ -56,7 +55,7 @@ public class AuthService {
             }
         }
 
-        // Determina a categoria com base no prefixo/formato do ID
+        // Determina a categoria com base no prefixo do ID
         TipoUsuario categoria = resolverCategoria(id);
 
         Usuario novoUsuario = new Usuario(id, nome, email, senha, categoria);
@@ -67,17 +66,20 @@ public class AuthService {
     }
 
     /**
-     * Infere a categoria do usuário a partir do ID validado.
-     * Ajuste a lógica conforme a convenção de IDs do projeto.
+     * Infere a categoria do usuário a partir do prefixo do ID.
+     *
+     * ALTERAÇÃO: prefixo de professor corrigido de 't' para 'p'.
+     * No BibliotecaRepository os IDs de professor são "p000001", "p000002", etc.
+     * e thisIDIsValid() também checa charAt(0) == 'p' para professores.
+     * O código original usava 't', o que fazia professores serem cadastrados como ALUNO.
      */
-
     private TipoUsuario resolverCategoria(String id) {
-        if (id.charAt(0)=='t') {
+        if (id.charAt(0) == 'p') {          // CORRIGIDO: era 't', deve ser 'p'
             return TipoUsuario.PROFESSOR;
-        } else if (id.charAt(0)=='l') {
+        } else if (id.charAt(0) == 'l') {
             return TipoUsuario.BIBLIOTECARIO;
         } else {
-            return TipoUsuario.ALUNO;
+            return TipoUsuario.ALUNO;       // cobre 's' e qualquer outro prefixo válido
         }
     }
 }
