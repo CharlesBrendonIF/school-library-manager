@@ -16,13 +16,17 @@ public class Usuario {
         this.nome = nome;
         this.email = email;
         this.tipo = tipo;
-        this.senha=senha;
-        if(tipo==TipoUsuario.ALUNO){
-            limiteLivros=3;
-        }else if(tipo==TipoUsuario.PROFESSOR){
-            limiteLivros=4;
+        this.senha = senha;
+
+        if(tipo == TipoUsuario.ALUNO){
+            limiteLivros = 3;
+        } else if(tipo == TipoUsuario.PROFESSOR){
+            limiteLivros = 4;
+        } else {
+            limiteLivros = 5; // evita valor 0 para bibliotecário
         }
-        this.listaEmprestimos=new EmprestimoDAOLista(limiteLivros);
+
+        this.listaEmprestimos = new EmprestimoDAOLista();
     }
 
     // Getters
@@ -32,9 +36,11 @@ public class Usuario {
     public String getSenha() { return senha; }
     public TipoUsuario getTipo() { return tipo; }
     public int getLimiteLivros() { return limiteLivros; }
-    public EmprestimoDAOLista getListaEmprestimos() {return listaEmprestimos;}
+    public EmprestimoDAOLista getListaEmprestimos() { return listaEmprestimos; }
+
     public Emprestimo[] getEmprestimos() {
-        return listaEmprestimos.listar();
+        /// Retorna todos os emprestimos do usuario
+        return listaEmprestimos.selecionarTodos();
     }
 
     // Setters
@@ -50,18 +56,74 @@ public class Usuario {
     }
 
     public void adicionarEmprestimo(Emprestimo emprestimo) {
-        this.listaEmprestimos.salvar(emprestimo);///Usar metodos contido em EmprestimoDaoLista
-    }///Implementar caso emprestimo ==null
+        /// Adiciona um emprestimo na lista
 
-    /// Criar removerEmprestimo
-    public Emprestimo removerEmprestimo(){
+        /// Verifica se o emprestimo é nulo
+        if (emprestimo == null) {
+            return;
+        }
 
+        listaEmprestimos.anexar(emprestimo);
+    }
+
+    /// Remove um emprestimo pelo id
+    public Emprestimo removerEmprestimo(Emprestimo e){
+
+        /// Verifica se o objeto é válido
+        if(e == null){
+            return null;
+        }
+
+        /// Percorre a lista usando índice
+        for(int i = 0; i < listaEmprestimos.tamanho(); i++){
+
+            Emprestimo emp = listaEmprestimos.selecionar(i);
+
+            /// Compara os IDs (tipo primitivo usa ==)
+            if(emp != null && emp.getId() == e.getId()){
+                return listaEmprestimos.remover(i);
+            }
+        }
+
+        return null;
     }
 
     public boolean temEmprestimoAtrasado(){
-        ///Return true se algum emprestimo em EmprestimoDAOLISTA estiver atrasado;
+        /// Retorna true se algum emprestimo estiver atrasado
+
+        for(int i = 0; i < listaEmprestimos.tamanho(); i++){
+
+            Emprestimo emp = listaEmprestimos.selecionar(i);
+
+            if(emp != null && emp.isAtrasado()){
+                return true;
+            }
+        }
+
+        return false;
     }
 
+    /// Compara dois usuarios pelo id
+    @Override
+    public boolean equals(Object obj){
 
+        /// Verifica se é o mesmo objeto
+        if(this == obj){
+            return true;
+        }
 
+        /// Verifica se é nulo ou tipo diferente
+        if(obj == null || getClass() != obj.getClass()){
+            return false;
+        }
+
+        Usuario outro = (Usuario) obj;
+
+        /// Verifica se os ids são válidos
+        if(this.id == null || outro.id == null){
+            return false;
+        }
+
+        return this.id.equals(outro.id);
+    }
 }
