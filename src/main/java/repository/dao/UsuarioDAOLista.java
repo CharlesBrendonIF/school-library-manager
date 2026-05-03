@@ -8,7 +8,7 @@ public class UsuarioDAOLista {
 
     private Listavel<Usuario> listaDeUsuarios = new ListaDinamica<>();
 
-    // 🔹 Salvar usuário
+    //  Salvar usuário
     public void salvar(Usuario u) {
         if (u == null) {
             throw new IllegalArgumentException("Usuário não pode ser nulo.");
@@ -16,7 +16,7 @@ public class UsuarioDAOLista {
         listaDeUsuarios.anexar(u);
     }
 
-    // 🔹 Buscar por ID
+    //  Buscar por ID
     public Usuario buscarPorId(String id) {
         for (int i = 0; i < listaDeUsuarios.tamanho(); i++) {
             Usuario u = listaDeUsuarios.selecionar(i);
@@ -27,7 +27,7 @@ public class UsuarioDAOLista {
         return null;
     }
 
-    // 🔹 Listar todos
+    //  Listar todos
     public Usuario[] listar() {
         Usuario[] arrayRetorno = new Usuario[listaDeUsuarios.tamanho()];
 
@@ -38,7 +38,7 @@ public class UsuarioDAOLista {
         return arrayRetorno;
     }
 
-    // 🔹 Atualizar usuário pelo ID
+    //  Atualizar usuário pelo ID
     public void atualizar(String id, Usuario usuarioAtualizado) {
         for (int i = 0; i < listaDeUsuarios.tamanho(); i++) {
             Usuario u = listaDeUsuarios.selecionar(i);
@@ -52,13 +52,13 @@ public class UsuarioDAOLista {
         throw new IllegalArgumentException("Usuário com ID " + id + " não encontrado.");
     }
 
-    // 🔹 Apagar usuário pelo ID
+    //  Apagar usuário pelo ID
     public Usuario apagar(String id) {
         for (int i = 0; i < listaDeUsuarios.tamanho(); i++) {
             Usuario u = listaDeUsuarios.selecionar(i);
 
             if (u.getId().equals(id)) {
-                return listaDeUsuarios.apagar(i);
+                return listaDeUsuarios.remover(i);
             }
         }
         return null;

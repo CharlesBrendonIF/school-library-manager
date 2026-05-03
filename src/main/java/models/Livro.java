@@ -44,7 +44,6 @@ public class Livro {
         return autor;
     }
 
-    // Retorna o ISBN do livro
     public String getIsbn() {
         return isbn;
     }
@@ -54,12 +53,10 @@ public class Livro {
         return genero;
     }
 
-    // Retorna a descrição do livro
     public String getDescricao() {
         return descricao;
     }
 
-    // Retorna a data de publicação do livro
     public LocalDate getDataPublicacao() {
         return dataPublicacao;
     }

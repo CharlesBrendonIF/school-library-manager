@@ -1,12 +1,15 @@
 package models;
+
 import java.time.LocalDate;
+
+import models.Livro;
+import models.Emprestimo;
 
 import repository.dao.EmprestimoDAOLista;
 import repository.dao.LivroDAOLista;
 import repository.dao.ReservaDAOFilaDePrioridade;
-import repository.dao.ReservaDAOLista;
-
 public class Titulo {
+
     private String nome;
     private String autor;
     private String isbn;
@@ -14,19 +17,23 @@ public class Titulo {
     private String descricao;
     private LocalDate dataPublicacao;
     private int quantidade;
-    private int quantidaDeReservas;
+    private int quantidadeDeReservas;
     private int quantidadeDisponivel;
 
-    public LivroDAOLista listaDeExemplares;
-    public ReservaDAOFilaDePrioridade filaDeReservas;
-    public EmprestimoDAOLista listaDeEmprestimos;
+    private LivroDAOLista listaDeExemplares;
+    private ReservaDAOFilaDePrioridade filaDeReservas;
+    private EmprestimoDAOLista listaDeEmprestimos;
 
     public Titulo(LivroDAOLista listaDeExemplares) {
-        if(listaDeExemplares==null){//Quando a lista estiver vazia
-            throw new NullPointerException();
+
+        // Quando a lista estiver vazia
+        if(listaDeExemplares == null || listaDeExemplares.tamanho() == 0){
+            throw new IllegalArgumentException("Lista de exemplares vazia");
         }
+
+        Livro modelo = listaDeExemplares.selecionar(0);
+
         this.listaDeExemplares = listaDeExemplares;
-        Livro modelo=listaDeExemplares.selecionar(0);
 
         this.nome = modelo.getNome();
         this.isbn = modelo.getIsbn();
@@ -34,53 +41,92 @@ public class Titulo {
         this.descricao = modelo.getDescricao();
         this.dataPublicacao = modelo.getDataPublicacao();
         this.autor = modelo.getAutor();
-        this.quantidade=listaDeExemplares.quantidade();
-        this.quantidaDeReservas=0;
-        this.quantidadeDisponivel=quantidade;
 
-        this.listaDeEmprestimos= new EmprestimoDAOLista(quantidadeDisponivel);//Quantidade maxima de Emprestimos  precisa ser a a quantidade disponivel menos 1 pois pelo menos um exemplar deve estar presente na biblioteca
-        this.filaDeReservas= new ReservaDAOFilaDePrioridade();
+        this.quantidade = listaDeExemplares.tamanho();
+        this.quantidadeDeReservas = 0;
+        this.quantidadeDisponivel = quantidade;
+
+        // Quantidade maxima de Emprestimos precisa ser a quantidade disponivel
+        this.listaDeEmprestimos = new EmprestimoDAOLista();
+        this.filaDeReservas = new ReservaDAOFilaDePrioridade();
     }
 
     // --- Getters ---
-    public String getNome() { return nome; }
-    public String getAutor() { return autor; }
-    public String getIsbn() { return isbn; }
-    public String getGenero() { return genero; }
-    public String getDescricao() { return descricao; }
-    public LocalDate getDataPublicacao() { return dataPublicacao; }
-    public int getQuantidadeDeExemplares() { return quantidade; }
-    public int getQuantidadeDisponivel() { return quantidadeDisponivel; }
+    public String getNome() {
+        return nome;
+    }
+    public String getAutor() {
+        return autor;
+    }
+    public String getIsbn() {
+        return isbn;
+    }
+    public String getGenero() {
+        return genero;
+    }
+    public String getDescricao() {
+        return descricao;
+    }
+    public LocalDate getDataPublicacao() {
+        return dataPublicacao;
+    }
+    public int getQuantidadeDeExemplares() {
+        return quantidade;
+    }
+    public int getQuantidadeDisponivel() {
+        return quantidadeDisponivel;
+    }
 
+    // Retorna um exemplar disponível
     public Livro getExemplarDisponivel(){
-        for(Livro l:listaDeExemplares.listar()){
-            if(l.isDisponivel()){
-                return l;
+
+        Livro[] lista = listaDeExemplares.selecionarTodos();
+
+        // Percorre todos os exemplares
+        for(int i = 0; i < lista.length; i++){
+
+            if(lista[i] != null && lista[i].isDisponivel()){
+                return lista[i];
             }
         }
+
         return null;
     }
 
+    // Retornar exception caso quantidade disponvel seja null
+    public void registrarEmprestimo(Emprestimo novoEmprestimo){
 
-    public void registrarEmprestimo(Emprestimo novoEmprestimo){/// Retornar exception caso quantidade disponvel seja null
-        listaDeEmprestimos.salvar(novoEmprestimo);
+        if(novoEmprestimo == null || quantidadeDisponivel <= 0){
+            throw new IllegalStateException("Não há exemplares disponíveis");
+        }
+
+        listaDeEmprestimos.anexar(novoEmprestimo);
+
         quantidadeDisponivel--;
-
     }
 
+    // Fazer esse metodo aqui rsrsrsrs
+    public Emprestimo removerEmprestimo(Emprestimo e){
 
-    public Emprestimo removerEmprestimo(Emprestimo e){/// Fazer esse metodo aqui rsrsrsrs
-        if(novoEmprestimo==null){/// Retornar exception caso quantidade disponvel seja null
+        if(e == null){
             return null;
         }
 
-        for(Emprestimo emprestimo: listaDeEmprestimos.listar()){
-            if(e.getId()==emprestimo.getId()){
+        // Percorre a lista de empréstimos
+        for(int i = 0; i < listaDeEmprestimos.tamanho(); i++){
 
+            Emprestimo emprestimo = listaDeEmprestimos.selecionar(i);
+
+            if(emprestimo != null && e.getId() == emprestimo.getId()){
+
+                listaDeEmprestimos.remover(i);
+
+                quantidadeDisponivel++;
+
+                return emprestimo;
             }
         }
-        quantidadeDisponivel++;
 
+        return null;
     }
-
 }
