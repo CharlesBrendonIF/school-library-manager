@@ -46,14 +46,14 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 ### 📂 Views (resources/views)
 *Interfaces FXML desenvolvidas no Scene Builder:*
 - **Kaique**: `AuthViews`.🟢 (Concluído)
-- **Pedro**: `UsuarioViews`.🟡 (Em Desenvolvimento)
+- **Pedro**: `UsuarioViews`.🔵 (Em Revisão)
 - ****: `CardsViews`(Precisa de alguem) 🔴 (Procura-se Responsável)
 - ** **: `BibliotecarioViews` 🔴 (Procura-se Responsável)
 
 ### 📂 Controller
 *Lógica das telas e integração:*
 - **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🟢 (Concluído)
-- **Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🟡 (Em Desenvolvimento)
+- **Pedro, e Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🟡 (Em Desenvolvimento)
 - ****:`BibliotecarioController` 🔴 (Procura-se Responsável)
   
 ---
