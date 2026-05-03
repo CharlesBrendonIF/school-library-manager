@@ -79,10 +79,10 @@ public class BibliotecarioService {
      * Substituído por for-each sobre b.getTitulosAtualizados().listarTitulos().
      */
     public int getTotalReservas() {
-        // CORRIGIDO: era listaDeTitulos.getLista().stream() — variável e método inexistentes
+
         int total = 0;
-        for (Titulo t : b.getTitulosAtualizados().listarTitulos()) {
-            total += t.filaDeReservas.tamanho();
+        for (Titulo t : b.getTitulosAtualizados().listar()) {
+            total += t.getFilaDeReservas().tamanho();
         }
         return total;
     }
@@ -124,7 +124,7 @@ public class BibliotecarioService {
         livro.setDisponivel(true);
 
         // Remove o empréstimo do registro do Título (já existia, mantido)
-        for (Titulo titulo : b.getTitulosAtualizados().listarTitulos()) {
+        for (Titulo titulo : b.getTitulosAtualizados().listar()) {
             if (livro.getIsbn().equalsIgnoreCase(titulo.getIsbn())) {
                 titulo.removerEmprestimo(e); // decrementa quantidadeDisponivel internamente
             }
@@ -161,7 +161,7 @@ public class BibliotecarioService {
      */
     public Titulo[] listarInventario() {
         // CORRIGIDO: corpo vazio — implementado com os métodos corretos
-        return b.getTitulosAtualizados().listarTitulos();
+        return b.getTitulosAtualizados().listar();
     }
 
     /**
@@ -192,8 +192,8 @@ public class BibliotecarioService {
     public Reserva[] listarPrimeirosDasFilaDeReservasDeCadaTitulo() {
         // CORRIGIDO: corpo vazio — implementado conforme comentário original do método
         ReservaDAOLista listaAuxiliar = new ReservaDAOLista();
-        for (Titulo t : b.getTitulosAtualizados().listarTitulos()) {
-            Reserva primeira = t.filaDeReservas.proximo(); // peek sem remover
+        for (Titulo t : b.getTitulosAtualizados().listar()) {
+            Reserva primeira = t.getFilaDeReservas().proximo(); // peek sem remover
             if (primeira != null) {
                 listaAuxiliar.salvar(primeira);
             }
@@ -211,9 +211,8 @@ public class BibliotecarioService {
      * @return array de Reserva ordenado por prioridade
      */
     public Reserva[] listarFilaDeReserva(Titulo t) {
-        // CORRIGIDO: corpo vazio — implementado conforme comentário original
         if (t == null) return new Reserva[0];
-        return t.filaDeReservas.listar();
+        return t.getFilaDeReservas().listar();
     }
 
     /**
@@ -232,7 +231,7 @@ public class BibliotecarioService {
      */
     public boolean atenderPrimeirosDaFila(Titulo titulo) {
         // CORRIGIDO: era titulo.getFilaDeReservas().peek() — correto é titulo.filaDeReservas.proximo()
-        Reserva proxima = titulo.filaDeReservas.proximo();
+        Reserva proxima = titulo.getFilaDeReservas().proximo();
         if (proxima == null) {
             System.out.println("Fila de reservas vazia para: " + titulo.getNome());
             return false;
@@ -250,7 +249,7 @@ public class BibliotecarioService {
         // Remove o primeiro da fila
         // CORRIGIDO: era titulo.getFilaDeReservas().desenfileirar() — inexistente.
         // Correto é removerProximo()
-        titulo.filaDeReservas.removerProximo();
+        titulo.getFilaDeReservas().removerProximo();
         b.getListaDeReservas().apagar(proxima.getId()); // remove também da lista global
 
         Usuario beneficiario = proxima.getUsuario();
@@ -342,8 +341,8 @@ public class BibliotecarioService {
      * @param idLivro ID (em String) do exemplar a ser removido
      * @return true se removido; false se não encontrado
      */
-    public boolean removerLivro(String idLivro) {
-        // CORRIGIDO: era listaDeLivros.getLista().stream() e listaDeLivros.remover() — inexistentes
+    public boolean removerLivro(Long idLivro) {
+
         Livro removido = b.getAcervo().apagar(idLivro);
         if (removido == null) {
             System.out.println("Exemplar não encontrado.");
@@ -352,20 +351,6 @@ public class BibliotecarioService {
         System.out.println("✅ Exemplar '" + removido.getNome() + "' removido com sucesso.");
         return true;
     }
-
-    // =========================================================================
-    // Helpers privados
-    // =========================================================================
-
-    // REMOVIDO: possuiAtraso(Usuario u) — usava listaDeEmprestimos.getLista().stream()
-    // e u.getListaEmprestimos().contains() — ambos inexistentes. Substituído pela
-    // chamada direta a b.getListaDeEmprestimos().usuarioTemAtraso(u) nos métodos acima.
-
-    // REMOVIDO: prazoEmDias(Usuario u) — usava u.getCategoria() (inexistente, correto
-    // é getTipo()) e cases com letras minúsculas. Como o construtor Emprestimo(Usuario,
-    // Livro) já calcula o prazo automaticamente, este helper não é mais necessário.
-
-    // REMOVIDO: gerarIdEmprestimo() — usava EmprestimoUtils.gerarId() que não existe
-    // nos arquivos do projeto. O ID de Emprestimo é gerado automaticamente pelo
-    // campo estático idCount no próprio construtor da classe Emprestimo.
 }
+
+

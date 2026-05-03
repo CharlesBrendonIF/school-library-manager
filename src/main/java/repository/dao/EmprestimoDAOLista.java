@@ -1,146 +1,88 @@
 package repository.dao;
 
-import ed.Listavel;
 import models.Emprestimo;
+import models.Livro;
+import models.Usuario;
+import ed.ListaDinamica;
+import ed.Listavel;
 
-public class EmprestimoDAOLista implements Listavel<Emprestimo> {
+public class EmprestimoDAOLista {
+    private Listavel<Emprestimo> listaEmprestimos;
 
-    private Emprestimo[] dados;
-    private int tamanho;
-
-    // Construtor
-    public EmprestimoDAOLista() {
-        dados = new Emprestimo[100];
-        tamanho = 0;
+    public EmprestimoDAOLista(int numeroMaximoDeEmprestimos){
+        listaEmprestimos=new ListaDinamica<Emprestimo>(numeroMaximoDeEmprestimos);
     }
 
-    @Override
-    public void inserir(Emprestimo objeto, int posicao) {
-
-        // Verifica se está cheia
-        if (estaCheia()) {
-            throw new IllegalStateException("Lista cheia");
-        }
-
-        // Verifica posição válida
-        if (posicao < 0 || posicao > tamanho) {
-            throw new IndexOutOfBoundsException("Posição inválida");
-        }
-
-        // Desloca os elementos
-        for (int i = tamanho; i > posicao; i--) {
-            dados[i] = dados[i - 1];
-        }
-
-        dados[posicao] = objeto;
-        tamanho++;
+    public EmprestimoDAOLista(){
+        listaEmprestimos=new ListaDinamica<Emprestimo>();
     }
 
-    @Override
-    public void anexar(Emprestimo objeto) {
+    public void salvar(Emprestimo e) {
+        if (e == null) {
+            throw new IllegalArgumentException("Empréstimo não pode ser nulo.");
+        }
+        listaEmprestimos.anexar(e);
+    }
 
-        // Adiciona no final
-        if (estaCheia()) {
-            throw new IllegalStateException("Lista cheia");
+    public Emprestimo[] listar() {
+        Emprestimo[] arrayRetorno = new Emprestimo[listaEmprestimos.tamanho()];
+        for (int i =0; i<listaEmprestimos.tamanho(); i++) {
+            arrayRetorno[i] = (Emprestimo) listaEmprestimos.selecionar(i);
+        }
+        return arrayRetorno;
+    }
+
+    public Emprestimo[] buscarPorUsuario(Usuario u) {
+        int contador = 0;
+        for (int i = 0; i < listaEmprestimos.tamanho(); i++) {
+            Emprestimo e = (Emprestimo) listaEmprestimos.selecionar(i);
+            if (e.getUsuario().equals(u)) {
+                contador++;
+            }
         }
 
-        dados[tamanho] = objeto;
-        tamanho++;
-    }
+        Emprestimo[] arrayRetorno = new Emprestimo[contador];
+        int indice = 0;
 
-    @Override
-    public Emprestimo selecionar(int posicao) {
-
-        // Retorna elemento pela posição
-        if (posicao < 0 || posicao >= tamanho) {
-            throw new IndexOutOfBoundsException("Posição inválida");
+        for (int i = 0; i < listaEmprestimos.tamanho(); i++) {
+            Emprestimo e = (Emprestimo) listaEmprestimos.selecionar(i);
+            if (e.getUsuario().equals(u)) {
+                arrayRetorno[indice++] = e;
+            }
         }
-
-        return dados[posicao];
+        return arrayRetorno;
     }
 
-    @Override
-    public Emprestimo[] selecionarTodos() {
-
-        // Retorna cópia da lista
-        Emprestimo[] copia = new Emprestimo[tamanho];
-
-        for (int i = 0; i < tamanho; i++) {
-            copia[i] = dados[i];
+    public boolean usuarioTemAtraso(Usuario u) {
+        for (int  i = 0; i<listaEmprestimos.tamanho(); i++) {
+            Emprestimo e = (Emprestimo) listaEmprestimos.selecionar(i);
+            if (e.getUsuario().equals(u) && e.isAtrasado()) {
+                return true;
+            }
         }
-
-        return copia;
+        return false;
     }
 
-    @Override
-    public void atualizar(Emprestimo objeto, int posicao) {
-
-        // Atualiza elemento
-        if (posicao < 0 || posicao >= tamanho) {
-            throw new IndexOutOfBoundsException("Posição inválida");
+    public int contarEmprestimosAtivos(Usuario u) {
+        int contador = 0;
+        for (int i=0; i<listaEmprestimos.tamanho(); i++) {
+            Emprestimo e = (Emprestimo) listaEmprestimos.selecionar(i);
+            if (e.getUsuario().equals(u) && !e.getLivro().isDisponivel()) {
+                contador++;
+            }
         }
-
-        dados[posicao] = objeto;
+        return contador;
     }
 
-    @Override
-    public Emprestimo remover(int posicao) {
-
-        // Remove elemento
-        if (posicao < 0 || posicao >= tamanho) {
-            throw new IndexOutOfBoundsException("Posição inválida");
-        }
-
-        Emprestimo removido = dados[posicao];
-
-        // Desloca para esquerda
-        for (int i = posicao; i < tamanho - 1; i++) {
-            dados[i] = dados[i + 1];
-        }
-
-        dados[tamanho - 1] = null;
-        tamanho--;
-
-        return removido;
+    public int tamanho(){
+        return listaEmprestimos.tamanho();
     }
 
-    @Override
-    public void limpar() {
-
-        // Limpa lista
-        for (int i = 0; i < tamanho; i++) {
-            dados[i] = null;
-        }
-
-        tamanho = 0;
+    public Emprestimo selecionar(int i){
+        return listaEmprestimos.selecionar(i);
     }
 
-    @Override
-    public int tamanho() {
-        // Retorna quantidade de elementos
-        return tamanho;
-    }
-
-    @Override
-    public boolean estaVazia() {
-        return tamanho == 0;
-    }
-
-    @Override
-    public boolean estaCheia() {
-        return tamanho == dados.length;
-    }
-
-    @Override
-    public String imprimir() {
-
-        // Monta string com elementos
-        String texto = "";
-
-        for (int i = 0; i < tamanho; i++) {
-            texto = texto + dados[i] + "\n";
-        }
-
-        return texto;
+    public Emprestimo remover(int i){
+        return listaEmprestimos.apagar(i);
     }
 }

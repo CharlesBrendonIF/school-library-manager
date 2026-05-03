@@ -108,7 +108,7 @@ public class ReservaDAOLista {
             Reserva r = listaReservas.selecionar(i);
 
             if (r != null && r.getId() == id) {
-                return listaReservas.remover(i);
+                return listaReservas.apagar(i);
             }
         }
 

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class Livro {
 
     private Long id;
+    private static long idCount=0;
     private String nome;
     private String autor;
     private String isbn;
@@ -14,10 +15,10 @@ public class Livro {
     private boolean disponivel;
 
     // Construtor da classe Livro
-    public Livro(Long id, String nome, String autor, String isbn, String genero,
+    public Livro( String nome, String autor, String isbn, String genero,
                  String descricao, LocalDate dataPublicacao) {
 
-        this.id = id;
+        this.id = ++idCount;
         this.nome = nome;
         this.autor = autor;
         this.isbn = isbn;

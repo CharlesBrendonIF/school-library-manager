@@ -48,7 +48,7 @@ public class LivroDAOLista {
         for (int i = 0; i < listaLivros.tamanho(); i++) {
             Livro l = listaLivros.selecionar(i);
             if (l != null && l.getId().equals(id)) {
-                return listaLivros.remover(i); // corrigido aqui
+                return listaLivros.apagar(i);
             }
         }
         return null;
@@ -130,11 +130,6 @@ public class LivroDAOLista {
 
     public int quantidade(){
         return listaLivros.tamanho();
-    }
-    
-//metodos adicionados para compatibilidade com titulo
-    public Livro[] selecionarTodos(){
-        return listar();
     }
 
     public int tamanho(){

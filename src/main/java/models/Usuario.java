@@ -38,10 +38,6 @@ public class Usuario {
     public int getLimiteLivros() { return limiteLivros; }
     public EmprestimoDAOLista getListaEmprestimos() { return listaEmprestimos; }
 
-    public Emprestimo[] getEmprestimos() {
-        /// Retorna todos os emprestimos do usuario
-        return listaEmprestimos.selecionarTodos();
-    }
 
     // Setters
     public void setId(String id) { this.id = id; }
@@ -63,7 +59,7 @@ public class Usuario {
             return;
         }
 
-        listaEmprestimos.anexar(emprestimo);
+        listaEmprestimos.salvar(emprestimo);
     }
 
     /// Remove um emprestimo pelo id

@@ -8,6 +8,7 @@ import models.Emprestimo;
 import repository.dao.EmprestimoDAOLista;
 import repository.dao.LivroDAOLista;
 import repository.dao.ReservaDAOFilaDePrioridade;
+
 public class Titulo {
 
     private String nome;
@@ -77,10 +78,22 @@ public class Titulo {
         return quantidadeDisponivel;
     }
 
+    public ReservaDAOFilaDePrioridade getFilaDeReservas() {
+        return filaDeReservas;
+    }
+
+    public EmprestimoDAOLista getListaDeEmprestimos() {
+        return listaDeEmprestimos;
+    }
+
+    public LivroDAOLista getListaDeExemplares() {
+        return listaDeExemplares;
+    }
+
     // Retorna um exemplar disponível
     public Livro getExemplarDisponivel(){
 
-        Livro[] lista = listaDeExemplares.selecionarTodos();
+        Livro[] lista = listaDeExemplares.listar();
 
         // Percorre todos os exemplares
         for(int i = 0; i < lista.length; i++){
@@ -100,12 +113,11 @@ public class Titulo {
             throw new IllegalStateException("Não há exemplares disponíveis");
         }
 
-        listaDeEmprestimos.anexar(novoEmprestimo);
+        listaDeEmprestimos.salvar(novoEmprestimo);
 
         quantidadeDisponivel--;
     }
 
-    // Fazer esse metodo aqui rsrsrsrs
     public Emprestimo removerEmprestimo(Emprestimo e){
 
         if(e == null){

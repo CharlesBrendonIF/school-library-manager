@@ -145,7 +145,7 @@ public class UsuarioService {
      * Retorna todos os títulos do catálogo ordenados por nome.
      */
     public Titulo[] mostrarCatalogo() {
-        return b.getTitulosAtualizados().listarTitulos();
+        return b.getTitulosAtualizados().listar();
     }
 
     /**
@@ -168,7 +168,7 @@ public class UsuarioService {
 
         // CORRIGIDO: era listaDeTitulos.getLista().stream() — inexistente.
         // Agora usa for sobre o array retornado por listarTitulos()
-        Titulo[] todos = b.getTitulosAtualizados().listarTitulos();
+        Titulo[] todos = b.getTitulosAtualizados().listar();
 
         int contador = 0;
         for (Titulo t : todos) {
@@ -233,13 +233,13 @@ public class UsuarioService {
 
         // CORRIGIDO: era titulo.getFilaDeReservas().enfileirar() — método inexistente.
         // O nome correto em ReservaDAOFilaDePrioridade é salvar()
-        titulo.filaDeReservas.salvar(reserva);
+        titulo.getFilaDeReservas().salvar(reserva);
 
         // Registra também na lista global de reservas da biblioteca
         b.getListaDeReservas().salvar(reserva);
 
         System.out.println("✅ Reserva realizada! Você está na posição " +
-                titulo.filaDeReservas.posicao(reserva) + " da fila.");
+                titulo.getFilaDeReservas().posicao(reserva) + " da fila.");
         return true;
     }
 
@@ -256,9 +256,9 @@ public class UsuarioService {
      */
     public boolean desistirDaReserva(Titulo titulo) {
         // CORRIGIDO: era titulo.getFilaDeReservas().remover(user) — inexistente
-        for (Reserva r : titulo.filaDeReservas.listar()) {
+        for (Reserva r : titulo.getFilaDeReservas().listar()) {
             if (r.getUsuario().getId().equals(user.getId())) {
-                titulo.filaDeReservas.apagar(r.getId());
+                titulo.getFilaDeReservas().apagar(r.getId());
                 b.getListaDeReservas().apagar(r.getId());
                 System.out.println("✅ Reserva cancelada com sucesso.");
                 return true;
@@ -310,10 +310,9 @@ public class UsuarioService {
      * Substituído por dois for aninhados usando listarTitulos() e listar().
      */
     private int contarReservasAtivas() {
-        // CORRIGIDO: era stream() em tipos que não o suportam
         int cont = 0;
-        for (Titulo t : b.getTitulosAtualizados().listarTitulos()) {
-            for (Reserva r : t.filaDeReservas.listar()) {
+        for (Titulo t : b.getTitulosAtualizados().listar()) {
+            for (Reserva r : t.getFilaDeReservas().listar()) {
                 if (r.getUsuario().getId().equals(user.getId()))
                     cont++;
             }
@@ -329,16 +328,11 @@ public class UsuarioService {
      */
     private void notificarProximoDaFila(Titulo titulo) {
         if (titulo == null) return;
-        // CORRIGIDO: era .peek() — correto é .proximo()
-        Reserva proxima = titulo.filaDeReservas.proximo();
+
+        Reserva proxima = titulo.getFilaDeReservas().proximo();
         if (proxima != null) {
             System.out.println("📢 Notificando " + proxima.getUsuario().getNome() +
                     ": o título '" + titulo.getNome() + "' está disponível para retirada!");
         }
     }
-
-    // REMOVIDO: prazoEmDias() — usava u.getCategoria() (método inexistente, o correto
-    // é getTipo()) e os cases do switch usavam "Professor"/"Aluno" (minúsculo) em vez
-    // de "PROFESSOR"/"ALUNO". Como o prazo já é calculado automaticamente pelo
-    // construtor de Emprestimo(Usuario, Livro), este helper não é necessário aqui.
 }

@@ -113,45 +113,45 @@ class BibliotecaRepository{
     public BibliotecaRepository(){
         listaDeLivros.salvar(new Livro(
                 "Código Limpo",
-                "9780132350884",
+                "Robert C. Martin",
+                "9788576082323",
                 "Programação",
-                true,
                 "Um guia prático para escrever código limpo e sustentável",
                 LocalDate.of(2008, 8, 1)
         ));
 
         listaDeLivros.salvar(new Livro(
                 "Estruturas de Dados e Algoritmos",
+                "Thomas H. Cormen",
                 "9788575226937",
                 "Computação",
-                true,
                 "Conceitos fundamentais de estruturas de dados",
                 LocalDate.of(2010, 5, 10)
         ));
 
         listaDeLivros.salvar(new Livro(
                 "Java: Como Programar",
+                "Paul Deitel",
                 "9780134694726",
                 "Programação",
-                true,
                 "Livro completo sobre Java",
                 LocalDate.of(2016, 1, 1)
         ));
 
         listaDeLivros.salvar(new Livro(
                 "Padrões de Projeto",
+                "Erich Gamma",
                 "9788573076103",
                 "Engenharia de Software",
-                true,
                 "Soluções reutilizáveis para problemas comuns",
                 LocalDate.of(1994, 10, 21)
         ));
 
         listaDeLivros.salvar(new Livro(
                 "Algoritmos",
+                "Sanjoy Dasgupta",
                 "9788535236996",
                 "Computação",
-                true,
                 "Estudo de algoritmos e lógica de programação",
                 LocalDate.of(2011, 3, 15)
         ));

@@ -58,7 +58,7 @@ public class UsuarioDAOLista {
             Usuario u = listaDeUsuarios.selecionar(i);
 
             if (u.getId().equals(id)) {
-                return listaDeUsuarios.remover(i);
+                return listaDeUsuarios.apagar(i);
             }
         }
         return null;

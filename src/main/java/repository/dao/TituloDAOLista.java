@@ -16,7 +16,7 @@ public class TituloDAOLista {
         listaTitulos.anexar(t);
     }
 
-    public Titulo[] listarTitulos() {
+    public Titulo[] listar() {
         Titulo[] arrayRetorno = new Titulo[listaTitulos.tamanho()];
 
         for (int i = 0; i < listaTitulos.tamanho(); i++) {
@@ -67,11 +67,11 @@ public class TituloDAOLista {
         throw new IllegalArgumentException("Título com ISBN " + isbn + " não encontrado.");
     }
 
-    public Titulo apagar(String isbn) {
+    public Titulo apagarPorIsbn(String isbn) {
         for (int i = 0; i < listaTitulos.tamanho(); i++) {
             Titulo t = listaTitulos.selecionar(i);
             if (t.getIsbn().equals(isbn)) {
-                return listaTitulos.remover(i);
+                return listaTitulos.apagar(i);
             }
         }
         return null;
