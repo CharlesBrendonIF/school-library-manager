@@ -1,16 +1,16 @@
 package repository.dao;
-import models.Livro;
+
 import models.Reserva;
 import models.Titulo;
 import models.Usuario;
 import ed.ListaDinamica;
 import ed.Listavel;
 
-
 public class ReservaDAOLista {
 
     private Listavel<Reserva> listaReservas = new ListaDinamica<>();
 
+    // Salvar reserva
     public void salvar(Reserva r) {
         if (r == null) {
             throw new IllegalArgumentException("Reserva não pode ser nula.");
@@ -18,74 +18,100 @@ public class ReservaDAOLista {
         listaReservas.anexar(r);
     }
 
+    // Listar todas reservas
     public Reserva[] listar() {
-        Reserva[] arrayRetorno = new Reserva[listaReservas.tamanho()];
+
+        Reserva[] array = new Reserva[listaReservas.tamanho()];
+
         for (int i = 0; i < listaReservas.tamanho(); i++) {
-            arrayRetorno[i] = listaReservas.selecionar(i);
+            array[i] = listaReservas.selecionar(i);
         }
-        return arrayRetorno;
+
+        return array;
     }
 
+    // Buscar por título
     public Reserva[] buscarPorTitulo(Titulo t) {
+
         int contador = 0;
+
         for (int i = 0; i < listaReservas.tamanho(); i++) {
             Reserva r = listaReservas.selecionar(i);
-            if (r.getTitulo().equals(t)) {
+
+            if (r != null && r.getTitulo() != null && r.getTitulo().equals(t)) {
                 contador++;
             }
         }
 
-        Reserva[] arrayRetorno = new Reserva[contador];
-        int indice = 0;
+        Reserva[] resultado = new Reserva[contador];
+        int j = 0;
 
-        for (int i = 0; i< listaReservas.tamanho(); i++) {
+        for (int i = 0; i < listaReservas.tamanho(); i++) {
             Reserva r = listaReservas.selecionar(i);
-            if (r.getTitulo().equals(t)) {
-                arrayRetorno[indice++] = r;
+
+            if (r != null && r.getTitulo() != null && r.getTitulo().equals(t)) {
+                resultado[j++] = r;
             }
         }
-        return arrayRetorno;
+
+        return resultado;
     }
 
+    // Buscar por usuário
     public Reserva[] buscarPorUsuario(Usuario u) {
+
         int contador = 0;
+
         for (int i = 0; i < listaReservas.tamanho(); i++) {
             Reserva r = listaReservas.selecionar(i);
-            if (r.getUsuario().equals(u)) {
+
+            if (r != null && r.getUsuario() != null && r.getUsuario().equals(u)) {
                 contador++;
             }
         }
 
-        Reserva[] arrayRetorno = new Reserva[contador];
-        int indice = 0;
+        Reserva[] resultado = new Reserva[contador];
+        int j = 0;
 
-        for (int i = 0; i< listaReservas.tamanho(); i++) {
-            Reserva r = listaReservas.selecionar(i);
-            if (r.getUsuario().equals(u)) {
-                arrayRetorno[indice++] = r;
-            }
-        }
-        return arrayRetorno;
-    }
-
-    public void atualizar(long id, Reserva reservaAtualizada) {
         for (int i = 0; i < listaReservas.tamanho(); i++) {
             Reserva r = listaReservas.selecionar(i);
-            if (r.getId()==id) {
-                listaReservas.atualizar(reservaAtualizada, i);
+
+            if (r != null && r.getUsuario() != null && r.getUsuario().equals(u)) {
+                resultado[j++] = r;
+            }
+        }
+
+        return resultado;
+    }
+
+    // Atualizar reserva
+    public void atualizar(long id, Reserva nova) {
+
+        for (int i = 0; i < listaReservas.tamanho(); i++) {
+
+            Reserva r = listaReservas.selecionar(i);
+
+            if (r != null && r.getId() == id) {
+                listaReservas.atualizar(nova, i);
                 return;
             }
         }
-        throw new IllegalArgumentException("Reserva com ID " + id + " não encontrado.");
+
+        throw new IllegalArgumentException("Reserva com ID " + id + " não encontrada.");
     }
 
+    // Apagar reserva
     public Reserva apagar(long id) {
+
         for (int i = 0; i < listaReservas.tamanho(); i++) {
+
             Reserva r = listaReservas.selecionar(i);
-            if (r.getId()==id) {
-                return listaReservas.apagar(i);
+
+            if (r != null && r.getId() == id) {
+                return listaReservas.remover(i);
             }
         }
+
         return null;
     }
 }
