@@ -7,13 +7,8 @@ import repository.dao.UsuarioDAOLista;
 
 // Login e cadastro
 public class AuthService {
-    private Biblioteca b;
+    private static Biblioteca b=Biblioteca.getInstance();
 
-
-    public AuthService(){
-        b= Biblioteca.getInstance();
-
-    }
     /**
      * Realiza o login do usuário.
      * Verifica se o email e a senha fornecidos correspondem a algum usuário
@@ -22,7 +17,8 @@ public class AuthService {
      * param b a instância da Biblioteca (fonte dos dados de usuários)
      * return o Usuario autenticado, ou null se as credenciais forem inválidas
      */
-    public Usuario login(String email, String senha) {
+
+    public static Usuario login(String email, String senha) {
         for (Usuario u : b.getListaDeUsuarios().listar()) {
             if (u.getEmail().equalsIgnoreCase(email) && u.getSenha().equals(senha)) {
                 System.out.println("Login realizado com sucesso! Bem-vindo(a), " + u.getNome() + ".");
@@ -41,7 +37,7 @@ public class AuthService {
      * param b a instância da Biblioteca
      * @return o novo Usuario cadastrado, ou null se o cadastro falhar
      */
-    public Usuario cadastro(String nome,String email, String senha, String id) {
+    public static Usuario cadastro(String nome,String email, String senha, String id) {
 
         // Valida o ID junto ao banco de IDs da biblioteca
         if (!b.thisIDIsValid(id)) {
@@ -71,7 +67,7 @@ public class AuthService {
      * Ajuste a lógica conforme a convenção de IDs do projeto.
      */
 
-    private TipoUsuario resolverCategoria(String id) {
+    private static TipoUsuario resolverCategoria(String id) {
         if (id.charAt(0)=='t') {
             return TipoUsuario.PROFESSOR;
         } else if (id.charAt(0)=='l') {

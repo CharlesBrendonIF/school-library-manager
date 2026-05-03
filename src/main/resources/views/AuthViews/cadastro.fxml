@@ -12,7 +12,7 @@
 
 <!-- Carrega arquivo CSS-->
 
-<AnchorPane prefHeight="600" prefWidth="800" stylesheets="@css/cadastro.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="600" prefWidth="800" stylesheets="@css/cadastro.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AuthController.cadastroController">
 
    <children>
 
@@ -39,17 +39,17 @@
          <VBox alignment="CENTER" maxWidth="350.0" prefHeight="323.0" prefWidth="350.0" spacing="15" styleClass="card">
 
             <Label styleClass="subtitulo" text="Cadastro" />
-            <TextField layoutX="36.0" layoutY="161.0" prefWidth="250" promptText="Nome Completo" />
+            <TextField fx:id="campoNome" layoutX="36.0" layoutY="161.0" prefWidth="250" promptText="Nome Completo" />
 
-            <TextField prefWidth="250" promptText="E-mail Institucional" />
-            <TextField layoutX="36.0" layoutY="142.0" prefWidth="250" promptText="Matricula ou ID Institucional" />
+            <TextField fx:id="campoEmail" prefWidth="250" promptText="E-mail Institucional" />
+            <TextField fx:id="campoId" layoutX="36.0" layoutY="142.0" prefWidth="250" promptText="Matricula ou ID Institucional" />
 
-            <PasswordField prefWidth="250" promptText="Senha" />
-            <PasswordField layoutX="36.0" layoutY="194.0" prefWidth="250" promptText="Repetir Senha" />
+            <PasswordField fx:id="campoSenha" prefWidth="250" promptText="Senha" />
+            <PasswordField fx:id="campoConfirmarSenha" layoutX="36.0" layoutY="194.0" prefWidth="250" promptText="Repetir Senha" />
 
-            <Hyperlink text="Fazer Login" />
+            <Hyperlink fx:id="linkFazerLogin" onAction="#irParaLogin" text="Fazer Login" />
 
-            <Button prefHeight="40" prefWidth="250" styleClass="botao" text="Entrar" />
+            <Button fx:id="btnRegistrar" onAction="#cadastrar" prefHeight="40" prefWidth="250" styleClass="botao" text="Registrar-se" />
 
          </VBox>
 

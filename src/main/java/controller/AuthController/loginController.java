@@ -3,12 +3,18 @@ package controller.AuthController;
 // Imports para o JavaFX para funcionar corretamente
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+
+
+import service.AuthService;
+import models.Usuario;
+import util.Sessao;
+import util.Tools;
+
+import static util.Tools.enviarAlerta;
 
 public class loginController {
 
@@ -20,22 +26,41 @@ public class loginController {
     @FXML
     private PasswordField campoSenha;
 
+    @FXML
+    private Button entrarBtn;
+
+    @FXML
+    private Hyperlink cadastroLink;
+
     // Método chamado quando o botão "Entrar" é acionado
     @FXML
     public void login(ActionEvent event) {
         // Armazena o texto do usuário em variáveis
-        String usuario = campoUsuario.getText();
+        String email = campoUsuario.getText();
         String senha = campoSenha.getText();
 
         // Para conferir se o código conseguiu ler o que foi digitado - apenas para testes no compilador
         System.out.println("Login acionado");
-        System.out.println("Usuário: " + usuario);
+        System.out.println("Usuário: " + email);
         System.out.println("Senha: " + senha);
 
-        // IMPLEMENTAR A VERIFICAÇÃO AQUI
+        Usuario userLogado = AuthService.login(email,senha);
+
+        if(userLogado!=null){
+            Sessao.setUsuarioLogado(userLogado);
+            Tools.mudarTela(event,"/views/usuarioViews/catalago.fxml");
+        }else{
+            enviarAlerta("Usuario não encontrado");
+        }
     }
 
-    // Direciona a página recuperarSenha - verificar se vamos implementar (continua no login.Contoller
+    @FXML
+    public void fazerCadastro(ActionEvent event){
+        Tools.mudarTela(event,"/views/AuthViews/cadastro.fxml");
+    }
+
+
+    /*// Direciona a página recuperarSenha - verificar se vamos implementar (continua no login.Contoller
     @FXML
     public void irParaRecuperacaoSenha(ActionEvent event) {
         try {
@@ -62,5 +87,5 @@ public class loginController {
             alerta.setContentText("Ocorreu um problema técnico ao carregar a página de recuperação.");
             alerta.showAndWait(); // Trava tela até usuário dar ok
         }
-    }
+    }*/
 }
