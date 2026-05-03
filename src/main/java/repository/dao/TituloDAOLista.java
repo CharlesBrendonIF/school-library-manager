@@ -71,7 +71,7 @@ public class TituloDAOLista {
         for (int i = 0; i < listaTitulos.tamanho(); i++) {
             Titulo t = listaTitulos.selecionar(i);
             if (t.getIsbn().equals(isbn)) {
-                return listaTitulos.apagar(i);
+                return listaTitulos.remover(i);
             }
         }
         return null;
