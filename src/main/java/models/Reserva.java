@@ -1,6 +1,7 @@
 package models;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class Reserva {
     private Usuario usuario;
@@ -10,20 +11,23 @@ public class Reserva {
     private long id;
     private static long Maximo_Reservas=1_000_000;
 
+    // Fuso horário fixo
+    private static final ZoneId ZONA = ZoneId.of("America/Sao_Paulo");
+
     // Construtor padrão
     public Reserva() {
-        this.dataReserva = LocalDateTime.now();
+        this.dataReserva = LocalDateTime.now(ZONA);
     }
 
     // Construtor parametrizado
     public Reserva(Usuario usuario, Titulo titulo) {
-        if(idCount==Maximo_Reservas){
+        if(idCount == Maximo_Reservas){
             throw new IllegalStateException("Limite máximo de reservas atingido");
         }
 
         this.usuario = usuario;
         this.titulo = titulo;
-        this.dataReserva = LocalDateTime.now();
+        this.dataReserva = LocalDateTime.now(ZONA);
         this.id= ++idCount;
     }
 
@@ -45,7 +49,7 @@ public class Reserva {
         return id;
     }
 
-// Setters
+    // Setters
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
@@ -62,10 +66,6 @@ public class Reserva {
     public void mostrarDados() {
         System.out.println("Reserva efetuada em: " + dataReserva);
         if (usuario != null) System.out.println("Usuário: " + usuario.getNome());
-        if (titulo != null) System.out.println("Título: " + titulo.getNome());
+        if (titulo != null && titulo.getNome() != null) System.out.println("Título: " + titulo.getNome());
     }
-
-
-
 }
-
