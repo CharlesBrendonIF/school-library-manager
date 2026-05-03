@@ -36,7 +36,7 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 *Lógica principal do sistema:*
 - **Charles**: `AuthService`, Login e Segurança.🔵 (Em Revisão)
 - **Charles**: `UsuarioService`, Gestão de usuários.🔵 (Em Revisão)
-- **Charles**: `BibliotecarioService`, Operações administrativas.🟡 (Em Desenvolvimento)
+- **Charles**: `BibliotecarioService`, Operações administrativas.🔵 (Em Revisão)
 
 ### 📂 Models (Entidades)
 *Entidades base*
@@ -52,7 +52,7 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 
 ### 📂 Controller
 *Lógica das telas e integração:*
-- **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🔵 (Em Revisão)
+- **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🟢 (Concluído)
 - **Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🟡 (Em Desenvolvimento)
 - ****:`BibliotecarioController` 🔴 (Procura-se Responsável)
   
