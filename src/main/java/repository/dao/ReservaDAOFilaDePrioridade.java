@@ -14,7 +14,7 @@ public class ReservaDAOFilaDePrioridade {
         this.fila = new PriorityQueue<>(new ReservaComparator());
     }
 
-    // 🔹 Adicionar reserva (enqueue)
+    // Adicionar reserva (enqueue)
     public void salvar(Reserva reserva) {
         if (reserva == null) {
             throw new IllegalArgumentException("Reserva não pode ser nula.");
@@ -22,40 +22,43 @@ public class ReservaDAOFilaDePrioridade {
         fila.add(reserva);
     }
 
-    // 🔹 Ver próxima reserva (sem remover)
+    // Ver próxima reserva (sem remover)
     public Reserva proximo() {
         return fila.peek();
     }
 
-    // 🔹 Remover próxima reserva (dequeue)
+    // Remover próxima reserva (dequeue)
     public Reserva removerProximo() {
         return fila.poll();
     }
 
-    // 🔹 Buscar por ID (precisa percorrer)
+    // Buscar por ID (precisa percorrer)
     public Reserva buscarPorId(long id) {
         for (Reserva r : fila) {
-            if (r.getId() == id) {
+            if (r != null && r.getId() == id) {
                 return r;
             }
         }
         return null;
     }
 
-    // 🔹 Listar todas (ordenadas por prioridade)
+    // Listar todas (ordenadas por prioridade)
     public Reserva[] listar() {
         List<Reserva> lista = new ArrayList<>(fila);
-        lista.sort(fila.comparator());
+
+        if (fila.comparator() != null) {
+            lista.sort(fila.comparator());
+        }
 
         return lista.toArray(new Reserva[0]);
     }
 
-    // 🔹 Remover por ID
+    // Remover por ID
     public Reserva apagar(long id) {
         Reserva encontrada = null;
 
         for (Reserva r : fila) {
-            if (r.getId() == id) {
+            if (r != null && r.getId() == id) {
                 encontrada = r;
                 break;
             }
@@ -68,8 +71,12 @@ public class ReservaDAOFilaDePrioridade {
         return encontrada;
     }
 
-    // 🔹 Atualizar reserva (remove + adiciona)
+    // Atualizar reserva (remove + adiciona)
     public void atualizar(long id, Reserva novaReserva) {
+        if (novaReserva == null) {
+            throw new IllegalArgumentException("Reserva não pode ser nula.");
+        }
+
         Reserva antiga = apagar(id);
 
         if (antiga == null) {
@@ -79,25 +86,32 @@ public class ReservaDAOFilaDePrioridade {
         fila.add(novaReserva);
     }
 
-    // 🔹 Ver posição na fila
+    // Ver posição na fila
     public int posicao(Reserva reserva) {
+        if (reserva == null) {
+            return -1;
+        }
+
         List<Reserva> lista = new ArrayList<>(fila);
-        lista.sort(fila.comparator());
+
+        if (fila.comparator() != null) {
+            lista.sort(fila.comparator());
+        }
 
         return lista.indexOf(reserva);
     }
 
-    // 🔹 Tamanho da fila
+    // Tamanho da fila
     public int tamanho() {
         return fila.size();
     }
 
-    // 🔹 Verificar se está vazia
+    // Verificar se está vazia
     public boolean estaVazia() {
         return fila.isEmpty();
     }
 
-    // 🔹 Limpar fila
+    // Limpar fila
     public void limpar() {
         fila.clear();
     }
