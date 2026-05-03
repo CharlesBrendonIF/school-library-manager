@@ -13,7 +13,7 @@ public class Livro {
     private LocalDate dataPublicacao;
     private boolean disponivel;
 
-    // Construtor
+    // Construtor da classe Livro
     public Livro(Long id, String nome, String autor, String isbn, String genero,
                  String descricao, LocalDate dataPublicacao) {
 
@@ -24,18 +24,22 @@ public class Livro {
         this.genero = genero;
         this.descricao = descricao;
         this.dataPublicacao = dataPublicacao;
+
+        // Ao criar um livro, ele já inicia como disponível
         this.disponivel = true;
     }
 
-    // --- Getters ---
+    // Retorna o identificador do livro
     public Long getId() {
         return id;
     }
 
+    // Retorna o nome/título do livro
     public String getNome() {
         return nome;
     }
 
+    // Retorna o autor do livro
     public String getAutor() {
         return autor;
     }
@@ -44,6 +48,7 @@ public class Livro {
         return isbn;
     }
 
+    // Retorna o gênero do livro
     public String getGenero() {
         return genero;
     }
@@ -56,44 +61,42 @@ public class Livro {
         return dataPublicacao;
     }
 
-    // Retorna se o livro está disponível
+    // Verifica se o livro está disponível para empréstimo
     public boolean isDisponivel() {
         return disponivel;
     }
 
-    // Define se o livro está disponível
+    // Altera o status de disponibilidade do livro
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
     }
 
-    // Compara dois livros pelo id
+    // Compara dois livros com base no id
     @Override
     public boolean equals(Object obj) {
 
+        // Verifica se é o mesmo objeto na memória
         if (this == obj) {
             return true;
         }
 
+        // Verifica se o objeto é nulo ou de outra classe
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
         Livro outro = (Livro) obj;
 
+        // Se o id for nulo, não é possível considerar iguais
         if (this.id == null) {
             return false;
         }
 
+        // Dois livros são iguais se tiverem o mesmo id
         return this.id.equals(outro.id);
     }
 
-    // Gera código hash baseado no id
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    // Retorna representação em texto
+    // Representação textual do objeto Livro
     @Override
     public String toString() {
         return "Livro{" +
