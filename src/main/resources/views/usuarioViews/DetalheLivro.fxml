@@ -7,8 +7,8 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.biblioqueue.controller.DetalheLivroController"
-            stylesheets="@../css/biblioqueue.css"
+            fx:controller="controller.usuarioController.DetalheLivroController"
+            stylesheets="css/biblioqueue.css"
             prefWidth="900" prefHeight="700">
 
     <!-- ===== TOP BAR ===== -->

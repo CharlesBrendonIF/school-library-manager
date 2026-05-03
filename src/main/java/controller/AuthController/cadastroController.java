@@ -72,7 +72,9 @@ public class cadastroController {
         if(novoUsuario!=null){
             Tools.enviarAlerta("Registro Realizado com sucesso");
             Sessao.setUsuarioLogado(novoUsuario);
-            Tools.mudarTela(event,"/views/usuarioViews/catalago.fxml");
+            Tools.mudarTela(event,"/views/usuarioViews/Catalogo.fxml");
+            // Se o Catalogo.fxml estiver dentro de usuarioViews
+
         }else{
             Tools.enviarAlerta("Registro Realizado não sucedido");
         }

@@ -19,7 +19,6 @@ public class Tools {
         aviso.showAndWait();
     }
 
-    // Método para mudar de tela sem passar dados
     public static void mudarTela(ActionEvent event, String caminhoFXML) {
         try {
             // Carrega o novo arquivo
@@ -38,4 +37,6 @@ public class Tools {
             e.printStackTrace();
         }
     }
+
+
 }

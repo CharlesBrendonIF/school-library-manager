@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 
-
 import service.AuthService;
 import models.Usuario;
 import util.Sessao;
@@ -18,9 +17,9 @@ import static util.Tools.enviarAlerta;
 
 public class loginController {
 
-    // O nome "campoUsuario" deve ser exatamente o mesmo do "fx:id"
+    // O nome "campoEmail" deve ser exatamente o mesmo do "fx:id"
     @FXML
-    private TextField campoUsuario;
+    private TextField campoEmail;
 
     // O nome "campoSenha" deve ser exatamente o mesmo do "fx:id"
     @FXML
@@ -36,7 +35,7 @@ public class loginController {
     @FXML
     public void login(ActionEvent event) {
         // Armazena o texto do usuário em variáveis
-        String email = campoUsuario.getText();
+        String email = campoEmail.getText();
         String senha = campoSenha.getText();
 
         // Para conferir se o código conseguiu ler o que foi digitado - apenas para testes no compilador
@@ -48,7 +47,7 @@ public class loginController {
 
         if(userLogado!=null){
             Sessao.setUsuarioLogado(userLogado);
-            Tools.mudarTela(event,"/views/usuarioViews/catalago.fxml");
+            Tools.mudarTela(event, "/views/usuarioViews/Catalogo.fxml");
         }else{
             enviarAlerta("Usuario não encontrado");
         }

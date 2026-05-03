@@ -122,4 +122,11 @@ public class Usuario {
 
         return this.id.equals(outro.id);
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "email='" + email + '\'' +
+                "senha: "+senha+'}';
+    }
 }

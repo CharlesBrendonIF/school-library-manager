@@ -1,5 +1,6 @@
-package com.biblioqueue.controller;
+package controller.usuarioController;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -119,7 +120,7 @@ public class DetalheLivroController implements Initializable {
 
     @FXML private void onLogout() { navegarPara("/fxml/Login.fxml"); }
 
-    @FXML private void onNavCatalogo()    { navegarPara("/fxml/Catalogo.fxml"); }
+    @FXML private void onNavCatalogo(ActionEvent event)    { navegarPara("/views/usuarioViews"); }
     @FXML private void onNavEmprestimos() { navegarPara("/fxml/Emprestimos.fxml"); }
     @FXML private void onNavReservas()    { navegarPara("/fxml/Reservas.fxml"); }
 

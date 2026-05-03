@@ -1,4 +1,4 @@
-package com.biblioqueue.controller;
+package controller.usuarioController;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

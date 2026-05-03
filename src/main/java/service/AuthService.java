@@ -20,6 +20,7 @@ public class AuthService {
 
     public static Usuario login(String email, String senha) {
         for (Usuario u : b.getListaDeUsuarios().listar()) {
+            System.out.println(u);
             if (u.getEmail().equalsIgnoreCase(email) && u.getSenha().equals(senha)) {
                 System.out.println("Login realizado com sucesso! Bem-vindo(a), " + u.getNome() + ".");
                 return u;
@@ -57,7 +58,7 @@ public class AuthService {
 
         Usuario novoUsuario = new Usuario(id, nome, email, senha, categoria);
         b.getListaDeUsuarios().salvar(novoUsuario);
-
+        System.out.println(b.getListaDeUsuarios());
         System.out.println("Cadastro realizado com sucesso! Bem-vindo(a), " + nome + ".");
         return novoUsuario;
     }
