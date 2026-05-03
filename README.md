@@ -11,7 +11,7 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 | **Emanuel** | **Líder / Integração** | Estrutura Maven, Navegação entre telas, Organização do Git e Revisão Geral. |
 | **Ana Clara** | **Persistência (DAO)** | Implementação das classes de acesso a dados e Estruturas Dinâmicas. |
 | **Charles** | **Service (Negócio)** | Lógica de regras de negócio e validações do sistema. |
-| **Kaique** | **Full / Design** | Implementação de Services, View/Controller de Login e suporte em FXML. |
+| **Kaique** | **Full / Design** | View e Controller de Login e Cadastro. |
 | **Maria Eduarda** | **ED / DAO** | Estrutura da Fila de Prioridade e Lógica de Reservas. |
 | **Indaia** | **Modelagem** | Criação das entidades (POJOs) do sistema. |
 | **Nikolas** | **Design (Views)** | Construção das interfaces visuais no Scene Builder. |
@@ -34,8 +34,8 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 
 ### 📂 Service (Lógica)
 *Lógica principal do sistema:*
-- **Charles**: `AuthService`, Login e Segurança.🟡 (Em Desenvolvimento)
-- **Charles**: `UsuarioService`, Gestão de usuários.🟡 (Em Desenvolvimento)
+- **Charles**: `AuthService`, Login e Segurança.🔵 (Em Revisão)
+- **Charles**: `UsuarioService`, Gestão de usuários.🔵 (Em Revisão)
 - **Charles**: `BibliotecarioService`, Operações administrativas.🟡 (Em Desenvolvimento)
 
 ### 📂 Models (Entidades)
@@ -43,9 +43,9 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 - **Indaia**:`Livro`, `Titulo`, `Usuario`, `Reserva`, `Emprestimo`.🔵 (Em Revisão)
 - **Emanuel**: `Bibiloteca`, e `BibliotecaRepository`.🟢 (Concluído)
 
-### 📂 View (resources/views)
+### 📂 Views (resources/views)
 *Interfaces FXML desenvolvidas no Scene Builder:*
-- **Kaique**: `AuthViews`.🟡 (Em Desenvolvimento)
+- **Kaique**: `AuthViews`.🟢 (Concluído)
 - **Pedro**: `UsuarioViews`.🟡 (Em Desenvolvimento)
 - ****: `CardsViews`(Precisa de alguem) 🔴 (Procura-se Responsável)
 - ** **: `BibliotecarioViews` 🔴 (Procura-se Responsável)
@@ -54,7 +54,7 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 *Lógica das telas e integração:*
 - **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🟡 (Em Desenvolvimento)
 - **Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🟡 (Em Desenvolvimento)
-- ** **:`BibliotecarioController` 🔴 (Procura-se Responsável)
+- **Emanuel**:`BibliotecarioController` 🔴 (Procura-se Responsável)
   
 ---
 
