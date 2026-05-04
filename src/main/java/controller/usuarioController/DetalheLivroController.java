@@ -1,6 +1,5 @@
 package controller.usuarioController;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -103,7 +102,7 @@ public class DetalheLivroController implements Initializable {
 
     @FXML
     private void onVoltar() {
-        navegarPara("/fxml/Catalogo.fxml");
+        navegarPara("/views/usuarioViews/Catalogo.fxml");
     }
 
     @FXML
@@ -120,9 +119,9 @@ public class DetalheLivroController implements Initializable {
 
     @FXML private void onLogout() { navegarPara("/fxml/Login.fxml"); }
 
-    @FXML private void onNavCatalogo(ActionEvent event)    { navegarPara("/views/usuarioViews"); }
-    @FXML private void onNavEmprestimos() { navegarPara("/fxml/Emprestimos.fxml"); }
-    @FXML private void onNavReservas()    { navegarPara("/fxml/Reservas.fxml"); }
+    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo"); }
+    @FXML private void onNavEmprestimos() { navegarPara("/views/usuarioViews/Emprestimos.fxml"); }
+    @FXML private void onNavReservas()    { navegarPara("/views/usuarioViews/Reservas.fxml"); }
 
     private void navegarPara(String fxmlPath) {
         try {

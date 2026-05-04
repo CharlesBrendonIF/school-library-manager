@@ -47,7 +47,7 @@ public class loginController {
 
         if(userLogado!=null){
             Sessao.setUsuarioLogado(userLogado);
-            Tools.mudarTela(event, "/views/usuarioViews/Catalogo.fxml");
+            Tools.navegarPara(event, "/views/usuarioViews/Catalogo.fxml");
         }else{
             enviarAlerta("Usuario não encontrado");
         }
@@ -55,7 +55,7 @@ public class loginController {
 
     @FXML
     public void fazerCadastro(ActionEvent event){
-        Tools.mudarTela(event,"/views/AuthViews/cadastro.fxml");
+        Tools.navegarPara(event,"/views/AuthViews/cadastro.fxml");
     }
 
 

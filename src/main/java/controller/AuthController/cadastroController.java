@@ -72,7 +72,7 @@ public class cadastroController {
         if(novoUsuario!=null){
             Tools.enviarAlerta("Registro Realizado com sucesso");
             Sessao.setUsuarioLogado(novoUsuario);
-            Tools.mudarTela(event,"/views/usuarioViews/Catalogo.fxml");
+            Tools.navegarPara(event,"/views/usuarioViews/Catalogo.fxml");
             // Se o Catalogo.fxml estiver dentro de usuarioViews
 
         }else{
@@ -83,6 +83,6 @@ public class cadastroController {
     // Direciona de volta para a tela de Login através do Hyperlink "Fazer Login"
     @FXML
     public void irParaLogin(ActionEvent event) {
-        Tools.mudarTela(event,"/views/AuthViews/login.fxml");
+        Tools.navegarPara(event,"/views/AuthViews/login.fxml");
     }
 }

@@ -132,10 +132,10 @@ public class EmprestimosController implements Initializable {
         return card;
     }
 
-    @FXML private void onLogout()         { navegarPara("/fxml/Login.fxml"); }
-    @FXML private void onNavCatalogo()    { navegarPara("/fxml/Catalogo.fxml"); }
+    @FXML private void onLogout()         { navegarPara("/views/usuarioViews/Login.fxml"); }
+    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
     @FXML private void onNavEmprestimos() { /* já está nesta tela */ }
-    @FXML private void onNavReservas()    { navegarPara("/fxml/Reservas.fxml"); }
+    @FXML private void onNavReservas()    { navegarPara("/views/usuarioViews/Reservas.fxml"); }
 
     private void navegarPara(String fxmlPath) {
         try {

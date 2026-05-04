@@ -19,7 +19,7 @@ public class Tools {
         aviso.showAndWait();
     }
 
-    public static void mudarTela(ActionEvent event, String caminhoFXML) {
+    public static void navegarPara(ActionEvent event, String caminhoFXML) {
         try {
             // Carrega o novo arquivo
             Parent root = FXMLLoader.load(Tools.class.getResource(caminhoFXML));
