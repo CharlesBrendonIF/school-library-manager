@@ -24,29 +24,29 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 
 ### 📂 Estrutura de Dados (`ed`)
 *Camada responsável por gerenciar as estruturas de dados customizadas:*
-- **Ana Clara**: `ListaDinamica`, `NoDuplo`, `Listavel`.🔵 (Em Revisão)
-- **Maria Eduarda**: `ReservaComparator` (Lógica de prioridade).🔵 (Em Revisão)
+- **Ana Clara**: `ListaDinamica`, `NoDuplo`, `Listavel`.🟢 (Concluído)
+- **Maria Eduarda**: `ReservaComparator` (Lógica de prioridade).🟢 (Concluído)
 
 ### 📂 Repository (DAO)
 *Camada responsável por gerenciar a persistência em memória:*
-- **Ana Clara**: `LivroDAOLista`, `UsuarioDAOLista`, `TituloDAOLista`, `EmprestimoDAOLista` e `ReservaDAOLista`.🔵 (Em Revisão)
-- **Maria Eduarda**: `ReservaDAOFilaDePrioridade`.🔵 (Em Revisão)
+- **Ana Clara**: `LivroDAOLista`, `UsuarioDAOLista`, `TituloDAOLista`, `EmprestimoDAOLista` e `ReservaDAOLista`.🟢 (Concluído)
+- **Maria Eduarda**: `ReservaDAOFilaDePrioridade`.🟢 (Concluído)
 
 ### 📂 Service (Lógica)
 *Lógica principal do sistema:*
-- **Charles**: `AuthService`, Login e Segurança.🔵 (Em Revisão)
-- **Charles**: `UsuarioService`, Gestão de usuários.🔵 (Em Revisão)
+- **Charles**: `AuthService`, Login e Segurança.🟢 (Concluído))
+- **Charles**: `UsuarioService`, Gestão de usuários.🟢 (Concluído)
 - **Charles**: `BibliotecarioService`, Operações administrativas.🔵 (Em Revisão)
 
 ### 📂 Models (Entidades)
 *Entidades base*
-- **Indaia, Maria Eduarda**:`Livro`, `Titulo`, `Usuario`, `Reserva`, `Emprestimo`.🔵 (Em Revisão)
+- **Indaia, Maria Eduarda**:`Livro`, `Titulo`, `Usuario`, `Reserva`, `Emprestimo`.🟢 (Concluído)
 - **Emanuel**: `Bibiloteca`, e `BibliotecaRepository`.🟢 (Concluído)
 
 ### 📂 Views (resources/views)
 *Interfaces FXML desenvolvidas no Scene Builder:*
 - **Kaique**: `AuthViews`.🟢 (Concluído)
-- **Pedro**: `UsuarioViews`.🔵 (Em Revisão)
+- **Pedro**: `UsuarioViews`.🟢 (Concluído)
 - ****: `CardsViews`(Precisa de alguem) 🔴 (Procura-se Responsável)
 - ** **: `BibliotecarioViews` 🔴 (Procura-se Responsável)
 
