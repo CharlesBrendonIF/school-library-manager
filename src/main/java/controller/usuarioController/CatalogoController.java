@@ -1,4 +1,4 @@
-package controller.usuarioController; // Ajustado para o seu pacote real
+package controller.usuarioController;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,78 +11,103 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.Titulo;
+import models.Usuario;
+import service.UsuarioService;
+import util.Sessao;
+import util.Tools;
+
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import util.*;
 
 public class CatalogoController implements Initializable {
 
     @FXML private ComboBox<String> comboCategorias;
     @FXML private VBox listaLivrosContainer;
 
-    // Dados de exemplo (depois você integra com seu model 'Livro')
-    private final List<LivroItem> todosOsLivros = List.of(
-            new LivroItem("Estruturas de Dados e Algoritmos", "Thomas H. Cormen", "2009", "Algoritmos", 2),
-            new LivroItem("Código Limpo", "Robert C. Martin", "2008", "Programação", 0),
-            new LivroItem("Java: Como Programar", "Paul Deitel", "2016", "Programação", 3),
-            new LivroItem("Padrões de Projeto", "Erich Gamma", "1995", "Engenharia de Software", 1),
-            new LivroItem("Algoritmos", "Sanjoy Dasgupta", "2011", "Algoritmos", 0)
-    );
+    private UsuarioService usuarioService;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Popula ComboBox
-        comboCategorias.getItems().add("Todas as categorias");
-        comboCategorias.getItems().addAll("Algoritmos", "Programação", "Engenharia de Software");
-        comboCategorias.getSelectionModel().selectFirst();
+        // 1. Pega o usuário logado da Sessão e inicia o Service
+        Usuario logado = Sessao.getUsuarioLogado();
+        this.usuarioService = new UsuarioService(logado);
 
-        renderizarLivros(todosOsLivros);
+        // 2. Configura o ComboBox
+        configurarCategorias();
+
+        // 3. Carrega os livros reais do sistema
+        atualizarListaDeLivros(usuarioService.obterCatalogo());
+    }
+
+    private void configurarCategorias() {
+        comboCategorias.getItems().clear();
+        comboCategorias.getItems().add("Todas as categorias");
+
+        // Pega as categorias direto dos títulos existentes para evitar erro de digitação
+        List<String> generos = Arrays.stream(usuarioService.obterCatalogo())
+                .map(Titulo::getGenero)
+                .distinct()
+                .toList();
+
+        comboCategorias.getItems().addAll(generos);
+        comboCategorias.getSelectionModel().selectFirst();
     }
 
     @FXML
     private void onCategoriaChanged() {
         String selecionada = comboCategorias.getValue();
+        Titulo[] resultados;
+
         if (selecionada == null || selecionada.equals("Todas as categorias")) {
-            renderizarLivros(todosOsLivros);
+            resultados = usuarioService.obterCatalogo();
         } else {
-            List<LivroItem> filtrados = todosOsLivros.stream()
-                    .filter(l -> l.categoria.equals(selecionada))
-                    .toList();
-            renderizarLivros(filtrados);
+            // Usa o método filtrarPorGenero do UsuarioService
+            resultados = usuarioService.filtrarPorGenero(selecionada);
         }
+
+        atualizarListaDeLivros(resultados);
     }
 
-    private void renderizarLivros(List<LivroItem> livros) {
+    /**
+     * Limpa o container e renderiza os novos cards baseados no array de Titulos
+     */
+    private void atualizarListaDeLivros(Titulo[] titulos) {
         listaLivrosContainer.getChildren().clear();
-        for (LivroItem livro : livros) {
-            VBox card = criarCardLivro(livro);
+        for (Titulo t : titulos) {
+            VBox card = criarCardLivro(t);
             listaLivrosContainer.getChildren().add(card);
         }
     }
 
-    private VBox criarCardLivro(LivroItem livro) {
+    private VBox criarCardLivro(Titulo t) {
         VBox card = new VBox(6);
         card.getStyleClass().add("book-card");
 
-        Label titulo = new Label(livro.titulo);
+        Label titulo = new Label(t.getNome());
         titulo.getStyleClass().add("book-title");
 
-        Label autor = new Label(livro.autor);
+        Label autor = new Label(t.getAutor());
         autor.getStyleClass().add("book-author");
 
-        Label ano = new Label(livro.ano);
+        Label ano = new Label(String.valueOf(t.getDataPublicacao()));
         ano.getStyleClass().add("book-year");
 
         HBox tagRow = new HBox(8);
         tagRow.setPadding(new Insets(4, 0, 0, 0));
 
-        Label tagCategoria = new Label(livro.categoria);
+        Label tagCategoria = new Label(t.getGenero());
         tagCategoria.getStyleClass().add("tag-category");
 
         Label tagStatus;
-        if (livro.disponivel > 0) {
-            tagStatus = new Label(livro.disponivel + " disponível");
+        int disponiveis = t.getQuantidadeDisponivel();
+
+        if (disponiveis > 0) {
+            tagStatus = new Label(disponiveis + " disponível");
             tagStatus.getStyleClass().add("tag-disponivel");
         } else {
             tagStatus = new Label("Fila de espera");
@@ -92,16 +117,19 @@ public class CatalogoController implements Initializable {
         tagRow.getChildren().addAll(tagCategoria, tagStatus);
         card.getChildren().addAll(titulo, autor, ano, tagRow);
 
-        card.setOnMouseClicked(e -> abrirDetalhe(livro));
+        // Ao clicar, você ainda usa a lógica do seu amigo para abrir detalhes
+        card.setOnMouseClicked(e -> abrirDetalhe(t));
+
         return card;
     }
 
-    private void abrirDetalhe(LivroItem livro) {
-        // Caminho atualizado para a sua pasta usuarioViews
-        navegarPara("/views/usuarioViews/DetalheLivro.fxml");
+    private void abrirDetalhe(Titulo t) {
+        // Aqui você mantém a lógica de carregar o FXML de detalhes
+        // e passar o objeto 't' para o próximo controller.
+        System.out.println("Abrindo detalhes de: " + t.getNome());
     }
 
-    @FXML private void onNavCatalogo()    { /* Já está aqui */ }
+    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo"); }
     @FXML private void onNavEmprestimos() { navegarPara("/views/usuarioViews/Emprestimos.fxml"); }
     @FXML private void onNavReservas()    { navegarPara("/views/usuarioViews/Reservas.fxml"); }
 
@@ -110,11 +138,13 @@ public class CatalogoController implements Initializable {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) listaLivrosContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
+
         } catch (IOException e) {
             System.err.println("Erro ao navegar para: " + fxmlPath);
             e.printStackTrace();
         }
+
     }
 
-    public record LivroItem(String titulo, String autor, String ano, String categoria, int disponivel) {}
+
 }

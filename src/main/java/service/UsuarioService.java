@@ -144,7 +144,7 @@ public class UsuarioService {
     /**
      * Retorna todos os títulos do catálogo ordenados por nome.
      */
-    public Titulo[] mostrarCatalogo() {
+    public Titulo[] obterCatalogo() {
         return b.getTitulosAtualizados().listar();
     }
 
@@ -163,7 +163,7 @@ public class UsuarioService {
      */
     public Titulo[] buscarTituloPorNome(String busca) {
         if (busca == null || busca.isBlank()) {
-            return mostrarCatalogo();
+            return obterCatalogo();
         }
 
         // CORRIGIDO: era listaDeTitulos.getLista().stream() — inexistente.
@@ -198,7 +198,7 @@ public class UsuarioService {
      */
     public Titulo[] filtrarPorGenero(String genero) {
         if (genero == null || genero.isBlank()) {
-            return mostrarCatalogo();
+            return obterCatalogo();
         }
         // CORRIGIDO: era listaDeTitulos.selecionaTituloPorGenero() — inexistente
         return b.getTitulosAtualizados().buscarPorGenero(genero);

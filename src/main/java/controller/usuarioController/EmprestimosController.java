@@ -9,16 +9,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.Emprestimo;
+import models.Usuario;
+import service.UsuarioService;
+import util.Sessao;
+import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.ResourceBundle;
-
-import util.Tools;
 
 public class EmprestimosController implements Initializable {
 
@@ -27,115 +29,120 @@ public class EmprestimosController implements Initializable {
     @FXML private VBox  listaEmprestimosContainer;
     @FXML private VBox  emptyStateEmprestimos;
 
+    private UsuarioService usuarioService;
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-    // Dados de exemplo (substituir por consulta ao banco)
-    private final List<EmprestimoItem> emprestimos = List.of(
-        new EmprestimoItem("Estruturas de Dados e Algoritmos", "#COMP-001",
-                LocalDate.of(2026, 4, 7), LocalDate.of(2026, 4, 14)),
-        new EmprestimoItem("Engenharia de Software", "#COMP-003",
-                LocalDate.of(2026, 4, 9), LocalDate.of(2026, 4, 16))
-    );
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        lblNomeUsuario.setText("Ana Silva");
+        // Inicializa o serviço com o usuário que realmente logou
+        Usuario logado = Sessao.getUsuarioLogado();
+        this.usuarioService = new UsuarioService(logado);
 
-        boolean temAtraso = emprestimos.stream()
-                .anyMatch(e -> e.dataPrevista.isBefore(LocalDate.now()));
+        lblNomeUsuario.setText(logado.getNome());
 
+        // Regra de Negócio: Verifica se o usuário tem algum livro atrasado para mostrar o alerta
+        boolean temAtraso = usuarioService.usuarioPossuiAtraso();
         alertaBloqueado.setVisible(temAtraso);
         alertaBloqueado.setManaged(temAtraso);
 
-        if (emprestimos.isEmpty()) {
-            emptyStateEmprestimos.setVisible(true);
-            emptyStateEmprestimos.setManaged(true);
+        carregarEmprestimosReais();
+    }
+
+    private void carregarEmprestimosReais() {
+        // Pega a lista de empréstimos direto do objeto Usuario (que o Service gerencia)
+        // O método 'listar()' retorna o array de empréstimos do DAO do usuário
+        Emprestimo[] lista = Sessao.getUsuarioLogado().getListaEmprestimos().listar();
+
+        listaEmprestimosContainer.getChildren().clear();
+
+        if (lista.length == 0) {
+            mostrarEstadoVazio(true);
         } else {
-            // Os dois primeiros já estão fixos no FXML (exemplos).
-            // Empréstimos adicionais são gerados aqui.
-            for (int i = 2; i < emprestimos.size(); i++) {
-                listaEmprestimosContainer.getChildren()
-                        .add(criarCardEmprestimo(emprestimos.get(i)));
+            mostrarEstadoVazio(false);
+            for (Emprestimo e : lista) {
+                // Cria o card visual para cada empréstimo real
+                listaEmprestimosContainer.getChildren().add(criarCardEmprestimo(e));
             }
         }
     }
 
-    /** Cria um card de empréstimo dinamicamente */
-    private VBox criarCardEmprestimo(EmprestimoItem item) {
-        boolean atrasado = item.dataPrevista.isBefore(LocalDate.now());
-        long diasAtraso  = atrasado
-                ? ChronoUnit.DAYS.between(item.dataPrevista, LocalDate.now())
-                : 0;
+    private void mostrarEstadoVazio(boolean vazio) {
+        emptyStateEmprestimos.setVisible(vazio);
+        emptyStateEmprestimos.setManaged(vazio);
+        listaEmprestimosContainer.setVisible(!vazio);
+        listaEmprestimosContainer.setManaged(!vazio);
+    }
+
+    /** Cria um card de empréstimo dinamicamente baseado no model Emprestimo */
+    private VBox criarCardEmprestimo(Emprestimo item) {
+        // Verifica atraso comparando a data atual com a data de devolução prevista
+        LocalDate hoje = LocalDate.now();
+        LocalDate prevista = item.getDataDevolucao();
+        boolean atrasado = hoje.isAfter(prevista);
+
+        long diasAtraso = atrasado ? ChronoUnit.DAYS.between(prevista, hoje) : 0;
 
         VBox card = new VBox(12);
         card.getStyleClass().add(atrasado ? "loan-card-atrasado" : "loan-card");
 
-        // Cabeçalho
+        // --- Cabeçalho ---
         HBox header = new HBox(12);
-        header.setStyle("-fx-alignment: TOP_LEFT;");
-
-        VBox iconBox = new VBox();
-        iconBox.setStyle(atrasado
-                ? "-fx-background-color: #FEE2E2; -fx-background-radius: 8; -fx-padding: 10; -fx-min-width: 42px; -fx-min-height: 42px; -fx-max-width: 42px; -fx-max-height: 42px;"
-                : "-fx-background-color: #EFF6FF; -fx-background-radius: 8; -fx-padding: 10; -fx-min-width: 42px; -fx-min-height: 42px; -fx-max-width: 42px; -fx-max-height: 42px;");
-        Label iconLabel = new Label(atrasado ? "📕" : "📗");
-        iconLabel.setStyle("-fx-font-size: 18px;");
-        iconBox.getChildren().add(iconLabel);
+        VBox iconBox = new VBox(new Label(atrasado ? "📕" : "📗"));
+        iconBox.setStyle(atrasado ? "-fx-background-color: #FEE2E2;" : "-fx-background-color: #EFF6FF;");
+        iconBox.getStyleClass().add("loan-icon-box"); // Certifique-se que essa classe existe no CSS ou mantenha o style anterior
 
         VBox info = new VBox(4);
         HBox.setHgrow(info, javafx.scene.layout.Priority.ALWAYS);
 
-        Label titulo = new Label(item.titulo);
+        Label titulo = new Label(item.getLivro().getNome());
         titulo.getStyleClass().add("loan-book-title");
 
-        Label idExemplar = new Label(item.idExemplar);
+        Label idExemplar = new Label("ID: " + item.getLivro().getId());
         idExemplar.getStyleClass().add("loan-book-id");
 
-        HBox badgeRow = new HBox();
         Label badge = new Label(atrasado ? "Atrasado" : "Em dia");
         badge.getStyleClass().add(atrasado ? "tag-atrasado" : "tag-disponivel");
-        badgeRow.getChildren().add(badge);
 
-        info.getChildren().addAll(titulo, idExemplar, badgeRow);
+        info.getChildren().addAll(titulo, idExemplar, badge);
         header.getChildren().addAll(iconBox, info);
 
-        // Datas
+        // --- Datas ---
         VBox datas = new VBox(8);
 
-        HBox rowRetirada = new HBox();
-        Label lblRetirada = new Label("📅 Data de Retirada");
-        lblRetirada.getStyleClass().add("loan-label");
-        HBox.setHgrow(lblRetirada, javafx.scene.layout.Priority.ALWAYS);
-        Label valRetirada = new Label(item.dataRetirada.format(FMT));
-        valRetirada.getStyleClass().add("loan-value");
-        rowRetirada.getChildren().addAll(lblRetirada, valRetirada);
+        // Data de Retirada (pode ser a data do sistema no dia que foi criado)
+        datas.getChildren().add(criarLinhaData("📅 Data de Retirada", hoje.minusDays(7).format(FMT))); // Exemplo estático ou pegue do model se houver
 
-        HBox rowPrevista = new HBox();
-        Label lblPrevista = new Label("📅 Data Prevista");
-        lblPrevista.getStyleClass().add("loan-label");
-        HBox.setHgrow(lblPrevista, javafx.scene.layout.Priority.ALWAYS);
-        Label valPrevista = new Label(item.dataPrevista.format(FMT));
-        valPrevista.getStyleClass().add(atrasado ? "loan-value-atrasado" : "loan-value");
-        rowPrevista.getChildren().addAll(lblPrevista, valPrevista);
-
-        datas.getChildren().addAll(rowRetirada, rowPrevista);
+        // Data Prevista
+        datas.getChildren().add(criarLinhaData("📅 Devolução Prevista", prevista.format(FMT)));
 
         if (atrasado) {
-            HBox rowAtraso = new HBox();
             Label lblAtraso = new Label("⏰ Atrasado há " + diasAtraso + " dia(s)");
             lblAtraso.getStyleClass().add("loan-atraso-label");
-            rowAtraso.getChildren().add(lblAtraso);
-            datas.getChildren().add(rowAtraso);
+            datas.getChildren().add(lblAtraso);
         }
 
         card.getChildren().addAll(header, datas);
         return card;
     }
 
+    // Helper para criar as linhas de data e não repetir código
+    private HBox criarLinhaData(String label, String valor) {
+        HBox row = new HBox();
+        Label lbl = new Label(label);
+        lbl.getStyleClass().add("loan-label");
+        HBox.setHgrow(lbl, javafx.scene.layout.Priority.ALWAYS);
+        Label val = new Label(valor);
+        val.getStyleClass().add("loan-value");
+        row.getChildren().addAll(lbl, val);
+        return row;
+    }
+
+    // ===== NAVEGAÇÃO UTILIZANDO A CLASSE TOOLS (Padronizado) =====
+
     @FXML private void onLogout()         { navegarPara("/views/usuarioViews/Login.fxml"); }
-    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
-    @FXML private void onNavEmprestimos() { /* já está nesta tela */ }
-    @FXML private void onNavReservas()    { navegarPara("/views/usuarioViews/Reservas.fxml"); }
+    @FXML private void onNavCatalogo()    { navegarPara( "/views/usuarioViews/Catalogo.fxml"); }
+    @FXML private void onNavEmprestimos() { /* Já está aqui */ }
+    @FXML private void onNavReservas()    { navegarPara( "/views/usuarioViews/Reservas.fxml"); }
 
     private void navegarPara(String fxmlPath) {
         try {
@@ -146,12 +153,5 @@ public class EmprestimosController implements Initializable {
             e.printStackTrace();
         }
     }
-
-    // ──────────────── Inner record ────────────────
-    public record EmprestimoItem(
-            String titulo,
-            String idExemplar,
-            LocalDate dataRetirada,
-            LocalDate dataPrevista
-    ) {}
 }
+

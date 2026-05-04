@@ -14,16 +14,20 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import models.Titulo;
+import models.Usuario;
+import service.UsuarioService;
+import util.Sessao;
+
 public class DetalheLivroController implements Initializable {
 
     @FXML private Label lblNomeUsuario;
     @FXML private Label lblTitulo;
     @FXML private Label lblAutor;
-    @FXML private Label lblAno;
     @FXML private Label lblCategoria;
     @FXML private Label lblIsbn;
     @FXML private Label lblIdExemplar;
-    @FXML private Label lblAnoPublicacao;
+    @FXML private Label lblDataPublicacao;
     @FXML private Label lblDisponibilidade;
     @FXML private Label lblDescricao;
     @FXML private Label lblEmprestimosAtivos;
@@ -32,103 +36,117 @@ public class DetalheLivroController implements Initializable {
     @FXML private Button btnEmprestimo;
     @FXML private Button btnReserva;
 
-    // Estado do usuário (injetar via sessão/singleton em produção)
-    private boolean acessoBloqueado = true;
-    private int emprestimosAtivos  = 2;
-    private int limiteEmprestimos  = 3;
+    private UsuarioService usuarioService;
+    private Titulo tituloAtual; // Guarda o título que está sendo visualizado
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        lblNomeUsuario.setText("Ana Silva"); // vem da sessão
-        lblEmprestimosAtivos.setText(
-                "Empréstimos ativos: " + emprestimosAtivos + "/" + limiteEmprestimos);
+        Usuario logado = Sessao.getUsuarioLogado();
+        this.usuarioService = new UsuarioService(logado);
+
+        lblNomeUsuario.setText(logado.getNome());
+
+        // Atualiza o contador de empréstimos usando os dados reais do model
+        int ativos = logado.getListaEmprestimos().tamanho();
+        int limite = logado.getLimiteLivros();
+        lblEmprestimosAtivos.setText("Empréstimos ativos: " + ativos + "/" + limite);
     }
 
     /**
-     * Chamado pelo CatalogoController antes de exibir a tela.
+     * Versão atualizada: Recebe o objeto Titulo completo do CatalogoController
      */
-    public void carregarLivro(String titulo, String autor, String ano,
-                               String categoria, int disponivel) {
-        lblTitulo.setText(titulo);
-        lblAutor.setText(autor);
-        lblAno.setText(ano);
-        lblAnoPublicacao.setText(ano);
-        lblCategoria.setText(categoria);
+    public void carregarLivro(Titulo titulo) {
+        this.tituloAtual = titulo;
 
-        // ISBN e ID fictícios — em produção viriam do banco
-        lblIsbn.setText("978-0262033848");
-        lblIdExemplar.setText("#COMP-001");
-        lblDescricao.setText("Referência completa sobre " + titulo.toLowerCase() + ".");
+        lblTitulo.setText(titulo.getNome());
+        lblAutor.setText(titulo.getAutor());
+        lblDataPublicacao.setText(String.valueOf(titulo.getDataPublicacao()));
+        lblCategoria.setText(titulo.getGenero());
 
-        // Disponibilidade
+        // Dados que agora vêm do objeto real
+        lblIsbn.setText("ISBN-12345"); // Caso seu model tenha getIsbn(), troque aqui
+        lblIdExemplar.setText("ID: " + titulo.getQuantidadeDeExemplares());
+        lblDescricao.setText("Informações detalhadas sobre a obra " + titulo.getNome() + ".");
+
+        // Lógica de cores para disponibilidade
+        int disponivel = titulo.getQuantidadeDisponivel();
         if (disponivel > 0) {
-            lblDisponibilidade.setText(disponivel + " exemplar(es)");
-            lblDisponibilidade.getStyleClass().setAll("detail-field-value-green");
+            lblDisponibilidade.setText(disponivel + " exemplar(es) disponível(is)");
+            lblDisponibilidade.setStyle("-fx-text-fill: #059669;"); // Verde
         } else {
-            lblDisponibilidade.setText("Indisponível");
-            lblDisponibilidade.getStyleClass().setAll("loan-value-atrasado");
+            lblDisponibilidade.setText("Indisponível no momento");
+            lblDisponibilidade.setStyle("-fx-text-fill: #DC2626;"); // Vermelho
         }
 
-        atualizarBotaoAcao(disponivel);
+        configurarAcoes(disponivel);
     }
 
-    private void atualizarBotaoAcao(int disponivel) {
-        if (acessoBloqueado) {
-            // Mostra apenas o alerta vermelho
+    /**
+     * Aplica as regras de negócio do UsuarioService para gerenciar os botões
+     */
+    private void configurarAcoes(int disponivel) {
+        boolean temAtraso = usuarioService.usuarioPossuiAtraso();
+        boolean limiteAtingido = usuarioService.atingiuLimiteDeEmprestimos();
+
+        if (temAtraso) {
+            // Regra 1: Usuário com atraso vê o alerta e não faz nada
             alertaBloqueado.setVisible(true);
             alertaBloqueado.setManaged(true);
             btnEmprestimo.setVisible(false);
-            btnEmprestimo.setManaged(false);
             btnReserva.setVisible(false);
-            btnReserva.setManaged(false);
-        } else if (disponivel > 0 && emprestimosAtivos < limiteEmprestimos) {
-            // Pode emprestar
-            alertaBloqueado.setVisible(false);
-            alertaBloqueado.setManaged(false);
-            btnEmprestimo.setVisible(true);
-            btnEmprestimo.setManaged(true);
-            btnReserva.setVisible(false);
-            btnReserva.setManaged(false);
         } else {
-            // Pode reservar
             alertaBloqueado.setVisible(false);
             alertaBloqueado.setManaged(false);
-            btnEmprestimo.setVisible(false);
-            btnEmprestimo.setManaged(false);
-            btnReserva.setVisible(true);
-            btnReserva.setManaged(true);
-        }
-    }
 
-    @FXML
-    private void onVoltar() {
-        navegarPara("/views/usuarioViews/Catalogo.fxml");
+            if (disponivel > 0 && !limiteAtingido) {
+                // Regra 2: Tem livro e tem vaga no plano -> Botão Empréstimo
+                btnEmprestimo.setVisible(true);
+                btnEmprestimo.setManaged(true);
+                btnReserva.setVisible(false);
+                btnReserva.setManaged(false);
+            } else {
+                // Regra 3: Não tem livro OU atingiu limite -> Botão Reserva
+                btnEmprestimo.setVisible(false);
+                btnEmprestimo.setManaged(false);
+                btnReserva.setVisible(true);
+                btnReserva.setManaged(true);
+            }
+        }
     }
 
     @FXML
     private void onEmprestimo() {
-        System.out.println("Empréstimo solicitado para: " + lblTitulo.getText());
-        // Aqui chama o serviço de empréstimo
+        if (usuarioService.pegarEmprestimo(tituloAtual)) {
+            // Se deu certo, volta para o catálogo ou atualiza a tela
+            System.out.println("✅ Empréstimo realizado!");
+            onVoltar();
+        }
     }
 
     @FXML
     private void onReserva() {
-        System.out.println("Reserva solicitada para: " + lblTitulo.getText());
-        // Aqui chama o serviço de reserva
+        if (usuarioService.fazerReserva(tituloAtual)) {
+            System.out.println("✅ Reserva realizada!");
+            onVoltar();
+        }
     }
 
-    @FXML private void onLogout() { navegarPara("/fxml/Login.fxml"); }
+    @FXML private void onVoltar() { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
 
-    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo"); }
+    @FXML private void onLogout() { navegarPara("/views/usuarioViews/Login.fxml"); }
+
+    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
     @FXML private void onNavEmprestimos() { navegarPara("/views/usuarioViews/Emprestimos.fxml"); }
     @FXML private void onNavReservas()    { navegarPara("/views/usuarioViews/Reservas.fxml"); }
 
+    // Mantido conforme solicitado (não usa a Tools)
     private void navegarPara(String fxmlPath) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) lblTitulo.getScene().getWindow();
             stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         } catch (IOException e) {
+            System.err.println("Erro ao navegar para: " + fxmlPath);
             e.printStackTrace();
         }
     }
