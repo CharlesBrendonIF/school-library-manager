@@ -1,0 +1,34 @@
+.root {
+    -fx-background-color: #f4f4f4;
+}
+
+/* Título principal */
+.titulo {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2f5d50;
+}
+
+/* Subtítulo */
+.subtitulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* Card central */
+.card {
+    -fx-background-color: white;
+    -fx-padding: 25;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1;
+}
+
+/* Botão */
+.botao {
+    -fx-background-color: #2f5d50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+}

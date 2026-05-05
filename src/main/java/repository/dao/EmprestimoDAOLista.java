@@ -1,12 +1,21 @@
 package repository.dao;
 
-import model.Emprestimo;
-import model.Usuario;
-import repository.repository.ListaDinamica;
-import repository.repository.Listavel;
+import models.Emprestimo;
+import models.Livro;
+import models.Usuario;
+import ed.ListaDinamica;
+import ed.Listavel;
 
 public class EmprestimoDAOLista {
-    private Listavel listaEmprestimos = new ListaDinamica(0);
+    private Listavel<Emprestimo> listaEmprestimos;
+
+    public EmprestimoDAOLista(int numeroMaximoDeEmprestimos){
+        listaEmprestimos=new ListaDinamica<Emprestimo>(numeroMaximoDeEmprestimos);
+    }
+
+    public EmprestimoDAOLista(){
+        listaEmprestimos=new ListaDinamica<Emprestimo>();
+    }
 
     public void salvar(Emprestimo e) {
         if (e == null) {
@@ -63,5 +72,17 @@ public class EmprestimoDAOLista {
             }
         }
         return contador;
+    }
+
+    public int tamanho(){
+        return listaEmprestimos.tamanho();
+    }
+
+    public Emprestimo selecionar(int i){
+        return listaEmprestimos.selecionar(i);
+    }
+
+    public Emprestimo remover(int i){
+        return listaEmprestimos.apagar(i);
     }
 }
