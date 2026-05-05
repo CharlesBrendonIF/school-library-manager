@@ -1,8 +1,0 @@
-package controller;
-import controller.MainApp;
-
-public class Launcher {
-    public static void main(String[] args) {
-        MainApp.main(args);
-    }
-}

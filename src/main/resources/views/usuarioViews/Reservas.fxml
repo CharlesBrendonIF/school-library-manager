@@ -7,7 +7,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.usuarioController.ReservasController"
+            fx:controller="br.edu.ifba.controller.features.usuario.ReservasController"
             stylesheets="@css/biblioqueue.css"
             prefWidth="900" prefHeight="700">
 
