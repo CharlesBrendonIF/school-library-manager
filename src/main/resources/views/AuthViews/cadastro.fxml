@@ -5,8 +5,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="views.AuthViews.cadastro">
-   <Button layoutX="248.0" layoutY="243.0" mnemonicParsing="false" text="Button"/>
-   <TextField layoutX="77.0" layoutY="74.0" text="hello word"/>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.AuthViews.Cadastro">
+   <children>
+      <Button layoutX="248.0" layoutY="243.0" mnemonicParsing="false" text="Button" />
+      <TextField layoutX="77.0" layoutY="74.0" text="hello word" />
+   </children>
 </AnchorPane>
