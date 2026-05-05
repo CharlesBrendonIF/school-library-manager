@@ -24,10 +24,11 @@ public class DetalheLivroController implements Initializable {
     @FXML private Label lblNomeUsuario;
     @FXML private Label lblTitulo;
     @FXML private Label lblAutor;
+    @FXML private Label lblAno; // Ano que aparece ao lado do autor
     @FXML private Label lblCategoria;
     @FXML private Label lblIsbn;
     @FXML private Label lblIdExemplar;
-    @FXML private Label lblDataPublicacao;
+    @FXML private Label lblDataPublicacao; // Mantido conforme seu pedido
     @FXML private Label lblDisponibilidade;
     @FXML private Label lblDescricao;
     @FXML private Label lblEmprestimosAtivos;
@@ -37,45 +38,45 @@ public class DetalheLivroController implements Initializable {
     @FXML private Button btnReserva;
 
     private UsuarioService usuarioService;
-    private Titulo tituloAtual; // Guarda o título que está sendo visualizado
+    private Titulo tituloAtual;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Usuario logado = Sessao.getUsuarioLogado();
         this.usuarioService = new UsuarioService(logado);
-
         lblNomeUsuario.setText(logado.getNome());
 
-        // Atualiza o contador de empréstimos usando os dados reais do model
         int ativos = logado.getListaEmprestimos().tamanho();
         int limite = logado.getLimiteLivros();
         lblEmprestimosAtivos.setText("Empréstimos ativos: " + ativos + "/" + limite);
     }
 
-    /**
-     * Versão atualizada: Recebe o objeto Titulo completo do CatalogoController
-     */
     public void carregarLivro(Titulo titulo) {
         this.tituloAtual = titulo;
 
         lblTitulo.setText(titulo.getNome());
         lblAutor.setText(titulo.getAutor());
-        lblDataPublicacao.setText(String.valueOf(titulo.getDataPublicacao()));
-        lblCategoria.setText(titulo.getGenero());
 
-        // Dados que agora vêm do objeto real
-        lblIsbn.setText("ISBN-12345"); // Caso seu model tenha getIsbn(), troque aqui
+        // Pega a data completa (ex: 2009 ou 10/05/2009)
+        String dataCompleta = String.valueOf(titulo.getDataPublicacao());
+        lblDataPublicacao.setText(dataCompleta);
+
+        // Se a data for string e você quiser só o ano para o lblAno do topo:
+        // lblAno.setText(dataCompleta.length() > 4 ? dataCompleta.substring(dataCompleta.length() - 4) : dataCompleta);
+        lblAno.setText(dataCompleta);
+
+        lblCategoria.setText(titulo.getGenero());
+        lblIsbn.setText("978-0262033848");
         lblIdExemplar.setText("ID: " + titulo.getQuantidadeDeExemplares());
         lblDescricao.setText("Informações detalhadas sobre a obra " + titulo.getNome() + ".");
 
-        // Lógica de cores para disponibilidade
         int disponivel = titulo.getQuantidadeDisponivel();
         if (disponivel > 0) {
             lblDisponibilidade.setText(disponivel + " exemplar(es) disponível(is)");
-            lblDisponibilidade.setStyle("-fx-text-fill: #059669;"); // Verde
+            lblDisponibilidade.setStyle("-fx-text-fill: #059669;");
         } else {
             lblDisponibilidade.setText("Indisponível no momento");
-            lblDisponibilidade.setStyle("-fx-text-fill: #DC2626;"); // Vermelho
+            lblDisponibilidade.setStyle("-fx-text-fill: #DC2626;");
         }
 
         configurarAcoes(disponivel);
@@ -133,7 +134,7 @@ public class DetalheLivroController implements Initializable {
 
     @FXML private void onVoltar() { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
 
-    @FXML private void onLogout() { navegarPara("/views/usuarioViews/Login.fxml"); }
+    @FXML private void onLogout() { navegarPara("/views/AuthViews/Login.fxml"); }
 
     @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
     @FXML private void onNavEmprestimos() { navegarPara("/views/usuarioViews/Emprestimos.fxml"); }

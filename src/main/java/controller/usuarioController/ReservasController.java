@@ -170,7 +170,7 @@ public class ReservasController implements Initializable {
 
     // ===== NAVEGAÇÃO UTILIZANDO A CLASSE TOOLS (Sua versão oficial) =====
 
-    @FXML private void onLogout()         { navegarPara( "/views/usuarioViews/Login.fxml"); }
+    @FXML private void onLogout()         { navegarPara( "/views/AuthViews/Login.fxml"); }
     @FXML private void onNavCatalogo()    { navegarPara( "/views/usuarioViews/Catalogo.fxml"); }
     @FXML private void onNavEmprestimos() { navegarPara( "/views/usuarioViews/Emprestimos.fxml"); }
     @FXML private void onNavReservas()    { /* já está nesta tela */ }

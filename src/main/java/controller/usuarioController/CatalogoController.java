@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import util.*;
+import controller.usuarioController.DetalheLivroController;
 
 public class CatalogoController implements Initializable {
 
@@ -117,6 +118,9 @@ public class CatalogoController implements Initializable {
         tagRow.getChildren().addAll(tagCategoria, tagStatus);
         card.getChildren().addAll(titulo, autor, ano, tagRow);
 
+        // Adicione isso para o mouse virar a "mãozinha" ao passar por cima
+        card.setStyle("-fx-cursor: hand;");
+
         // Ao clicar, você ainda usa a lógica do seu amigo para abrir detalhes
         card.setOnMouseClicked(e -> abrirDetalhe(t));
 
@@ -124,12 +128,32 @@ public class CatalogoController implements Initializable {
     }
 
     private void abrirDetalhe(Titulo t) {
-        // Aqui você mantém a lógica de carregar o FXML de detalhes
-        // e passar o objeto 't' para o próximo controller.
-        System.out.println("Abrindo detalhes de: " + t.getNome());
+        try {
+            // 1. Carrega o FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/usuarioViews/DetalheLivro.fxml"));
+            Parent root = loader.load();
+
+            // 2. Acessa o Controller da tela de detalhes
+            DetalheLivroController controller = loader.getController();
+
+            // 3. Passa o objeto Titulo para o controller (método que criamos anteriormente)
+            controller.carregarLivro(t);
+
+            // 4. Troca a cena
+            Stage stage = (Stage) listaLivrosContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Erro ao abrir detalhes do livro: " + t.getNome());
+            e.printStackTrace();
+        }catch (NullPointerException e){
+            System.err.println("Tela n encontrada " + t.getNome());
+            e.printStackTrace();
+        }
     }
 
-    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo"); }
+    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
     @FXML private void onNavEmprestimos() { navegarPara("/views/usuarioViews/Emprestimos.fxml"); }
     @FXML private void onNavReservas()    { navegarPara("/views/usuarioViews/Reservas.fxml"); }
 

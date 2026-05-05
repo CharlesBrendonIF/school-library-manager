@@ -139,7 +139,7 @@ public class EmprestimosController implements Initializable {
 
     // ===== NAVEGAÇÃO UTILIZANDO A CLASSE TOOLS (Padronizado) =====
 
-    @FXML private void onLogout()         { navegarPara("/views/usuarioViews/Login.fxml"); }
+    @FXML private void onLogout()         { navegarPara("/views/AuthViews/Login.fxml"); }
     @FXML private void onNavCatalogo()    { navegarPara( "/views/usuarioViews/Catalogo.fxml"); }
     @FXML private void onNavEmprestimos() { /* Já está aqui */ }
     @FXML private void onNavReservas()    { navegarPara( "/views/usuarioViews/Reservas.fxml"); }

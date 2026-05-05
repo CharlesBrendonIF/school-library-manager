@@ -85,8 +85,8 @@
                         </HBox>
 
                         <HBox>
-                            <Label text="Ano de Publicação" styleClass="detail-field-label" HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="lblAnoPublicacao" text="2009" styleClass="detail-field-value"/>
+                            <Label text="Data de Publicação" styleClass="detail-field-label" HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="lblDataPublicacao" text="2009" styleClass="detail-field-value"/>
                         </HBox>
 
                         <HBox>

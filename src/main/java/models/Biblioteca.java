@@ -1,25 +1,29 @@
 package models;
 
+import repository.DataBaseSeed; // Importa a nova classe
 import repository.dao.*;
 
-import java.time.LocalDate;
-
 public class Biblioteca {
-
     private LivroDAOLista acervo;
     private TituloDAOLista listaDeTitulos;
     private EmprestimoDAOLista listaDeEmprestimos;
-    private ReservaDAOLista listaDeReservas;//Para a biblioteca ter um controle de todas as reservas
+    private ReservaDAOLista listaDeReservas;
     private UsuarioDAOLista listaDeUsuarios;
-    private BibliotecaRepository repositorio = new BibliotecaRepository();
+
     private static Biblioteca instance;
 
     private Biblioteca() {
-        listaDeEmprestimos = new EmprestimoDAOLista();
-        listaDeReservas = new ReservaDAOLista();
-        listaDeUsuarios = repositorio.listaDeUsuarios;
-        acervo = repositorio.listaDeLivros;
-        listaDeTitulos= updateListaDeTitulos(acervo);
+        // Inicializa as listas vazias
+        this.acervo = new LivroDAOLista();
+        this.listaDeUsuarios = new UsuarioDAOLista();
+        this.listaDeEmprestimos = new EmprestimoDAOLista();
+        this.listaDeReservas = new ReservaDAOLista();
+
+        // Chama a "Semente" de dados para preencher as listas acima
+        DataBaseSeed.popularDadosIniciais(this.acervo, this.listaDeUsuarios);
+
+        // Gera os títulos baseados no acervo populado
+        this.listaDeTitulos = updateListaDeTitulos(this.acervo);
     }
 
     public static Biblioteca getInstance() {
@@ -30,22 +34,19 @@ public class Biblioteca {
     }
 
     public boolean thisIDIsValid(String id) {
-        if (id.charAt(0) == 't') {
-            for (String idOfATeacher : repositorio.idsOfTeachers) {
-                if (idOfATeacher.equals(id))
-                    return true;
-            }
+        if (id == null || id.isEmpty()) return false;
 
-        } else if (id.charAt(0) == 's') {
-            for (String idsOfStudent : repositorio.idsOfStudents) {
-                if (idsOfStudent.equals(id))
-                    return true;
-            }
-        } else if (id.charAt(0) == 'l') {
-            for (String idsOfLibrarian : repositorio.idsOfLibrarians) {
-                if (idsOfLibrarian.equals(id))
-                    return true;
-            }
+        char prefixo = id.charAt(0);
+        String[] listaParaComparar;
+
+        // Busca os IDs da nossa nova classe repository
+        if (prefixo == 'p') listaParaComparar = DataBaseSeed.IDS_TEACHERS;
+        else if (prefixo == 's') listaParaComparar = DataBaseSeed.IDS_STUDENTS;
+        else if (prefixo == 'l') listaParaComparar = DataBaseSeed.IDS_LIBRARIANS;
+        else return false;
+
+        for (String validId : listaParaComparar) {
+            if (validId.equals(id)) return true;
         }
         return false;
     }
@@ -98,104 +99,5 @@ public class Biblioteca {
         }
 
         return novaListaDeTitulos;
-    }
-}
-
-class BibliotecaRepository{
-    public String[] idsOfStudents= {"s000001","s000002","s000003","s000004"};
-    public String[] idsOfTeachers= {"p000001","p000002","p000003","p000004"};
-    public String[] idsOfLibrarians= {"l000001"};
-
-    public LivroDAOLista listaDeLivros= new LivroDAOLista();
-    public UsuarioDAOLista listaDeUsuarios= new UsuarioDAOLista();
-
-
-    public BibliotecaRepository(){
-        listaDeLivros.salvar(new Livro(
-                "Código Limpo",
-                "Robert C. Martin",
-                "9788576082323",
-                "Programação",
-                "Um guia prático para escrever código limpo e sustentável",
-                LocalDate.of(2008, 8, 1)
-        ));
-
-        listaDeLivros.salvar(new Livro(
-                "Estruturas de Dados e Algoritmos",
-                "Thomas H. Cormen",
-                "9788575226937",
-                "Computação",
-                "Conceitos fundamentais de estruturas de dados",
-                LocalDate.of(2010, 5, 10)
-        ));
-
-        listaDeLivros.salvar(new Livro(
-                "Java: Como Programar",
-                "Paul Deitel",
-                "9780134694726",
-                "Programação",
-                "Livro completo sobre Java",
-                LocalDate.of(2016, 1, 1)
-        ));
-
-        listaDeLivros.salvar(new Livro(
-                "Padrões de Projeto",
-                "Erich Gamma",
-                "9788573076103",
-                "Engenharia de Software",
-                "Soluções reutilizáveis para problemas comuns",
-                LocalDate.of(1994, 10, 21)
-        ));
-
-        listaDeLivros.salvar(new Livro(
-                "Algoritmos",
-                "Sanjoy Dasgupta",
-                "9788535236996",
-                "Computação",
-                "Estudo de algoritmos e lógica de programação",
-                LocalDate.of(2011, 3, 15)
-        ));
-
-
-        listaDeUsuarios.salvar(new Usuario(
-                "s000001",
-                "João Silva",
-                "joao.silva@email.com",
-                "123456",
-                TipoUsuario.ALUNO
-        ));
-
-        listaDeUsuarios.salvar(new Usuario(
-                "s000002",
-                "Maria Oliveira",
-                "maria.oliveira@email.com",
-                "abc123",
-                TipoUsuario.ALUNO
-        ));
-
-        listaDeUsuarios.salvar(new Usuario(
-                "t000001",
-                "Carlos Souza",
-                "carlos.souza@email.com",
-                "prof123",
-                TipoUsuario.PROFESSOR
-        ));
-
-        listaDeUsuarios.salvar(new Usuario(
-                "t000002",
-                "Ana Pereira",
-                "ana.pereira@email.com",
-                "senha456",
-                TipoUsuario.PROFESSOR
-        ));
-
-        listaDeUsuarios.salvar(new Usuario(
-                "l000001",
-                "Bibliotecário",
-                "admin@biblioteca.com",
-                "admin",
-                TipoUsuario.BIBLIOTECARIO
-        ));
-
     }
 }
