@@ -119,4 +119,11 @@ public class Biblioteca {
         }
         return filtrada;
     }
+    public int contarTotalEmprestimos() {
+        return listaDeEmprestimos.tamanho();
+    }
+
+    public int contarTotalReservas() {
+        return listaDeReservas.tamanho();
+    }
 }
