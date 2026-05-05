@@ -73,31 +73,50 @@ public class Biblioteca {
         this.listaDeTitulos = updateListaDeTitulos(this.acervo);
         return this.listaDeTitulos;
     }
-
     private TituloDAOLista updateListaDeTitulos(LivroDAOLista acervo) {
-        acervo.ordenar(); // Garante que livros iguais fiquem juntos
+        acervo.ordenar();
         TituloDAOLista novaListaDeTitulos = new TituloDAOLista();
 
         int i = 0;
         while (i < acervo.quantidade()) {
             Livro modelo = acervo.selecionar(i);
+            String isbnAtual = modelo.getIsbn();
             LivroDAOLista colecaoExemplares = new LivroDAOLista();
 
-            // Agrupa todos os livros que possuem o mesmo ISBN
-            while (i < acervo.quantidade() &&
-                    acervo.selecionar(i).getIsbn().equals(modelo.getIsbn())) {
-
+            while (i < acervo.quantidade() && acervo.selecionar(i).getIsbn().equals(isbnAtual)) {
                 colecaoExemplares.salvar(acervo.selecionar(i));
-                i++; // Move para o próximo exemplar
+                i++;
             }
 
-            // Cria um único Título baseado na coleção de exemplares idênticos
-            novaListaDeTitulos.salvar(new Titulo(colecaoExemplares));
+            // --- A MÁGICA ACONTECE AQUI ---
+            // Filtramos as listas globais para pegar apenas o que é deste ISBN
+            EmprestimoDAOLista emprestimosFiltrados = filtrarEmprestimosPorIsbn(isbnAtual);
+            ReservaDAOFilaDePrioridade reservasFiltradas = filtrarReservasPorIsbn(isbnAtual);
 
-            // O "i" já está na posição do próximo livro diferente,
-            // o loop principal continuará dali.
+            // Criamos o título com as suas respectivas listas já vindo da persistência global
+            novaListaDeTitulos.salvar(new Titulo(colecaoExemplares, emprestimosFiltrados, reservasFiltradas));
         }
-
         return novaListaDeTitulos;
+    }
+
+    // Métodos auxiliares dentro da Biblioteca para ajudar no filtro:
+    private EmprestimoDAOLista filtrarEmprestimosPorIsbn(String isbn) {
+        EmprestimoDAOLista filtrada = new EmprestimoDAOLista();
+        for (Emprestimo e : this.listaDeEmprestimos.listar()) {
+            if (e.getLivro().getIsbn().equals(isbn)) {
+                filtrada.salvar(e);
+            }
+        }
+        return filtrada;
+    }
+
+    private ReservaDAOFilaDePrioridade filtrarReservasPorIsbn(String isbn) {
+        ReservaDAOFilaDePrioridade filtrada = new ReservaDAOFilaDePrioridade();
+        for (Reserva r : this.listaDeReservas.listar()) {
+            if (r.getTitulo().getIsbn().equals(isbn)) {
+                filtrada.salvar(r);
+            }
+        }
+        return filtrada;
     }
 }

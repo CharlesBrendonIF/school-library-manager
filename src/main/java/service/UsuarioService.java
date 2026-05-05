@@ -1,6 +1,7 @@
 package service;
 
 import models.*;
+import repository.dao.EmprestimoDAOLista;
 import repository.dao.ReservaDAOLista;
 
 // ALTERAÇÃO: removidos imports de "repository.*" e "java.util.List" — não são mais usados.
@@ -66,7 +67,8 @@ public class UsuarioService {
 
         // Registro nos 3 pilares de persistência em memória
         user.adicionarEmprestimo(emprestimo);         // perfil do usuário
-        b.getListaDeEmprestimos().salvar(emprestimo); // relatório geral da biblioteca
+        b.getListaDeEmprestimos().salvar(emprestimo);// relatório geral da biblioteca
+        b.getAcervo().buscarPorId(livroFisicoEmprestado.getId()).setDisponivel(false);
         titulo.registrarEmprestimo(emprestimo);       // controle de estoque do título
 
         System.out.println("✅ Sucesso! Devolução prevista: " + emprestimo.getDataDevolucao());
@@ -165,9 +167,6 @@ public class UsuarioService {
         if (busca == null || busca.isBlank()) {
             return obterCatalogo();
         }
-
-        // CORRIGIDO: era listaDeTitulos.getLista().stream() — inexistente.
-        // Agora usa for sobre o array retornado por listarTitulos()
         Titulo[] todos = b.getTitulosAtualizados().listar();
 
         int contador = 0;
@@ -227,12 +226,9 @@ public class UsuarioService {
             return false;
         }
 
-        // CORRIGIDO: era new Reserva(user) — construtor inexistente.
         // Reserva exige dois parâmetros: Reserva(Usuario, Titulo)
         Reserva reserva = new Reserva(user, titulo);
 
-        // CORRIGIDO: era titulo.getFilaDeReservas().enfileirar() — método inexistente.
-        // O nome correto em ReservaDAOFilaDePrioridade é salvar()
         titulo.getFilaDeReservas().salvar(reserva);
 
         // Registra também na lista global de reservas da biblioteca
@@ -255,7 +251,7 @@ public class UsuarioService {
      * @return true se cancelada; false se não havia reserva deste usuário
      */
     public boolean desistirDaReserva(Titulo titulo) {
-        // CORRIGIDO: era titulo.getFilaDeReservas().remover(user) — inexistente
+
         for (Reserva r : titulo.getFilaDeReservas().listar()) {
             if (r.getUsuario().getId().equals(user.getId())) {
                 titulo.getFilaDeReservas().apagar(r.getId());
@@ -282,7 +278,6 @@ public class UsuarioService {
      * essa verificação de forma correta dentro de EmprestimoDAOLista.
      */
     public boolean usuarioPossuiAtraso() {
-        // CORRIGIDO: era user.getEmprestimos().anyMatch(...) — array não tem stream
         return b.getListaDeEmprestimos().usuarioTemAtraso(user);
     }
 
@@ -293,8 +288,32 @@ public class UsuarioService {
      * não possui size(), o método correto é tamanho().
      */
     public boolean atingiuLimiteDeEmprestimos() {
-        // CORRIGIDO: era .size() — método inexistente, correto é .tamanho()
+
         return user.getListaEmprestimos().tamanho() >= user.getLimiteLivros();
+    }
+
+    public boolean esseLivroFoiPegoEmprestado(String isbn) {
+        EmprestimoDAOLista listaDeEmprestimos= user.getListaEmprestimos();
+        for (Emprestimo e: listaDeEmprestimos.listar()){
+            if(e.getLivro().getIsbn().equals(isbn)){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    public boolean esseLivroFoiFeitoAReserva(String isbn) {
+        // Buscamos todas as reservas na biblioteca
+        // Ou, se o seu 'user' tiver uma lista própria: user.getListaReservas()
+        for (Reserva r : b.getListaDeReservas().listar()) {
+            // Verifica se a reserva pertence ao usuário logado E se o ISBN bate
+            if (r.getUsuario().getId().equals(user.getId()) &&
+                    r.getTitulo().getIsbn().equals(isbn)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // =========================================================================

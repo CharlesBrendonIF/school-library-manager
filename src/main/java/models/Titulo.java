@@ -1,6 +1,7 @@
 package models;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import models.Livro;
 import models.Emprestimo;
@@ -8,6 +9,7 @@ import models.Emprestimo;
 import repository.dao.EmprestimoDAOLista;
 import repository.dao.LivroDAOLista;
 import repository.dao.ReservaDAOFilaDePrioridade;
+import repository.dao.ReservaDAOLista;
 
 public class Titulo {
 
@@ -25,7 +27,7 @@ public class Titulo {
     private ReservaDAOFilaDePrioridade filaDeReservas;
     private EmprestimoDAOLista listaDeEmprestimos;
 
-    public Titulo(LivroDAOLista listaDeExemplares) {
+    public Titulo(LivroDAOLista listaDeExemplares, EmprestimoDAOLista listaDeEmprestimos, ReservaDAOFilaDePrioridade filaDeReserva) {
 
         // Quando a lista estiver vazia
         if(listaDeExemplares == null || listaDeExemplares.tamanho() == 0){
@@ -45,11 +47,11 @@ public class Titulo {
 
         this.quantidade = listaDeExemplares.tamanho();
         this.quantidadeDeReservas = 0;
-        this.quantidadeDisponivel = quantidade;
+        this.quantidadeDisponivel = contarQuantidadeDisponivel();
 
         // Quantidade maxima de Emprestimos precisa ser a quantidade disponivel
-        this.listaDeEmprestimos = new EmprestimoDAOLista();
-        this.filaDeReservas = new ReservaDAOFilaDePrioridade();
+        this.listaDeEmprestimos = listaDeEmprestimos;
+        this.filaDeReservas = filaDeReserva;
     }
 
     // --- Getters ---
@@ -74,11 +76,25 @@ public class Titulo {
     public int getQuantidadeDeExemplares() {
         return quantidade;
     }
+
     public int getQuantidadeDisponivel() {
         return quantidadeDisponivel;
     }
 
+    private int contarQuantidadeDisponivel(){
+        int cont = 0;
+        // Percorre os exemplares que este título possui
+        for (Livro l : listaDeExemplares.listar()) {
+            if (l.isDisponivel()) { // Verifica o booleano do livro físico
+                cont++;
+            }
+        }
+        return cont;
+    }
+
     public ReservaDAOFilaDePrioridade getFilaDeReservas() {
+        System.out.println(Arrays.toString(filaDeReservas.listar()));
+        System.out.println("-----------");
         return filaDeReservas;
     }
 

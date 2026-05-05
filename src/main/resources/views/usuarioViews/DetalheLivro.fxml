@@ -80,11 +80,6 @@
                         </HBox>
 
                         <HBox>
-                            <Label text="ID do Exemplar" styleClass="detail-field-label" HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="lblIdExemplar" text="#COMP-001" styleClass="detail-field-value-blue"/>
-                        </HBox>
-
-                        <HBox>
                             <Label text="Data de Publicação" styleClass="detail-field-label" HBox.hgrow="ALWAYS"/>
                             <Label fx:id="lblDataPublicacao" text="2009" styleClass="detail-field-value"/>
                         </HBox>
@@ -103,49 +98,33 @@
                                wrapText="true"/>
                     </VBox>
 
-                    <!-- Botão de ação (empréstimo / reserva / bloqueado) -->
                     <VBox fx:id="actionContainer" spacing="8">
 
-                        <!-- Alerta bloqueado (visível quando acesso bloqueado) -->
-                        <HBox fx:id="alertaBloqueado"
-                              styleClass="alert-card"
-                              spacing="10"
-                              alignment="CENTER_LEFT"
-                              visible="true"
-                              managed="true">
+                        <HBox fx:id="alertaBloqueado" styleClass="alert-card" spacing="10" alignment="CENTER_LEFT" visible="false" managed="false">
                             <Label text="⚠" style="-fx-font-size: 14px; -fx-text-fill: #DC2626;"/>
-                            <VBox HBox.hgrow="ALWAYS">
-                                <Label text="Acesso Bloqueado:"
-                                       style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #DC2626;"/>
-                                <Label text="Regularize seus atrasos para fazer novos empréstimos ou reservas."
-                                       styleClass="alert-text"
-                                       wrapText="true"/>
+                            <VBox>
+                                <Label text="Acesso Bloqueado:" style="-fx-font-weight: bold; -fx-text-fill: #DC2626;"/>
+                                <Label text="Regularize seus atrasos primeiro." styleClass="alert-text"/>
                             </VBox>
                         </HBox>
 
-                        <!-- Botão pegar emprestado (visível quando disponível e sem bloqueio) -->
-                        <Button fx:id="btnEmprestimo"
-                                text="Pegar Emprestado"
-                                visible="false"
-                                managed="false"
-                                onAction="#onEmprestimo"
-                                style="-fx-background-color: #1E3A8A; -fx-text-fill: white;
-                                       -fx-font-size: 14px; -fx-font-weight: bold;
-                                       -fx-background-radius: 10; -fx-padding: 12 0 12 0;
-                                       -fx-cursor: hand;"
-                                maxWidth="Infinity"/>
+                        <HBox fx:id="alertaLimite" styleClass="alert-card" style="-fx-border-color: #EAB308; -fx-background-color: #FEFCE8;" spacing="10" alignment="CENTER_LEFT" visible="false" managed="false">
+                            <Label text="⚠" style="-fx-font-size: 14px; -fx-text-fill: #A16207;"/>
+                            <Label text="Você atingiu seu limite de empréstimos ativos." style="-fx-text-fill: #A16207; -fx-font-size: 13px;"/>
+                        </HBox>
 
-                        <!-- Botão entrar na fila (visível quando indisponível e sem bloqueio) -->
-                        <Button fx:id="btnReserva"
-                                text="Entrar na Fila de Espera"
-                                visible="false"
-                                managed="false"
-                                onAction="#onReserva"
-                                style="-fx-background-color: #EA580C; -fx-text-fill: white;
-                                       -fx-font-size: 14px; -fx-font-weight: bold;
-                                       -fx-background-radius: 10; -fx-padding: 12 0 12 0;
-                                       -fx-cursor: hand;"
-                                maxWidth="Infinity"/>
+                        <HBox fx:id="alertaJaPossui" styleClass="alert-card" style="-fx-border-color: #2563EB; -fx-background-color: #EFF6FF;" spacing="10" alignment="CENTER_LEFT" visible="false" managed="false">
+                            <Label text="ℹ" style="-fx-font-size: 14px; -fx-text-fill: #1E40AF;"/>
+                            <Label text="Você já está em posse de um exemplar deste título." style="-fx-text-fill: #1E40AF; -fx-font-size: 13px;"/>
+                        </HBox>
+
+                        <HBox fx:id="alertaJaReservado" styleClass="alert-card" style="-fx-border-color: #EA580C; -fx-background-color: #FFF7ED;" spacing="10" alignment="CENTER_LEFT" visible="false" managed="false">
+                            <Label text="⏳" style="-fx-font-size: 14px; -fx-text-fill: #9A3412;"/>
+                            <Label text="Você já está na fila de reserva para este livro." style="-fx-text-fill: #9A3412; -fx-font-size: 13px;"/>
+                        </HBox>
+
+                        <Button fx:id="btnEmprestimo" text="Pegar Emprestado" visible="false" managed="false" onAction="#onEmprestimo" styleClass="primary-btn"/>
+                        <Button fx:id="btnReserva" text="Entrar na Fila de Espera" visible="false" managed="false" onAction="#onReserva" styleClass="secondary-btn"/>
                     </VBox>
 
                     <!-- Rodapé do card -->

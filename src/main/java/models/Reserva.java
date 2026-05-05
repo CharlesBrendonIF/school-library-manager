@@ -68,4 +68,11 @@ public class Reserva {
         if (usuario != null) System.out.println("Usuário: " + usuario.getNome());
         if (titulo != null && titulo.getNome() != null) System.out.println("Título: " + titulo.getNome());
     }
+
+    @Override
+    public String toString() {
+        return "Reserva{" +
+                "usuario=" + usuario.getNome() +
+                '}';
+    }
 }

@@ -142,6 +142,7 @@ public class CatalogoController implements Initializable {
             // 4. Troca a cena
             Stage stage = (Stage) listaLivrosContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
+
             stage.show();
 
         } catch (IOException e) {

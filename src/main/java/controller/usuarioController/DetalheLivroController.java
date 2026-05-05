@@ -18,6 +18,7 @@ import models.Titulo;
 import models.Usuario;
 import service.UsuarioService;
 import util.Sessao;
+import util.Tools;
 
 public class DetalheLivroController implements Initializable {
 
@@ -27,7 +28,6 @@ public class DetalheLivroController implements Initializable {
     @FXML private Label lblAno; // Ano que aparece ao lado do autor
     @FXML private Label lblCategoria;
     @FXML private Label lblIsbn;
-    @FXML private Label lblIdExemplar;
     @FXML private Label lblDataPublicacao; // Mantido conforme seu pedido
     @FXML private Label lblDisponibilidade;
     @FXML private Label lblDescricao;
@@ -36,6 +36,11 @@ public class DetalheLivroController implements Initializable {
     @FXML private HBox alertaBloqueado;
     @FXML private Button btnEmprestimo;
     @FXML private Button btnReserva;
+
+    // Adicione estes campos ao topo da classe DetalheLivroController
+    @FXML private HBox alertaLimite;
+    @FXML private HBox alertaJaPossui;
+    @FXML private HBox alertaJaReservado;
 
     private UsuarioService usuarioService;
     private Titulo tituloAtual;
@@ -66,9 +71,8 @@ public class DetalheLivroController implements Initializable {
         lblAno.setText(dataCompleta);
 
         lblCategoria.setText(titulo.getGenero());
-        lblIsbn.setText("978-0262033848");
-        lblIdExemplar.setText("ID: " + titulo.getQuantidadeDeExemplares());
-        lblDescricao.setText("Informações detalhadas sobre a obra " + titulo.getNome() + ".");
+        lblIsbn.setText(titulo.getIsbn());
+        lblDescricao.setText(titulo.getDescricao());
 
         int disponivel = titulo.getQuantidadeDisponivel();
         if (disponivel > 0) {
@@ -85,35 +89,54 @@ public class DetalheLivroController implements Initializable {
     /**
      * Aplica as regras de negócio do UsuarioService para gerenciar os botões
      */
+
     private void configurarAcoes(int disponivel) {
+        // 1. Coleta de dados
         boolean temAtraso = usuarioService.usuarioPossuiAtraso();
         boolean limiteAtingido = usuarioService.atingiuLimiteDeEmprestimos();
+        String isbn = tituloAtual.getIsbn();
+        boolean jaPossui = usuarioService.esseLivroFoiPegoEmprestado(isbn);
+        boolean jaReservou = usuarioService.esseLivroFoiFeitoAReserva(isbn);
 
+        // 2. Reset de visibilidade (Esconde tudo primeiro para limpar a tela)
+        alertaBloqueado.setVisible(false); alertaBloqueado.setManaged(false);
+        alertaLimite.setVisible(false);    alertaLimite.setManaged(false);
+        alertaJaPossui.setVisible(false);  alertaJaPossui.setManaged(false);
+        alertaJaReservado.setVisible(false); alertaJaReservado.setManaged(false);
+        btnEmprestimo.setVisible(false);   btnEmprestimo.setManaged(false);
+        btnReserva.setVisible(false);      btnReserva.setManaged(false);
+
+        // 3. Aplicação das Regras de Prioridade
         if (temAtraso) {
-            // Regra 1: Usuário com atraso vê o alerta e não faz nada
-            alertaBloqueado.setVisible(true);
-            alertaBloqueado.setManaged(true);
-            btnEmprestimo.setVisible(false);
-            btnReserva.setVisible(false);
-        } else {
-            alertaBloqueado.setVisible(false);
-            alertaBloqueado.setManaged(false);
-
-            if (disponivel > 0 && !limiteAtingido) {
-                // Regra 2: Tem livro e tem vaga no plano -> Botão Empréstimo
-                btnEmprestimo.setVisible(true);
-                btnEmprestimo.setManaged(true);
-                btnReserva.setVisible(false);
-                btnReserva.setManaged(false);
+            exibirElemento(alertaBloqueado);
+        }
+        else if (jaPossui) {
+            exibirElemento(alertaJaPossui);
+        }
+        else if (jaReservou) {
+            exibirElemento(alertaJaReservado);
+        }
+        else if (limiteAtingido) {
+            exibirElemento(alertaLimite);
+            // Opcional: Se não tiver o livro, mesmo com limite atingido, ele pode querer reservar?
+            // Se a regra for "limite atingido não reserva", para aqui.
+        }
+        else {
+            // Se passou em todas as validações, mostramos o botão de ação baseado no estoque
+            if (disponivel > 0) {
+                exibirElemento(btnEmprestimo);
             } else {
-                // Regra 3: Não tem livro OU atingiu limite -> Botão Reserva
-                btnEmprestimo.setVisible(false);
-                btnEmprestimo.setManaged(false);
-                btnReserva.setVisible(true);
-                btnReserva.setManaged(true);
+                exibirElemento(btnReserva);
             }
         }
     }
+
+    // Método auxiliar para não repetir código
+    private void exibirElemento(javafx.scene.Node node) {
+        node.setVisible(true);
+        node.setManaged(true);
+    }
+
 
     @FXML
     private void onEmprestimo() {
@@ -121,6 +144,8 @@ public class DetalheLivroController implements Initializable {
             // Se deu certo, volta para o catálogo ou atualiza a tela
             System.out.println("✅ Empréstimo realizado!");
             onVoltar();
+        }else{
+            Tools.enviarAlerta("Não foi possivel concluir o emprestimo");
         }
     }
 
@@ -129,6 +154,8 @@ public class DetalheLivroController implements Initializable {
         if (usuarioService.fazerReserva(tituloAtual)) {
             System.out.println("✅ Reserva realizada!");
             onVoltar();
+        }else{
+            Tools.enviarAlerta("Não foi possivel concluir a reserva");
         }
     }
 
@@ -145,6 +172,7 @@ public class DetalheLivroController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) lblTitulo.getScene().getWindow();
+
             stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         } catch (IOException e) {
             System.err.println("Erro ao navegar para: " + fxmlPath);

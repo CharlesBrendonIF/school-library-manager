@@ -1,6 +1,7 @@
 package models;
 
 import repository.dao.EmprestimoDAOLista;
+import repository.dao.ReservaDAOLista;
 
 public class Usuario {
     private String id;
@@ -10,7 +11,6 @@ public class Usuario {
     public TipoUsuario tipo;
     private int limiteLivros;
     private EmprestimoDAOLista listaEmprestimos;
-
     public Usuario(String id, String nome, String email, String senha, TipoUsuario tipo) {
         this.id = id;
         this.nome = nome;
