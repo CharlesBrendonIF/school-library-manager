@@ -31,6 +31,7 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 *Camada responsável por gerenciar a persistência em memória:*
 - **Ana Clara**: `LivroDAOLista`, `UsuarioDAOLista`, `TituloDAOLista`, `EmprestimoDAOLista` e `ReservaDAOLista`.🟢 (Concluído)
 - **Maria Eduarda**: `ReservaDAOFilaDePrioridade`.🟢 (Concluído)
+- **Emanuel**: `DataBaseSeed`.🟢 (Concluído)
 
 ### 📂 Service (Lógica)
 *Lógica principal do sistema:*
@@ -41,20 +42,19 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 ### 📂 Models (Entidades)
 *Entidades base*
 - **Indaia, Maria Eduarda**:`Livro`, `Titulo`, `Usuario`, `Reserva`, `Emprestimo`.🟢 (Concluído)
-- **Emanuel**: `Bibiloteca`, e `BibliotecaRepository`.🟢 (Concluído)
+- **Emanuel**: `Bibiloteca`.🟢 (Concluído)
 
 ### 📂 Views (resources/views)
 *Interfaces FXML desenvolvidas no Scene Builder:*
 - **Kaique**: `AuthViews`.🟢 (Concluído)
 - **Pedro**: `UsuarioViews`.🟢 (Concluído)
-- ****: `CardsViews`(Precisa de alguem) 🔴 (Procura-se Responsável)
-- ** **: `BibliotecarioViews` 🔴 (Procura-se Responsável)
+- **Kaique**: `BibliotecarioViews` 🟡 (Em Desenvolvimento)
 
 ### 📂 Controller
 *Lógica das telas e integração:*
 - **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🟢 (Concluído)
-- **Pedro, e Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🟡 (Em Desenvolvimento)
-- ****:`BibliotecarioController` 🔴 (Procura-se Responsável)
+- **Pedro, e Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🔵 (Em Revisão)
+- **Kaique**:`BibliotecarioController` 🟡 (Em Desenvolvimento)
   
 ---
 
