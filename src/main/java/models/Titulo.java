@@ -45,7 +45,7 @@ public class Titulo {
 
         this.quantidade = listaDeExemplares.tamanho();
         this.quantidadeDeReservas = 0;
-        this.quantidadeDisponivel = quantidade;
+        this.quantidadeDisponivel = contarQuantidadeDisponivel();
 
         // Quantidade maxima de Emprestimos precisa ser a quantidade disponivel
         this.listaDeEmprestimos = new EmprestimoDAOLista();
@@ -74,8 +74,20 @@ public class Titulo {
     public int getQuantidadeDeExemplares() {
         return quantidade;
     }
+
     public int getQuantidadeDisponivel() {
         return quantidadeDisponivel;
+    }
+
+    private int contarQuantidadeDisponivel(){
+        int cont = 0;
+        // Percorre os exemplares que este título possui
+        for (Livro l : listaDeExemplares.listar()) {
+            if (l.isDisponivel()) { // Verifica o booleano do livro físico
+                cont++;
+            }
+        }
+        return cont;
     }
 
     public ReservaDAOFilaDePrioridade getFilaDeReservas() {

@@ -29,6 +29,7 @@ public class Tools {
 
             // Define a nova cena
             stage.setScene(new Scene(root));
+
             stage.show();
 
         } catch (IOException e) {

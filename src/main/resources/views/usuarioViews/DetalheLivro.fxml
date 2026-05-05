@@ -80,11 +80,6 @@
                         </HBox>
 
                         <HBox>
-                            <Label text="ID do Exemplar" styleClass="detail-field-label" HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="lblIdExemplar" text="#COMP-001" styleClass="detail-field-value-blue"/>
-                        </HBox>
-
-                        <HBox>
                             <Label text="Data de Publicação" styleClass="detail-field-label" HBox.hgrow="ALWAYS"/>
                             <Label fx:id="lblDataPublicacao" text="2009" styleClass="detail-field-value"/>
                         </HBox>

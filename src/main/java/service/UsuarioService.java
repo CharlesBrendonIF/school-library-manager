@@ -66,7 +66,8 @@ public class UsuarioService {
 
         // Registro nos 3 pilares de persistência em memória
         user.adicionarEmprestimo(emprestimo);         // perfil do usuário
-        b.getListaDeEmprestimos().salvar(emprestimo); // relatório geral da biblioteca
+        b.getListaDeEmprestimos().salvar(emprestimo);// relatório geral da biblioteca
+        b.getAcervo().buscarPorId(livroFisicoEmprestado.getId()).setDisponivel(false);
         titulo.registrarEmprestimo(emprestimo);       // controle de estoque do título
 
         System.out.println("✅ Sucesso! Devolução prevista: " + emprestimo.getDataDevolucao());
@@ -165,9 +166,6 @@ public class UsuarioService {
         if (busca == null || busca.isBlank()) {
             return obterCatalogo();
         }
-
-        // CORRIGIDO: era listaDeTitulos.getLista().stream() — inexistente.
-        // Agora usa for sobre o array retornado por listarTitulos()
         Titulo[] todos = b.getTitulosAtualizados().listar();
 
         int contador = 0;
@@ -227,12 +225,9 @@ public class UsuarioService {
             return false;
         }
 
-        // CORRIGIDO: era new Reserva(user) — construtor inexistente.
         // Reserva exige dois parâmetros: Reserva(Usuario, Titulo)
         Reserva reserva = new Reserva(user, titulo);
 
-        // CORRIGIDO: era titulo.getFilaDeReservas().enfileirar() — método inexistente.
-        // O nome correto em ReservaDAOFilaDePrioridade é salvar()
         titulo.getFilaDeReservas().salvar(reserva);
 
         // Registra também na lista global de reservas da biblioteca
@@ -282,7 +277,6 @@ public class UsuarioService {
      * essa verificação de forma correta dentro de EmprestimoDAOLista.
      */
     public boolean usuarioPossuiAtraso() {
-        // CORRIGIDO: era user.getEmprestimos().anyMatch(...) — array não tem stream
         return b.getListaDeEmprestimos().usuarioTemAtraso(user);
     }
 

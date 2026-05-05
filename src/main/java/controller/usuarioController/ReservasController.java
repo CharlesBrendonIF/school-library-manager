@@ -179,6 +179,7 @@ public class ReservasController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) lblNomeUsuario.getScene().getWindow();
+
             stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
 
         } catch (IOException e) {

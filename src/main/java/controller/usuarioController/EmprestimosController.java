@@ -76,9 +76,9 @@ public class EmprestimosController implements Initializable {
     /** Cria um card de empréstimo dinamicamente baseado no model Emprestimo */
     private VBox criarCardEmprestimo(Emprestimo item) {
         // Verifica atraso comparando a data atual com a data de devolução prevista
-        LocalDate hoje = LocalDate.now();
+        LocalDate hoje = item.getDataEmprestimo();
         LocalDate prevista = item.getDataDevolucao();
-        boolean atrasado = hoje.isAfter(prevista);
+        boolean atrasado = item.isAtrasado();
 
         long diasAtraso = atrasado ? ChronoUnit.DAYS.between(prevista, hoje) : 0;
 
@@ -97,7 +97,7 @@ public class EmprestimosController implements Initializable {
         Label titulo = new Label(item.getLivro().getNome());
         titulo.getStyleClass().add("loan-book-title");
 
-        Label idExemplar = new Label("ID: " + item.getLivro().getId());
+        Label idExemplar = new Label("ID do livro: " + item.getLivro().getId());
         idExemplar.getStyleClass().add("loan-book-id");
 
         Label badge = new Label(atrasado ? "Atrasado" : "Em dia");
@@ -148,6 +148,7 @@ public class EmprestimosController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) lblNomeUsuario.getScene().getWindow();
+
             stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
         } catch (IOException e) {
             e.printStackTrace();

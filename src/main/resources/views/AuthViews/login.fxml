@@ -26,14 +26,14 @@
         <!-- CONTEÚDO CENTRAL -->
         <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="200" AnchorPane.rightAnchor="200" AnchorPane.topAnchor="0">
 
-               <!-- Logo -->
+            <!-- Logo -->
             <ImageView fitHeight="284.0" fitWidth="294.0" preserveRatio="true">
 
-                   <image>
+                <image>
                     <Image url="@../../images/logo.png" />
                 </image>
 
-               </ImageView>
+            </ImageView>
 
             <!-- CAMPOS DE ENTRADA -->
             <VBox alignment="CENTER" maxWidth="350.0" prefHeight="232.0" prefWidth="338.0" spacing="15" styleClass="card">
@@ -51,11 +51,11 @@
             </VBox>
 
         </VBox>
-      <ImageView fitHeight="606.0" fitWidth="287.0" layoutX="600.0" preserveRatio="true" scaleX="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="-80.0" AnchorPane.topAnchor="0.0">
-         <image>
-            <Image url="@../../images/prateleira_esquerda.jpeg" />
-         </image>
-      </ImageView>
+        <ImageView fitHeight="606.0" fitWidth="287.0" layoutX="600.0" preserveRatio="true" scaleX="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="-80.0" AnchorPane.topAnchor="0.0">
+            <image>
+                <Image url="@../../images/prateleira_esquerda.jpeg" />
+            </image>
+        </ImageView>
 
     </children>
 </AnchorPane>
