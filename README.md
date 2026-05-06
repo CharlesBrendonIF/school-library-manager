@@ -53,7 +53,7 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 ### 📂 Controller
 *Lógica das telas e integração:*
 - **Kaique**: `AuthController`, Controle da tela de Login e Cadastro 🟢 (Concluído)
-- **Pedro, e Emanuel**: `UsuarioController` e `CardsController`(Gostaria de ajuda) 🔵 (Em Revisão)
+- **Pedro, e Emanuel**: `UsuarioController` 🔵 (Em Revisão)
 - **Kaique, e Nikolas**: `BibliotecarioController` 🟡 (Em Desenvolvimento)
   
 ---
