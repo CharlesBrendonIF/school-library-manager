@@ -124,7 +124,7 @@ public class ReservasController implements Initializable {
         VBox detalhes = new VBox(8);
 
         // Posição na fila (calculada pelo DAO do título)
-        int pos = reserva.getTitulo().getFilaDeReservas().posicao(reserva);
+        int pos = reserva.getTitulo().getFilaDeReservas().posicao(reserva)+1;
         detalhes.getChildren().add(criarLinhaInfo("Posição na fila", pos + "º"));
 
         // Data da reserva (supondo que seu model Reserva tenha getDataReserva)
