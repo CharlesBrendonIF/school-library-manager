@@ -8,16 +8,16 @@ Repositório destinado ao desenvolvimento do sistema de gerenciamento de bibliot
 
 | Membro | Papel Principal | Atribuições |
 | :--- | :--- | :--- |
-| **Emanuel** | **Líder / Integração** | Estrutura Maven, Navegação entre telas, Organização do Git e Revisão Geral. |
-| **Ana Clara** | **Persistência (DAO)** | Implementação das classes de acesso a dados e Estruturas Dinâmicas. |
-| **Charles** | **Service (Negócio)** | Lógica de regras de negócio e validações do sistema. |
-| **Kaique** | **Full / Design** | View e Controller de Login e Cadastro. |
-| **Maria Eduarda** | **ED / DAO** | Estrutura da Fila de Prioridade e Lógica de Reservas. |
-| **Indaia** | **Modelagem** | Criação das entidades (POJOs) do sistema. |
-| **Nikolas** | **Design (Views)** | Construção das interfaces visuais no Scene Builder. |
-| **Pedro** | **Design (Views)** | Construção das interfaces visuais no Scene Builder. |
-| **Rodrigo** | **Design (Views)** | Construção das interfaces visuais no Scene Builder. |
-
+| Integrante | Papel Principal | Responsabilidades Detalhadas |
+| :--- | :--- | :--- |
+| **Emanuel** | **Líder / Integração** | Estrutura Maven, Gestão do Git, Integração Controller/View de Usuário e Revisão Geral. |
+| **Ana Clara** | **Persistência (DAO)** | Implementação das classes de acesso a dados (CRUD) e Estruturas Dinâmicas. |
+| **Charles** | **Service (Negócio)** | Implementação das Regras de Negócio e validações lógicas do sistema. |
+| **Kaique** | **Fullstack / Design** | Telas e Controllers de Login/Cadastro e Interfaces do Bibliotecário. |
+| **Maria Eduarda** | **ED / DAO** | Implementação da Fila de Prioridade e lógica específica de Reservas. |
+| **Indaia** | **Modelagem** | Criação e manutenção das entidades (POJOs) e objetos do sistema. |
+| **Nikolas** | **Controller Bibliotecário** | Integração das Views com a lógica de controle do Bibliotecário. |
+| **Pedro** | **Front-end Usuário** | Construção das interfaces visuais para Alunos e Professores no Scene Builder. |
 ---
 
 ## 🏗️ Divisão Técnica
