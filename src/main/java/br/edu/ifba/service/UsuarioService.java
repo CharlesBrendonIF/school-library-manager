@@ -74,19 +74,7 @@ public class UsuarioService {
         return true;
     }
 
-    /**
-     * Registra a devolução de um empréstimo ativo do usuário logado.
-     *
-     * ALTERAÇÃO COMPLETA: o método original recebia Livro como parâmetro (sem nome,
-     * causando erro de compilação) e usava métodos inexistentes como setEstaDisponivel(),
-     * devolverLivro(), setAtrasada() e getDataDevolucaoPrevista().
-     * Refatorado para receber Emprestimo diretamente, conforme indicado pelo comentário
-     * original no código. Agora remove o empréstimo dos três registros: biblioteca,
-     * título e usuário (dependendo de removerEmprestimo ser implementado nos models).
-     *
-     * @param emprestimo o empréstimo a ser encerrado
-     * @return true se a devolução foi registrada; false se o empréstimo for nulo
-     */
+
     public boolean devolucaoDoEmprestimo(Emprestimo emprestimo) {
         // CORRIGIDO: parâmetro era "Livro" sem nome — trocado para "Emprestimo emprestimo"
 
@@ -98,10 +86,6 @@ public class UsuarioService {
         Livro livro = emprestimo.getLivro();
 
         // Marca a data de devolução real e verifica atraso
-        // CORRIGIDO: era setAtrasada() e getDataDevolucaoPrevista() — métodos inexistentes.
-        // Os nomes corretos em Emprestimo são setAtrasado() e getDataDevolucao()
-        // (getDataDevolucao() armazena a data PREVISTA no construtor;
-        //  aqui salvamos a data real sobrescrevendo com setDataDevolucao)
         boolean atrasado = java.time.LocalDate.now().isAfter(emprestimo.getDataDevolucao());
         emprestimo.setDataDevolucao(java.time.LocalDate.now()); // registra data real
         emprestimo.setAtrasado(atrasado);
@@ -113,19 +97,13 @@ public class UsuarioService {
         // Remove o empréstimo do registro do Título (atualiza quantidadeDisponivel internamente)
         // CORRIGIDO: era listaDeTitulos.buscarTitulo() — método inexistente.
         // Agora busca via b.getTitulosAtualizados().buscarPorNome()
-        Titulo titulo = b.getTitulosAtualizados().buscarPorNome(livro.getNome());
+        Titulo titulo = b.getTitulos().buscarPorNome(livro.getNome());
         if (titulo != null) {
             titulo.removerEmprestimo(emprestimo); // decrementa quantidadeDisponivel dentro de Titulo
         }
 
         // Remove o empréstimo do registro global da biblioteca
-        // OBS: EmprestimoDAOLista.apagar() ainda está incompleto nos models.
-        // Quando o responsável pelos models implementar, chamar:
-        // b.getListaDeEmprestimos().apagar(emprestimo.getId());
-
         // Remove do registro do usuário
-        // OBS: Usuario.removerEmprestimo() ainda está incompleto nos models.
-        // Quando implementado, chamar: user.removerEmprestimo(emprestimo);
 
         if (atrasado) {
             System.out.println("⚠️ Livro devolvido com atraso. Regularize pendências futuras.");
@@ -146,27 +124,14 @@ public class UsuarioService {
      * Retorna todos os títulos do catálogo ordenados por nome.
      */
     public Titulo[] obterCatalogo() {
-        return b.getTitulosAtualizados().listar();
+        return b.getTitulos().listar();
     }
 
-    /**
-     * Busca títulos cujo nome contenha o texto informado (case-insensitive).
-     *
-     * ALTERAÇÃO: o método original retornava List<Titulo> usando stream() em
-     * listaDeTitulos (variável inexistente). Refatorado para retornar Titulo[]
-     * iterando com for sobre b.getTitulosAtualizados().listarTitulos(),
-     * pois TituloDAOLista não expõe getLista() nem stream().
-     * Também foi adicionado um array de resultado auxiliar com dois passos
-     * (contar + preencher), seguindo o padrão já usado nos outros DAOs do projeto.
-     *
-     * @param busca texto a procurar no nome do título
-     * @return array de títulos cujo nome contém a busca
-     */
     public Titulo[] buscarTituloPorNome(String busca) {
         if (busca == null || busca.isBlank()) {
             return obterCatalogo();
         }
-        Titulo[] todos = b.getTitulosAtualizados().listar();
+        Titulo[] todos = b.getTitulos().listar();
 
         int contador = 0;
         for (Titulo t : todos) {
@@ -198,8 +163,7 @@ public class UsuarioService {
         if (genero == null || genero.isBlank()) {
             return obterCatalogo();
         }
-        // CORRIGIDO: era listaDeTitulos.selecionaTituloPorGenero() — inexistente
-        return b.getTitulosAtualizados().buscarPorGenero(genero);
+        return b.getTitulos().buscarPorGenero(genero);
     }
 
     // =========================================================================
@@ -329,7 +293,7 @@ public class UsuarioService {
      */
     private int contarReservasAtivas() {
         int cont = 0;
-        for (Titulo t : b.getTitulosAtualizados().listar()) {
+        for (Titulo t : b.getTitulos().listar()) {
             for (Reserva r : t.getFilaDeReservas().listar()) {
                 if (r.getUsuario().getId().equals(user.getId()))
                     cont++;

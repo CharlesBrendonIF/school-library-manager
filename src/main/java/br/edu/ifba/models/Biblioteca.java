@@ -67,12 +67,17 @@ public class Biblioteca {
         return listaDeUsuarios;
     }
 
-    public TituloDAOLista getTitulosAtualizados() {
+    public TituloDAOLista getTitulos(){
+        return this.listaDeTitulos;
+    }
+
+    /*public TituloDAOLista getTitulosAtualizados() {
         // Toda vez que alguém pedir os títulos, você re-agrupa para garantir
         // que novos livros adicionados ao acervo apareçam aqui.
         this.listaDeTitulos = updateListaDeTitulos(this.acervo);
         return this.listaDeTitulos;
-    }
+    }*/
+
     private TituloDAOLista updateListaDeTitulos(LivroDAOLista acervo) {
         acervo.ordenar();
         TituloDAOLista novaListaDeTitulos = new TituloDAOLista();

@@ -72,7 +72,7 @@ public class ReservasController implements Initializable {
         Usuario logado = Sessao.getUsuarioLogado();
 
         // Percorre todos os títulos da biblioteca para achar onde este usuário está na fila
-        for (Titulo t : Biblioteca.getInstance().getTitulosAtualizados().listar()) {
+        for (Titulo t : Biblioteca.getInstance().getTitulos().listar()) {
             for (Reserva r : t.getFilaDeReservas().listar()) {
                 if (r.getUsuario().getId().equals(logado.getId())) {
                     encontradas.add(r);

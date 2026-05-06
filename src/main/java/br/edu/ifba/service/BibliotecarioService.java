@@ -81,7 +81,7 @@ public class BibliotecarioService {
     public int getTotalReservas() {
 
         int total = 0;
-        for (Titulo t : b.getTitulosAtualizados().listar()) {
+        for (Titulo t : b.getTitulos().listar()) {
             total += t.getFilaDeReservas().tamanho();
         }
         return total;
@@ -124,7 +124,7 @@ public class BibliotecarioService {
         livro.setDisponivel(true);
 
         // Remove o empréstimo do registro do Título (já existia, mantido)
-        for (Titulo titulo : b.getTitulosAtualizados().listar()) {
+        for (Titulo titulo : b.getTitulos().listar()) {
             if (livro.getIsbn().equalsIgnoreCase(titulo.getIsbn())) {
                 titulo.removerEmprestimo(e); // decrementa quantidadeDisponivel internamente
             }
@@ -161,7 +161,7 @@ public class BibliotecarioService {
      */
     public Titulo[] listarInventario() {
         // CORRIGIDO: corpo vazio — implementado com os métodos corretos
-        return b.getTitulosAtualizados().listar();
+        return b.getTitulos().listar();
     }
 
     /**
@@ -192,7 +192,7 @@ public class BibliotecarioService {
     public Reserva[] listarPrimeirosDasFilaDeReservasDeCadaTitulo() {
         // CORRIGIDO: corpo vazio — implementado conforme comentário original do método
         ReservaDAOLista listaAuxiliar = new ReservaDAOLista();
-        for (Titulo t : b.getTitulosAtualizados().listar()) {
+        for (Titulo t : b.getTitulos().listar()) {
             Reserva primeira = t.getFilaDeReservas().proximo(); // peek sem remover
             if (primeira != null) {
                 listaAuxiliar.salvar(primeira);
