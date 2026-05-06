@@ -54,7 +54,7 @@ public class Login {
         }
 
         Sessao.setUsuarioLogado(userLogado);
-        if (userLogado.getTipo().equals(TipoUsuario.ALUNO)) {
+        if (userLogado.getTipo().equals(TipoUsuario.ALUNO)|| userLogado.getTipo().equals(TipoUsuario.PROFESSOR)) {
             Tools.navegarPara(event, "/views/usuarioViews/Catalogo.fxml");
             return;
         }
