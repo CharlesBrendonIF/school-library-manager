@@ -1,6 +1,7 @@
 package br.edu.ifba.controller.auth;
 
 // Imports para o JavaFX para funcionar corretamente
+import br.edu.ifba.enums.TipoUsuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -12,6 +13,8 @@ import br.edu.ifba.service.AuthService;
 import br.edu.ifba.models.Usuario;
 import br.edu.ifba.util.Sessao;
 import br.edu.ifba.util.Tools;
+
+import java.util.Objects;
 
 import static br.edu.ifba.util.Tools.enviarAlerta;
 
@@ -45,12 +48,18 @@ public class Login {
 
         Usuario userLogado = AuthService.login(email,senha);
 
-        if(userLogado!=null){
-            Sessao.setUsuarioLogado(userLogado);
-            Tools.navegarPara(event, "/views/usuarioViews/Catalogo.fxml");
-        }else{
+        if(Objects.isNull(userLogado)){
             enviarAlerta("Usuario não encontrado");
+            return;
         }
+
+        Sessao.setUsuarioLogado(userLogado);
+        if (userLogado.getTipo().equals(TipoUsuario.ALUNO)) {
+            Tools.navegarPara(event, "/views/usuarioViews/Catalogo.fxml");
+            return;
+        }
+
+        Tools.navegarPara(event, "/views/bibliotecarioViews/dashboard.fxml");
     }
 
     @FXML
