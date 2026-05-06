@@ -15,6 +15,7 @@ BIBLIOTECÁRIO l000001
 ALUNOS
 ID: s000001 | Nome: João Silva | Email: joao.silva@email.com |Senha: 123456
 ID: s000002 | Nome: Maria Oliveira | Email: maria.oliveira@email.com | Senha: abc123
+ID: t000002 | Nome: Ana Silva| Email: ana.silva@email.com | Senha: senha123
 
 PROFESSORES
 ID: t000001 | Nome: Carlos Souza | Email:carlos.souza@email.com | Senha: prof123

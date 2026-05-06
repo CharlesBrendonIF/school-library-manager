@@ -45,12 +45,19 @@ public class AuthService {
             return null;
         }
 
-        // Verifica se o email já está cadastrado
+
+
+        // Verifica se o email já está cadastrado e se há algum usuario com o msm id
         for (Usuario u : b.getListaDeUsuarios().listar()) {
             if (u.getEmail().equalsIgnoreCase(email)) {
                 System.out.println("Este email já está em uso.");
                 return null;
             }
+            if (u.getId().equalsIgnoreCase(id)) {
+                System.out.println("Ja há no sistema usuario com este id.");
+                return null;
+            }
+
         }
 
         // Determina a categoria com base no prefixo do ID
