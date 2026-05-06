@@ -114,4 +114,7 @@ public class ReservaDAOLista {
 
         return null;
     }
+    public int tamanho() {
+        return listaReservas.tamanho();
+    }
 }
