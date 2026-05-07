@@ -151,7 +151,9 @@ public class CatalogoController implements Initializable {
         }
     }
 
-    @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
+    @FXML private void onNavCatalogo()    { 
+        System.out.println("Já está no Catálogo"); 
+    }
     @FXML private void onNavEmprestimos() { navegarPara("/views/usuarioViews/Emprestimos.fxml"); }
     @FXML private void onNavReservas()    { navegarPara("/views/usuarioViews/Reservas.fxml"); }
 
@@ -159,13 +161,22 @@ public class CatalogoController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) listaLivrosContainer.getScene().getWindow();
+            
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
+            
             stage.setScene(new Scene(root));
+            
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
 
         } catch (IOException e) {
             System.err.println("Erro ao navegar para: " + fxmlPath);
             e.printStackTrace();
         }
-
     }
 
 

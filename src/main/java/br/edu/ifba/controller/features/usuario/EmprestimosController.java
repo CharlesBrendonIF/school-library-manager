@@ -140,7 +140,7 @@ public class EmprestimosController implements Initializable {
 
     @FXML private void onLogout()         { navegarPara("/views/AuthViews/Login.fxml"); }
     @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
-    @FXML private void onNavEmprestimos() { /* Já está aqui */ }
+    @FXML private void onNavEmprestimos() { System.out.println("Já está na página de Empréstimos"); }
     @FXML private void onNavReservas()    { navegarPara("/views/usuarioViews/Reservas.fxml"); }
 
     private void navegarPara(String fxmlPath) {

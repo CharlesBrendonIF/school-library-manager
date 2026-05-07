@@ -172,7 +172,7 @@ public class ReservasController implements Initializable {
     @FXML private void onLogout()         { navegarPara( "/views/AuthViews/Login.fxml"); }
     @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
     @FXML private void onNavEmprestimos() { navegarPara("/views/usuarioViews/Emprestimos.fxml"); }
-    @FXML private void onNavReservas()    { /* já está nesta tela */ }
+    @FXML private void onNavReservas()    { System.out.println("Já está na página de Reservas"); }
 
     private void navegarPara(String fxmlPath) {
         try {

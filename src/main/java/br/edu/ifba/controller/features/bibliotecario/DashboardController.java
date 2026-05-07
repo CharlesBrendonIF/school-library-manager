@@ -77,9 +77,19 @@ public class DashboardController implements Initializable {
             URL resource = Objects.requireNonNull(getClass().getResource(fxmlPath), "Recurso não encontrado: " + fxmlPath);
             Parent root = FXMLLoader.load(resource);
             Stage stage = (Stage) bibliotecarioVBox.getScene().getWindow();
+            
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
+            
             Scene newScene = new Scene(root);
             stage.setScene(newScene);
-            stage.sizeToScene();
+            
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
+            
             System.out.println("Navegação concluída para: " + fxmlPath);
         } catch (IOException | NullPointerException e) {
             System.err.println("Erro ao navegar para " + fxmlPath + ": " + e.getMessage());

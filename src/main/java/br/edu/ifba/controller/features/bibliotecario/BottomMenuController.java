@@ -1,5 +1,6 @@
 package br.edu.ifba.controller.features.bibliotecario;
 
+import br.edu.ifba.util.Sessao;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -13,22 +14,22 @@ public class BottomMenuController {
 
     @FXML
     private void irDashboard(MouseEvent event) {
-        carregarTela(event, "/views/bibliotecarioViews/Dashboard.fxml");
+        carregarTela(event, "/views/bibliotecarioViews/dashboard.fxml");
     }
 
     @FXML
     private void irInventario(MouseEvent event) {
-        carregarTela(event, "/views/bibliotecarioViews/Inventario.fxml");
+        carregarTela(event, "/views/bibliotecarioViews/inventario.fxml");
     }
 
     @FXML
     private void irFilaReserva(MouseEvent event) {
-        carregarTela(event, "/views/bibliotecarioViews/FilaReserva.fxml");
+        carregarTela(event, "/views/bibliotecarioViews/controleDeReservas.fxml");
     }
 
     @FXML
     private void irDevolucoes(MouseEvent event) {
-        carregarTela(event, "/views/bibliotecarioViews/Devolucoes.fxml");
+        carregarTela(event, "/views/bibliotecarioViews/controleDeEmprestimos.fxml");
     }
 
     private void carregarTela(MouseEvent event, String caminhoFXML) {
@@ -38,8 +39,26 @@ public class BottomMenuController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("Aviso: A tela " + caminhoFXML + " ainda não foi criada.");
-            // e.printStackTrace(); // Descomente para ver o erro completo no console
+            System.err.println("Erro ao carregar a tela " + caminhoFXML + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleLogout(MouseEvent event) {
+        try {
+            Sessao.encerrarSessao();
+            System.out.println("Logout realizado via BottomMenu. Redirecionando para login...");
+            
+            Parent root = FXMLLoader.load(getClass().getResource("/views/AuthViews/login.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Erro ao fazer logout: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
