@@ -87,6 +87,21 @@ public class BibliotecarioService {
         return total;
     }
 
+    /**
+     * Número de empréstimos realizados hoje.
+     * Percorre todos os empréstimos e conta aqueles cuja data de empréstimo é hoje.
+     */
+    public int getNumeroEmprestimosHoje() {
+        int cont = 0;
+        java.time.LocalDate hoje = java.time.LocalDate.now();
+        for (Emprestimo e : b.getListaDeEmprestimos().listar()) {
+            if (e.getDataEmprestimo().isEqual(hoje)) {
+                cont++;
+            }
+        }
+        return cont;
+    }
+
     // =========================================================================
     // DEVOLUÇÕES — tela de controle de devoluções
     // =========================================================================
