@@ -172,14 +172,23 @@ public class ReservasController implements Initializable {
     @FXML private void onLogout()         { navegarPara( "/views/AuthViews/Login.fxml"); }
     @FXML private void onNavCatalogo()    { navegarPara("/views/usuarioViews/Catalogo.fxml"); }
     @FXML private void onNavEmprestimos() { navegarPara("/views/usuarioViews/Emprestimos.fxml"); }
-    @FXML private void onNavReservas()    { /* já está nesta tela */ }
+    @FXML private void onNavReservas()    { System.out.println("Já está na página de Reservas"); }
 
     private void navegarPara(String fxmlPath) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) lblNomeUsuario.getScene().getWindow();
+            
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
 
             stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+            
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

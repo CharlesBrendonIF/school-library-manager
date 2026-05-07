@@ -27,8 +27,17 @@ public class Tools {
             // Pega o Stage atual
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
+
             // Define a nova cena
             stage.setScene(new Scene(root));
+
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
 
             stage.show();
 
@@ -39,5 +48,32 @@ public class Tools {
         }
     }
 
+    /**
+     * Navega para uma nova tela a partir de um Node, preservando a maximização da janela.
+     * Use este método em controllers que fazem navegação manualmente (sem ActionEvent).
+     */
+    public static void navegarPara(Node source, String caminhoFXML) {
+        try {
+            Parent root = FXMLLoader.load(Tools.class.getResource(caminhoFXML));
+            Stage stage = (Stage) source.getScene().getWindow();
+            
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
+            
+            stage.setScene(new Scene(root));
+            
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
+            
+            stage.show();
+        } catch (IOException e) {
+            Tools.enviarAlerta("Erro ao carregar a tela: " + e);
+            System.err.println("Erro ao carregar a tela: " + caminhoFXML);
+            e.printStackTrace();
+        }
+    }
 
 }
