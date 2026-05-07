@@ -34,7 +34,6 @@ public class TopBarController {
 
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {

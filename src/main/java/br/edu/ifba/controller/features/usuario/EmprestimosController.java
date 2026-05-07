@@ -147,11 +147,21 @@ public class EmprestimosController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) lblNomeUsuario.getScene().getWindow();
+            
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
 
             stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+            
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
+
 

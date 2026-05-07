@@ -29,7 +29,6 @@ public class InventarioController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             System.err.println("Erro ao fazer logout: " + e.getMessage());
@@ -42,15 +41,43 @@ public class InventarioController implements Initializable {
         navegarPara("/views/bibliotecarioViews/adicionarLivro.fxml", event);
     }
 
+    @FXML
+    private void dashboardController(MouseEvent event) {
+        navegarPara("/views/bibliotecarioViews/dashboard.fxml", event);
+    }
+
+    @FXML
+    private void inventarioController(MouseEvent event) {
+        System.out.println("Já está na página de Controle de inventario ");
+    }
+
+    @FXML
+    private void controleDeReservasController(MouseEvent event) {
+        navegarPara("/views/bibliotecarioViews/controleDeReservas.fxml", event);
+    }
+
+    @FXML
+    private void controleDeEmprestimosController(MouseEvent event) {
+        navegarPara("/views/bibliotecarioViews/controleDeEmprestimos.fxml", event);
+    }
+
     private void navegarPara(String fxmlPath, MouseEvent event) {
         try {
             System.out.println("Navegando para: " + fxmlPath);
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
+            
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.centerOnScreen();
-            stage.show();
+            
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
         } catch (IOException e) {
             System.err.println("Erro ao navegar para " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();

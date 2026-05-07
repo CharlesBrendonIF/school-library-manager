@@ -172,8 +172,17 @@ public class DetalheLivroController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) lblTitulo.getScene().getWindow();
+            
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
 
             stage.setScene(new Scene(root, stage.getWidth(), stage.getHeight()));
+            
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
         } catch (IOException e) {
             System.err.println("Erro ao navegar para: " + fxmlPath);
             e.printStackTrace();

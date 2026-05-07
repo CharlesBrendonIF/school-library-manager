@@ -78,7 +78,7 @@ public class DashboardController implements Initializable {
             Parent root = FXMLLoader.load(resource);
             Stage stage = (Stage) bibliotecarioVBox.getScene().getWindow();
             
-            // Preserva o estado de maximização
+            // Preserva o estado de maximizaçãoP
             boolean estaMaximizada = stage.isMaximized();
             
             Scene newScene = new Scene(root);

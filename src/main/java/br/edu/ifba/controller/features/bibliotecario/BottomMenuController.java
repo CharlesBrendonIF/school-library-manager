@@ -36,7 +36,18 @@ public class BottomMenuController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(caminhoFXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            // Preserva o estado de maximização
+            boolean estaMaximizada = stage.isMaximized();
+            
             stage.setScene(new Scene(root));
+            
+            // Restaura o estado de maximização
+            if (estaMaximizada) {
+                stage.setMaximized(false);
+                stage.setMaximized(true);
+            }
+            
             stage.show();
         } catch (IOException e) {
             System.err.println("Erro ao carregar a tela " + caminhoFXML + ": " + e.getMessage());
@@ -54,7 +65,6 @@ public class BottomMenuController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             System.err.println("Erro ao fazer logout: " + e.getMessage());
